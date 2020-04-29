@@ -4,18 +4,18 @@
 namespace netvars {
 	struct data {
 		recv_prop* prop;
-		uint16_t offset;
+		uint32_t offset;
 	};
 
 	void init();
-	void dump_recursive(const char* base_class, recv_table* table, uint16_t offset);
+	void dump_recursive(const char* base_class, recv_table* table, uint32_t offset);
 
 	extern std::unordered_map<uint32_t, data> props;
 
-	uint16_t get_offset(uint32_t hash);
+	uint32_t get_offset(uint32_t hash);
 	recv_prop* get_prop(uint32_t hash);
 
-	__declspec(noinline) static uint16_t get_offset_by_hash(uint32_t hash) { return get_offset(hash); }
+	__declspec(noinline) static uint32_t get_offset_by_hash(uint32_t hash) { return get_offset(hash); }
 };
 
 #define NETVAR(func, type, name) \

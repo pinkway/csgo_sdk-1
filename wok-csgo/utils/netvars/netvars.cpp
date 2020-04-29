@@ -11,7 +11,7 @@ namespace netvars {
 		}
 	}
 
-	void dump_recursive(const char* base_class, recv_table* table, uint16_t offset) {
+	void dump_recursive(const char* base_class, recv_table* table, uint32_t offset) {
 		for (int i = 0; i < table->m_num_props; i++) {
 			auto prop = &table->m_props[i];
 			if (!prop
@@ -30,12 +30,12 @@ namespace netvars {
 			strcat_s(hash_name, prop->m_var_name);
 			auto hash = fnv1a_rt(static_cast<const char*>(hash_name));
 
-			props[hash] = { prop, static_cast<uint16_t>(offset + prop->m_offset) };
+			props[hash] = { prop, static_cast<uint32_t>(offset + prop->m_offset) };
 		}
 	}
 
 	std::unordered_map<uint32_t, data> props;
 
-	uint16_t get_offset(uint32_t hash) { return props[hash].offset; }
+	uint32_t get_offset(uint32_t hash) { return props[hash].offset; }
 	recv_prop* get_prop(uint32_t hash) { return props[hash].prop; }
 }

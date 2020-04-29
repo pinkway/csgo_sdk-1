@@ -77,20 +77,19 @@ struct datamap_t {
 	int                 m_packed_size;
 };
 
-__declspec(noinline) static unsigned int find_in_data_map(datamap_t *map, const char *name) {
+__declspec(noinline) static uint32_t find_in_data_map(datamap_t* map, uint32_t hash) {
 	while (map) {
-		for (auto i = 0; i < map->m_data_num_fields; i++) {
-			if (map->m_data_description[i].m_field_name == nullptr)
+		for (int i = 0; i < map->m_data_num_fields; i++) {
+			if (!map->m_data_description[i].m_field_name)
 				continue;
 
-			if (!strcmp(name, map->m_data_description[i].m_field_name))
+			if (hash == fnv1a_rt(map->m_data_description[i].m_field_name))
 				return map->m_data_description[i].m_field_offset[TD_OFFSET_NORMAL];
 
 			if (map->m_data_description[i].m_field_type == FIELD_EMBEDDED) {
 				if (map->m_data_description[i].m_datamap) {
-					unsigned int offset;
-
-					if ((offset = find_in_data_map(map->m_data_description[i].m_datamap, name)) != 0)
+					auto offset = find_in_data_map(map->m_data_description[i].m_datamap, hash);
+					if (offset)
 						return offset;
 				}
 			}
@@ -102,8 +101,9 @@ __declspec(noinline) static unsigned int find_in_data_map(datamap_t *map, const 
 	return 0;
 }
 
-#define DATAMAP(name, type, netvar_name) \
-	type& name { \
-		static const auto offset = find_in_data_map(this->get_pred_desc_map(), netvar_name); \
+#define DATAMAP(func, type, name) \
+	type& func { \
+		static const auto hash = fnv1a_rt(name); \
+		static const auto offset = find_in_data_map(get_pred_desc_map(), hash); \
 		return *reinterpret_cast<type*>(reinterpret_cast<uintptr_t>(this) + offset ); \
 	}
