@@ -8,9 +8,9 @@ std::string c_base_combat_weapon::get_name() {
 	if (!weapon_data)
 		return "";
 
-	auto localised_name = interfaces::localize->find(weapon_data->m_hud_name);
+	auto localized_name = interfaces::localize->find(weapon_data->m_hud_name);
 
-	std::wstring w(localised_name);
+	std::wstring w(localized_name);
 	std::string ret(w.begin(), w.end());
 	std::transform(ret.begin(), ret.end(), ret.begin(), ::tolower);
 

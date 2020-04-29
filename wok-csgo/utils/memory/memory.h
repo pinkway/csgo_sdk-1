@@ -200,7 +200,7 @@ namespace memory {
 
 #define SIG(module_name, sig) memory::find_module_sig(fnv1a(module_name), _ot(sig))
 
-#define _INTERFACE(val, type, module_name, interface_name) val = memory::capture_interface<type*>(module_name, interface_name);
+#define _INTERFACE(val, type, module_name, interface_name) val = memory::capture_interface<type*>(_(module_name), _(interface_name));
 #define _INTERFACE_OFFSET(val, type, ptr, index, add) val = **reinterpret_cast<type***>((*reinterpret_cast<uintptr_t**>(ptr))[index] + add);
 #define _INTERFACE_SIG(val, type, module_name, sig, add) { static const auto addr = SIG(module_name, sig); val = *reinterpret_cast<type**>(addr + add); }
 #define _PINTERFACE_SIG(val, type, module_name, sig, add) { static const auto addr = SIG(module_name, sig); val = **reinterpret_cast<type***>(addr + add); }
