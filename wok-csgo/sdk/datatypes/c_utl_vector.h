@@ -40,7 +40,7 @@ public:
 
 		if ((int)(I)new_alloc_count < alloc_requested) {
 			if ((int)(I)new_alloc_count == 0 && (int)(I)(new_alloc_count - 1) >= alloc_requested) {
-				--new_alloc_count; 
+				--new_alloc_count;
 			}
 			else {
 				if ((int)(I)alloc_requested != alloc_requested) {
@@ -137,9 +137,9 @@ public:
 	}
 
 	void shift_elements_left(int elem, int num = 1) {
-		auto numToMove = m_size - elem - num;
-		if ((numToMove > 0) && (num > 0))
-			memmove(&element(elem), &element(elem + num), numToMove * sizeof(T));
+		auto num_to_move = m_size - elem - num;
+		if ((num_to_move > 0) && (num > 0))
+			memmove(&element(elem), &element(elem + num), num_to_move * sizeof(T));
 	}
 
 	void grow_vector(int num = 1) {
@@ -181,6 +181,7 @@ public:
 			if (element(i) == src)
 				return i;
 		}
+
 		return -1;
 	}
 
