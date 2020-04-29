@@ -51,8 +51,9 @@ void c_prediction::start(c_cs_player* player, c_user_cmd* cmd) {
 		}
 	}
 
-	auto vehicle = player->get_vehicle().is_valid() ? reinterpret_cast<c_base_entity*>(interfaces::entity_list->get_client_entity_from_handle(player->get_vehicle())) : nullptr;
-
+	auto vehicle_handle = player->get_vehicle();
+	auto vehicle = vehicle_handle.is_valid() ? reinterpret_cast<c_base_entity*>(vehicle_handle.get()) : nullptr;
+	
 	if (cmd->m_impulse 
 		&& (!vehicle || player->using_standard_weapons_in_vehicle()))
 		player->get_impulse() = cmd->m_impulse;

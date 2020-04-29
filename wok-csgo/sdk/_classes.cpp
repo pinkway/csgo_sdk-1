@@ -77,7 +77,7 @@ c_base_combat_weapon* c_base_combat_character::get_active_weapon() {
 	if (!handle.is_valid())
 		return nullptr;
 
-	return reinterpret_cast<c_base_combat_weapon*>(interfaces::entity_list->get_client_entity_from_handle(handle));
+	return reinterpret_cast<c_base_combat_weapon*>(handle.get());
 }
 
 bool c_base_entity::is_enemy() {
