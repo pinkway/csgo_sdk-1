@@ -25,9 +25,9 @@ namespace math {
 		}
 
 		if (right) {
-			right->x = -1 * sin.z * sin.x * cos.y + -1 * cos.z * -sin.y;
-			right->y = -1 * sin.z * sin.x * sin.y + -1 * cos.z * cos.y;
-			right->z = -1 * sin.z * cos.x;
+			right->x = -sin.z * sin.x * cos.y + -cos.z * -sin.y;
+			right->y = -sin.z * sin.x * sin.y + -cos.z * cos.y;
+			right->z = -sin.z * cos.x;
 		}
 
 		if (up) {
