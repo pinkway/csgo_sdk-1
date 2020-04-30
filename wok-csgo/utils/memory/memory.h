@@ -2,21 +2,21 @@
 
 namespace memory {
 	struct protect_t {
-		protect_t(LPVOID address, uint32_t size, DWORD flags) : m_address(address), m_size(size), m_flags(0) {
+		protect_t(LPVOID address, uint32_t size, DWORD flags) {
+			m_size = size;
+			m_address = address;
 			VirtualProtect(m_address, m_size, flags, &m_flags);
 		}
 
-		~protect_t() {
-			VirtualProtect(m_address, m_size, m_flags, &m_flags);
-		}
+		~protect_t() { VirtualProtect(m_address, m_size, m_flags, &m_flags); }
 
-		LPVOID m_address;
-		uint32_t m_size;
-		DWORD m_flags;
+		DWORD m_flags = 0;
+		uint32_t m_size = 0;
+		LPVOID m_address = nullptr;
 	};
 
 	__forceinline uint32_t get_vtable_length(uintptr_t* table) {
-		auto length = uint32_t{};
+		uint32_t length;
 		for (length = 0; table[length]; length++)
 			if (IS_INTRESOURCE(table[length]))
 				break;
@@ -26,8 +26,8 @@ namespace memory {
 
 	struct hook_t {
 		hook_t() = default;
-		hook_t(uintptr_t ptr) : m_vtable(reinterpret_cast<uintptr_t**>(ptr)), m_table_length(0), m_orig(nullptr), m_replace(nullptr) { init(); };
-		hook_t(void* ptr) : m_vtable(reinterpret_cast<uintptr_t**>(ptr)), m_table_length(0), m_orig(nullptr), m_replace(nullptr) { init(); };
+		hook_t(uintptr_t ptr) : m_vtable(reinterpret_cast<uintptr_t**>(ptr)) { init(); };
+		hook_t(void* ptr) : m_vtable(reinterpret_cast<uintptr_t**>(ptr)) { init(); };
 
 		bool init() {
 			if (!m_vtable)
@@ -43,17 +43,11 @@ namespace memory {
 
 			m_replace = std::make_unique<uintptr_t[]>(m_table_length + 1);
 
-			std::memset(m_replace.get(),
-				NULL,
-				m_table_length * sizeof(uintptr_t) + sizeof(uintptr_t));
+			std::memset(m_replace.get(), 0, m_table_length * sizeof(uintptr_t) + sizeof(uintptr_t));
 
-			std::memcpy(&m_replace[1],
-				m_orig,
-				m_table_length * sizeof(uintptr_t));
+			std::memcpy(&m_replace[1], m_orig, m_table_length * sizeof(uintptr_t));
 
-			std::memcpy(m_replace.get(),
-				&m_orig[-1],
-				sizeof(uintptr_t));
+			std::memcpy(m_replace.get(), &m_orig[-1], sizeof(uintptr_t));
 
 			*m_vtable = &m_replace[1];
 
@@ -61,7 +55,7 @@ namespace memory {
 		}
 
 		template<typename T>
-		void hook(const uint16_t index, T replace_function) {
+		void hook(const uint32_t index, T replace_function) {
 			if (index < 0 
 				|| index > m_table_length)
 				return;
@@ -70,7 +64,7 @@ namespace memory {
 		}
 
 		template<typename T>
-		T get_original(const uint16_t index) {
+		T get_original(const uint32_t index) {
 			if (index < 0 
 				|| index > m_table_length)
 				return nullptr;
@@ -78,7 +72,7 @@ namespace memory {
 			return reinterpret_cast<T>(m_orig[index]);
 		}
 
-		void unhook(const uint16_t index) {
+		void unhook(const uint32_t index) {
 			if (index < 0
 				|| index > m_table_length)
 				return;
@@ -96,10 +90,10 @@ namespace memory {
 			m_orig = nullptr;
 		}
 
-		uintptr_t** m_vtable;
-		uint16_t m_table_length;
-		uintptr_t* m_orig;
-		std::unique_ptr<uintptr_t[]> m_replace;
+		uintptr_t* m_orig = nullptr;
+		uint32_t m_table_length = 0;
+		uintptr_t** m_vtable = nullptr;
+		std::unique_ptr<uintptr_t[]> m_replace = nullptr;
 	};
 
 	__forceinline uintptr_t get_module_handle(const uintptr_t module, const uintptr_t process = 0) {
