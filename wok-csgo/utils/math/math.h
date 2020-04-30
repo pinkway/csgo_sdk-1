@@ -1,7 +1,7 @@
 #pragma once
 
 namespace math {
-	void sin_cos(float radian, float* sin, float* cos);
+	void sin_cos(float radian, float& sin, float& cos);
 
 	void vector_transform(const vec3_t in1, const matrix3x4_t in2, vec3_t& out);
 

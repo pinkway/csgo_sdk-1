@@ -1,9 +1,9 @@
 #include "../utils.h"
 
 namespace math {
-	void sin_cos(float radian, float* sin, float* cos) {
-		*sin = std::sin(radian);
-		*cos = std::cos(radian);
+	void sin_cos(float radian, float& sin, float& cos) {
+		sin = std::sin(radian);
+		cos = std::cos(radian);
 	}
 
 	void vector_transform(const vec3_t in1, const matrix3x4_t in2, vec3_t& out) {
@@ -13,27 +13,27 @@ namespace math {
 	}
 
 	void angle_vectors(const qangle_t& angles, vec3_t* forward, vec3_t* right, vec3_t* up) {
-		float sr, sp, sy, cr, cp, cy;
-		sin_cos(DEG2RAD(angles.x), &sp, &cp);
-		sin_cos(DEG2RAD(angles.y), &sy, &cy);
-		sin_cos(DEG2RAD(angles.z), &sr, &cr);
+		vec3_t cos, sin;
+		sin_cos(DEG2RAD(angles.x), sin.x, cos.x);
+		sin_cos(DEG2RAD(angles.y), sin.y, cos.y);
+		sin_cos(DEG2RAD(angles.z), sin.z, cos.z);
 
 		if (forward) {
-			forward->x = cp * cy;
-			forward->y = cp * sy;
-			forward->z = -sp;
+			forward->x = cos.x * cos.y;
+			forward->y = cos.x * sin.y;
+			forward->z = -sin.x;
 		}
 
 		if (right) {
-			right->x = (-1 * sr*sp*cy + -1 * cr*-sy);
-			right->y = (-1 * sr*sp*sy + -1 * cr*cy);
-			right->z = -1 * sr*cp;
+			right->x = -1 * sin.z * sin.x * cos.y + -1 * cos.z * -sin.y;
+			right->y = -1 * sin.z * sin.x * sin.y + -1 * cos.z * cos.y;
+			right->z = -1 * sin.z * cos.x;
 		}
 
 		if (up) {
-			up->x = (cr*sp*cy + -sr * -sy);
-			up->y = (cr*sp*sy + -sr * cy);
-			up->z = cr * cp;
+			up->x = cos.z * sin.x * cos.y + -sin.z * -sin.y;
+			up->y = cos.z * sin.x * sin.y + -sin.z * cos.y;
+			up->z = cos.z * cos.x;
 		}
 	}
 
