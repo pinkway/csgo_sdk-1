@@ -93,7 +93,7 @@ public:
 		static const auto addr = SIG("client_panorama.dll", "80 3D ? ? ? ? ? 74 16 A1 ? ? ? ? 48 C7 81");
 		auto model_bone_counter = **reinterpret_cast<unsigned long**>(addr + 0xA);
 		
-		get_last_setup_bones_time() = 0xFF7FFFFF;
+		get_last_setup_bones_time() = -FLT_MAX;
 		get_most_recent_model_bone_counter() = model_bone_counter - 1;
 	}
 
