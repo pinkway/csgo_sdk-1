@@ -77,8 +77,8 @@ public:
 	OFFSET(get_prev_bone_mask(), int, 0x2698 + 0x4)
 	OFFSET(get_readable_bones(), int, 0x26A8 + 0x4)
 	OFFSET(get_writable_bones(), int, 0x26AC + 0x4)
-	OFFSET(get_most_recent_model_bone_counter(), unsigned int, 0x268C + 0x4)
-	OFFSET(get_last_setup_bones_time(), unsigned int, 0x2920 + 0x4)
+	OFFSET(get_most_recent_model_bone_counter(), unsigned long, 0x268C + 0x4)
+	OFFSET(get_last_setup_bones_time(), float, 0x2920 + 0x4)
 	OFFSET(get_ik_context(), ik_context*, 0x266C + 0x4)
 	OFFSET(get_setup_bones_pos(), vec3_t, 0xA68 + 0x4)
 	OFFSET(get_setup_bones_quaternion(), quaternion, 0x166C + 0x4)
@@ -91,9 +91,10 @@ public:
 
 	void invalidate_bone_cache() {
 		static const auto addr = SIG("client_panorama.dll", "80 3D ? ? ? ? ? 74 16 A1 ? ? ? ? 48 C7 81");
-		auto g_iModelBoneCounter = **reinterpret_cast<unsigned long**>(addr + 0xA);
+		auto model_bone_counter = **reinterpret_cast<unsigned long**>(addr + 0xA);
+		
 		get_last_setup_bones_time() = 0xFF7FFFFF;
-		get_most_recent_model_bone_counter() = g_iModelBoneCounter - 1;
+		get_most_recent_model_bone_counter() = model_bone_counter - 1;
 	}
 
 	bool is_enemy();
