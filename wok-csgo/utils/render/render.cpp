@@ -26,141 +26,112 @@ namespace render {
 			font->invalidate();
 	}
 
-	void line(int x, int y, int x1, int y1, const col_t& clr) {
+	void line(const vec2_t& from, const vec2_t& to, const col_t& clr) {
 		auto new_clr = clr.direct();
 
 		vertex_t vert[2] = {
-			{ float(x), float(y), 0.f, 1.f, new_clr },
-			{ float(x1), float(y1), 0.f, 1.f, new_clr }
+			{ from.x, from.y, 0.f, 1.f, new_clr },
+			{ to.x, to.y, 0.f, 1.f, new_clr }
 		};
 
 		m_device->SetTexture(0, nullptr);
 		m_device->DrawPrimitiveUP(D3DPT_LINELIST, 1, &vert, sizeof(vertex_t));
 	}
 
-	void line(const vec2_t& from, const vec2_t& to, const col_t& clr) {
-		line(from.x, from.y, to.x, to.y, clr);
-	}
-
-	void rect(int x, int y, int w, int h, const col_t& clr) {
+	void rect(const vec2_t& pos, const vec2_t& size, const col_t& clr) {
 		auto new_clr = clr.direct();
 
-		w += x; h += y;
-
 		vertex_t vert[5] = {
-			{ float(x), float(y), 1.f, 1.f, new_clr },
-			{ float(w), float(y), 1.f, 1.f, new_clr },
-			{ float(w), float(h), 1.f, 1.f, new_clr },
-			{ float(x), float(h), 1.f, 1.f, new_clr },
-			{ float(x), float(y), 1.f, 1.f, new_clr }
+			{ pos.x, pos.y, 1.f, 1.f, new_clr },
+			{ pos.x + size.x, pos.y, 1.f, 1.f, new_clr },
+			{ pos.x + size.x, pos.y + size.y, 1.f, 1.f, new_clr },
+			{ pos.x, pos.y + size.y, 1.f, 1.f, new_clr },
+			{ pos.x, pos.y, 1.f, 1.f, new_clr }
 		};
 
 		m_device->SetTexture(0, nullptr);
 		m_device->DrawPrimitiveUP(D3DPT_LINESTRIP, 4, &vert, sizeof(vertex_t));
 	}
 
-	void rect(const vec2_t& pos, const vec2_t& size, const col_t& clr) {
-		rect(pos.x, pos.y, size.x, size.y, clr);
-	}
-
-	void filled_rect(int x, int y, int w, int h, const col_t& clr) {
+	void filled_rect(const vec2_t& pos, const vec2_t& size, const col_t& clr) {
 		auto new_clr = clr.direct();
 
-		w += x; h += y;
-
 		vertex_t vert[4] = {
-			{ float(x), float(y), 1.f, 1.f, new_clr },
-			{ float(w), float(y), 1.f, 1.f, new_clr },
-			{ float(x), float(h), 1.f, 1.f, new_clr },
-			{ float(w), float(h), 1.f, 1.f, new_clr },
+			{ pos.x, pos.y, 1.f, 1.f, new_clr },
+			{ pos.x + size.x, pos.y, 1.f, 1.f, new_clr },
+			{ pos.x, pos.y + size.y, 1.f, 1.f, new_clr },
+			{ pos.x + size.x, pos.y + size.y, 1.f, 1.f, new_clr },
 		};
 
 		m_device->SetTexture(0, nullptr);
 		m_device->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, &vert, sizeof(vertex_t));
 	}
 
-	void filled_rect(const vec2_t& pos, const vec2_t& size, const col_t& clr) {
-		filled_rect(pos.x, pos.y, size.x, size.y, clr);
-	}
-
-	void gradient_rect(int x, int y, int w, int h, const col_t& clr, const col_t& clr2, bool horizontal) {
-		const auto new_clr1 = clr.direct();
-		const auto new_clr2 = clr2.direct();
-
-		w += x; h += y;
-
-		if (horizontal) {
-			const auto top_left = new_clr1, top_right = new_clr2, bottom_left = new_clr1, bottom_right = new_clr2;
-
-			vertex_t vert[5] = {
-				{ float(x), float(y), 1.f, 1.f, top_left },
-				{ float(w), float(y), 1.f, 1.f, top_right },
-				{ float(w), float(h), 1.f, 1.f, bottom_right },
-				{ float(x), float(h), 1.f, 1.f, bottom_left },
-				{ float(x), float(y), 1.f, 1.f, top_left }
-			};
-
-			m_device->SetTexture(0, nullptr);
-			m_device->DrawPrimitiveUP(D3DPT_LINESTRIP, 4, &vert, sizeof(vertex_t));
-		}
-		else {
-			const auto top_left = new_clr1, top_right = new_clr1, bottom_left = new_clr2, bottom_right = new_clr2;
-
-			vertex_t vert[5] = {
-				{ float(x), float(y), 1.f, 1.f, top_left },
-				{ float(w), float(y), 1.f, 1.f, top_right },
-				{ float(w), float(h), 1.f, 1.f, bottom_right },
-				{ float(x), float(h), 1.f, 1.f, bottom_left },
-				{ float(x), float(y), 1.f, 1.f, top_left }
-			};
-
-			m_device->SetTexture(0, nullptr);
-			m_device->DrawPrimitiveUP(D3DPT_LINESTRIP, 4, &vert, sizeof(vertex_t));
-		}
-	}
-
 	void gradient_rect(const vec2_t& pos, const vec2_t& size, const col_t& clr, const col_t& clr2, bool horizontal) {
-		gradient_rect(pos.x, pos.y, size.x, size.y, clr, clr2, horizontal);
-	}
-
-	void gradient_filled_rect(int x, int y, int w, int h, const col_t& clr, const col_t& clr2, bool horizontal) {
-		const auto new_clr1 = clr.direct();
-		const auto new_clr2 = clr2.direct();
-
-		w += x; h += y;
+		auto new_clr = clr.direct();
+		auto new_clr2 = clr2.direct();
 
 		if (horizontal) {
-			const auto top_left = new_clr1, top_right = new_clr2, bottom_left = new_clr1, bottom_right = new_clr2;
+			auto top_left = new_clr, top_right = new_clr2, bottom_left = new_clr, bottom_right = new_clr2;
 
-			vertex_t vert[4] = {
-				 { float(x), float(y), 0.f, 1.f, top_left },
-				 { float(w), float(y), 0.f, 1.f, top_right },
-				 { float(x), float(h), 0.f, 1.f, bottom_left },
-				 { float(w), float(h), 0.f, 1.f, bottom_right }
+			vertex_t vert[5] = {
+				{ pos.x, pos.y, 1.f, 1.f, top_left },
+				{ pos.x + size.x, pos.y, 1.f, 1.f, top_right },
+				{ pos.x + size.x, pos.y + size.y, 1.f, 1.f, bottom_right },
+				{ pos.x, pos.y + size.y, 1.f, 1.f, bottom_left },
+				{ pos.x, pos.y, 1.f, 1.f, top_left }
 			};
 
 			m_device->SetTexture(0, nullptr);
-			m_device->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, &vert, sizeof(vertex_t));
+			m_device->DrawPrimitiveUP(D3DPT_LINESTRIP, 4, &vert, sizeof(vertex_t));
 		}
 		else {
-			const auto top_left = new_clr1, top_right = new_clr1, bottom_left = new_clr2, bottom_right = new_clr2;
+			auto top_left = new_clr, top_right = new_clr, bottom_left = new_clr2, bottom_right = new_clr2;
 
-			vertex_t vert[4] = {
-				 { float(x), float(y), 0.f, 1.f, top_left },
-				 { float(w), float(y), 0.f, 1.f, top_right },
-				 { float(x), float(h), 0.f, 1.f, bottom_left },
-				 { float(w), float(h), 0.f, 1.f, bottom_right }
+			vertex_t vert[5] = {
+				{ pos.x, pos.y, 1.f, 1.f, top_left },
+				{ pos.x + size.x, pos.y, 1.f, 1.f, top_right },
+				{ pos.x + size.x, pos.y + size.y, 1.f, 1.f, bottom_right },
+				{ pos.x, pos.y + size.y, 1.f, 1.f, bottom_left },
+				{ pos.x, pos.y, 1.f, 1.f, top_left }
 			};
 
 			m_device->SetTexture(0, nullptr);
-			m_device->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, &vert, sizeof(vertex_t));
+			m_device->DrawPrimitiveUP(D3DPT_LINESTRIP, 4, &vert, sizeof(vertex_t));
 		}
 	}
 
 	void gradient_filled_rect(const vec2_t& pos, const vec2_t& size, const col_t& clr, const col_t& clr2, bool horizontal) {
-		gradient_filled_rect(pos.x, pos.y, size.x, size.y, clr, clr2, horizontal);
-	}
+		auto new_clr = clr.direct();
+		auto new_clr2 = clr2.direct();
 
+		if (horizontal) {
+			auto top_left = new_clr, top_right = new_clr2, bottom_left = new_clr, bottom_right = new_clr2;
+
+			vertex_t vert[4] = {
+				 { pos.x, pos.y, 0.f, 1.f, top_left },
+				 { pos.x + size.x, pos.y, 0.f, 1.f, top_right },
+				 { pos.x, pos.y + size.y, 0.f, 1.f, bottom_left },
+				 { pos.x + size.x, pos.y + size.y, 0.f, 1.f, bottom_right }
+			};
+
+			m_device->SetTexture(0, nullptr);
+			m_device->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, &vert, sizeof(vertex_t));
+		}
+		else {
+			auto top_left = new_clr, top_right = new_clr, bottom_left = new_clr2, bottom_right = new_clr2;
+
+			vertex_t vert[4] = {
+				 { pos.x, pos.y, 0.f, 1.f, top_left },
+				 { pos.x + size.x, pos.y, 0.f, 1.f, top_right },
+				 { pos.x, pos.y + size.y, 0.f, 1.f, bottom_left },
+				 { pos.x + size.x, pos.y + size.y, 0.f, 1.f, bottom_right }
+			};
+
+			m_device->SetTexture(0, nullptr);
+			m_device->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, &vert, sizeof(vertex_t));
+		}
+	}
 	void text(std::shared_ptr<c_font>& font, const vec2_t& pos, std::wstring txt, int flags, const col_t& clr) {
 		if (txt.empty())
 			return;
@@ -206,11 +177,11 @@ namespace render {
 		text(font, pos, buf, flags, clr);
 	}
 
-	void filled_triangle(POINT pos1, POINT pos2, POINT pos3, const col_t& clr) {
+	void filled_triangle(vec2_t pos, vec2_t pos2, vec2_t pos3, const col_t& clr) {
 		auto new_clr = clr.direct();
 
 		vertex_t vert[3] = {
-			{ pos1.x, pos1.y, 0.f, 1.f, new_clr },
+			{ pos.x, pos.y, 0.f, 1.f, new_clr },
 			{ pos2.x, pos2.y, 0.f, 1.f, new_clr },
 			{ pos3.x, pos3.y, 0.f, 1.f, new_clr }
 		};
