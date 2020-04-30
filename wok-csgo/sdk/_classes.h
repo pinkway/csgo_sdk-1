@@ -64,7 +64,7 @@ public:
 	OFFSET(get_renderable(), i_client_renderable*, 0x4)
 	OFFSET(get_networkable(), i_client_networkable*, 0x8)
 
-	OFFSET(get_model_hdr(), studiohdr_t*, 0x294C)
+	OFFSET(get_model_hdr(), c_studio_hdr*, 0x294C)
 	POFFSET(get_bone_cache(), c_bone_cache, 0x290C + 0x4)
 	OFFSET(get_occlusion_mask(), int, 0xA24)
 	OFFSET(get_occlusion_framecount(), int, 0xA30)
