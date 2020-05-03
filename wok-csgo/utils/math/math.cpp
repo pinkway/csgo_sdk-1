@@ -6,10 +6,8 @@ namespace math {
 		cos = std::cos(radian);
 	}
 
-	void vector_transform(const vec3_t in1, const matrix3x4_t in2, vec3_t& out) {
-		out.x = in1.dot_product(in2.m_matrix[0]) + in2.m_matrix[0][3];
-		out.y = in1.dot_product(in2.m_matrix[1]) + in2.m_matrix[1][3];
-		out.z = in1.dot_product(in2.m_matrix[2]) + in2.m_matrix[2][3];
+	void vector_transform(const vec3_t& in1, const matrix3x4_t& in2, vec3_t& out) {
+		out = vec3_t(in1.dot_product(in2[0]) + in2[0][3], in1.dot_product(in2[1]) + in2[1][3], in1.dot_product(in2[2]) + in2[2][3]);
 	}
 
 	void angle_vectors(const qangle_t& angles, vec3_t* forward, vec3_t* right, vec3_t* up) {
@@ -43,7 +41,7 @@ namespace math {
 		angles.z = std::clamp(remainderf(angles.z, 360.f), -45.f, 45.f);
 	}
 
-	qangle_t calc_angle(const vec3_t src, const vec3_t dst) {
+	qangle_t calc_angle(const vec3_t& src, const vec3_t& dst) {
 		auto delta = src - dst;
 		if (delta.empty())
 			return qangle_t();

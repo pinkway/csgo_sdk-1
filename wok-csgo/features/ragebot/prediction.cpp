@@ -26,7 +26,7 @@ void c_prediction::start(c_cs_player* player, c_user_cmd* cmd) {
 	interfaces::prediction->m_in_prediction = true;
 	interfaces::prediction->m_first_time_predicted = false;
 
-	*reinterpret_cast<c_user_cmd**>(reinterpret_cast<uintptr_t>(player) + 0x3338) = cmd;
+	player->get_cur_cmd() = cmd;
 	*reinterpret_cast<c_user_cmd**>(reinterpret_cast<uintptr_t>(player) + 0x3288) = cmd;
 
 	static const auto md5_pseudo_random_fn = reinterpret_cast<uint32_t(__thiscall*)(uint32_t)>(SIG("client_panorama.dll", "55 8B EC 83 E4 F8 83 EC 70 6A"));
@@ -76,10 +76,7 @@ void c_prediction::start(c_cs_player* player, c_user_cmd* cmd) {
 		&& player->get_next_think_tick() != -1
 		&& player->get_next_think_tick() <= player->get_tickbase()) {
 		player->get_next_think_tick() = -1;
-
-		static const auto unknown_fn = reinterpret_cast<void(__thiscall*)(int)>(SIG("client_panorama.dll", "55 8B EC 56 57 8B F9 8B B7 ? ? ? ? 8B"));
-		player->is_alive() ? unknown_fn(0) : 0;
-
+		player->unknown_think(0);
 		player->think();
 	}
 
@@ -107,7 +104,7 @@ void c_prediction::end(c_cs_player* player, c_user_cmd* cmd) {
 	interfaces::move_helper->set_host(nullptr);
 	interfaces::game_movement->reset();
 
-	*reinterpret_cast<int*>(reinterpret_cast<uintptr_t>(player) + 0x3338) = 0;
+	player->get_cur_cmd() = nullptr;
 	*m_prediction_random_seed = -1;
 	*m_prediction_player = 0;
 

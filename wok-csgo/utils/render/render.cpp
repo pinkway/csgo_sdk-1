@@ -194,10 +194,10 @@ namespace render {
 		auto screen_transform = [](const vec3_t& in, vec2_t& out) -> bool {
 			static const auto& matrix = *reinterpret_cast<v_matrix*>(*reinterpret_cast<uintptr_t*>(SIG("client_panorama.dll", "0F 10 05 ? ? ? ? 8D 85 ? ? ? ? B9") + 0x3) + 0xB0);
 
-			out.x = matrix.m_matrix[0][0] * in.x + matrix.m_matrix[0][1] * in.y + matrix.m_matrix[0][2] * in.z + matrix.m_matrix[0][3];
-			out.y = matrix.m_matrix[1][0] * in.x + matrix.m_matrix[1][1] * in.y + matrix.m_matrix[1][2] * in.z + matrix.m_matrix[1][3];
+			out.x = matrix[0][0] * in.x + matrix[0][1] * in.y + matrix[0][2] * in.z + matrix[0][3];
+			out.y = matrix[1][0] * in.x + matrix[1][1] * in.y + matrix[1][2] * in.z + matrix[1][3];
 
-			auto w = matrix.m_matrix[3][0] * in.x + matrix.m_matrix[3][1] * in.y + matrix.m_matrix[3][2] * in.z + matrix.m_matrix[3][3];
+			auto w = matrix[3][0] * in.x + matrix[3][1] * in.y + matrix[3][2] * in.z + matrix[3][3];
 
 			if (w < 0.001f) {
 				out.x *= 100000;

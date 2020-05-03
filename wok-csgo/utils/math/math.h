@@ -9,7 +9,7 @@ namespace math {
 
 	void normalize_angles(qangle_t& angles);
 
-	qangle_t calc_angle(const vec3_t src, const vec3_t dst);
+	qangle_t calc_angle(const vec3_t& src, const vec3_t& dst);
 
 	void vector_angles(const vec3_t& forward, qangle_t& angles);
 

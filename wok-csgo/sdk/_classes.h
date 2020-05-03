@@ -201,16 +201,18 @@ public:
 	NETVAR(get_aim_punch_angle(), qangle_t, "CBasePlayer->m_aimPunchAngle")
 	NETVAR(get_aim_punch_angle_vel(), vec3_t, "CBasePlayer->m_aimPunchAngleVel")
 	NETVAR(get_view_model(), c_base_handle, "CBasePlayer->m_hViewModel[0]")
+	NETVAR_OFFSET(get_cur_cmd(), c_user_cmd*, "CBasePlayer->m_hConstraintEntity", -0xC)
 
 	VFUNC(set_local_view_angles(qangle_t& angle), 372, void(__thiscall*)(void*, qangle_t&), angle)
 
 	VFUNC(think(), 138, void(__thiscall*)(void*))
 	VFUNC(pre_think(), 317, void(__thiscall*)(void*))
 	VFUNC(post_think(), 318, void(__thiscall*)(void*))
+	VFUNC(select_item(const char* name, int sub_type), 328, void(__thiscall*)(void*, const char*, int), name, sub_type)
 
+	CUSTOM_VFUNC(unknown_think(int unk), "client_panorama.dll", "55 8B EC 56 57 8B F9 8B B7 ? ? ? ? 8B C6 C1 E8 16 24 01 74 18", void(__thiscall*)(void*, int), unk)
 	CUSTOM_VFUNC(using_standard_weapons_in_vehicle(), "client_panorama.dll", "56 57 8B F9 8B 97 ? ? ? ? 83 FA FF 74 41", bool(__thiscall*)(void*))
 	CUSTOM_VFUNC(physics_run_think(int index), "client_panorama.dll", "55 8B EC 83 EC 10 53 56 57 8B F9 8B 87", bool(__thiscall*)(void*, int), index)
-	CUSTOM_VFUNC(select_item(const char* string, int sub_type = 0), "client_panorama.dll", "55 8B EC 56 8B F1 ? ? ? 85 C9 74 71 8B 06", bool(__thiscall*)(void*, const char*, int), string, sub_type)
 
 	void reset_anim_state(c_anim_state* state);
 	void update_anim_state(c_anim_state* state, qangle_t angle);
