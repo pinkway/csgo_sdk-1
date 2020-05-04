@@ -59,11 +59,20 @@ public:
 		return *this;
 	}
 
+	vec2_t operator-() const {
+		return vec2_t(-x, -y);
+	}
+
 	void normalize() {
 		auto l = length();
 
 		x /= l;
 		y /= l;
+	}
+
+	vec2_t& normalized() {
+		normalize();
+		return *this;
 	}
 
 	bool operator==(const vec2_t& in) const {
@@ -134,18 +143,22 @@ public:
 		return vec3_t(x * in, y * in, z * in);
 	}
 
-	vec3_t& operator-=(const vec3_t& v) {
-		x -= v.x;
-		y -= v.y;
-		z -= v.z;
+	vec3_t operator-() const {
+		return vec3_t(-x, -y, -z);
+	}
+
+	vec3_t& operator-=(const vec3_t& in) {
+		x -= in.x;
+		y -= in.y;
+		z -= in.z;
 
 		return *this;
 	}
 
-	vec3_t& operator+=(const vec3_t& v) {
-		x += v.x;
-		y += v.y;
-		z += v.z;
+	vec3_t& operator+=(const vec3_t& in) {
+		x += in.x;
+		y += in.y;
+		z += in.z;
 
 		return *this;
 	}
@@ -154,6 +167,7 @@ public:
 		x /= in;
 		y /= in;
 		z /= in;
+
 		return *this;
 	}
 
@@ -161,6 +175,7 @@ public:
 		x *= in;
 		y *= in;
 		z *= in;
+
 		return *this;
 	}
 
@@ -170,6 +185,11 @@ public:
 		x /= l;
 		y /= l;
 		z /= l;
+	}
+
+	vec3_t& normalized() {
+		normalize();
+		return *this;
 	}
 
 	bool operator==(const vec3_t& in) const {
@@ -230,20 +250,22 @@ public:
 class ALIGN16 vector_aligned : public vec3_t {
 public:
 	vector_aligned() = default;
-	vector_aligned(float ix, float iy, float iz) {
-		x = ix; y = iy; z = iz;
-	}
-	vector_aligned(const vec3_t &in) {
-		x = in.x; y = in.y; z = in.z;
-	}
+	vector_aligned(float ix, float iy, float iz) { x = ix; y = iy; z = iz; }
+	vector_aligned(const vec3_t& in) { x = in.x; y = in.y; z = in.z; }
 
-	vector_aligned& operator=(const vec3_t &in) {
-		x = in.x; y = in.y; z = in.z;
+	vector_aligned& operator=(const vec3_t& in) {
+		x = in.x; 
+		y = in.y; 
+		z = in.z;
+
 		return *this;
 	}
 
-	vector_aligned& operator=(const vector_aligned &in)  {
-		x = in.x; y = in.y; z = in.z;
+	vector_aligned& operator=(const vector_aligned& in)  {
+		x = in.x;
+		y = in.y;
+		z = in.z;
+
 		return *this;
 	}
 
@@ -281,18 +303,18 @@ public:
 		return qangle_t(x * in, y * in, z * in);
 	}
 
-	qangle_t& operator-=(const qangle_t& v) {
-		x -= v.x;
-		y -= v.y;
-		z -= v.z;
+	qangle_t& operator-=(const qangle_t& in) {
+		x -= in.x;
+		y -= in.y;
+		z -= in.z;
 
 		return *this;
 	}
 
-	qangle_t& operator+=(const qangle_t& v) {
-		x += v.x;
-		y += v.y;
-		z += v.z;
+	qangle_t& operator+=(const qangle_t& in) {
+		x += in.x;
+		y += in.y;
+		z += in.z;
 
 		return *this;
 	}
@@ -301,6 +323,7 @@ public:
 		x /= in;
 		y /= in;
 		z /= in;
+
 		return *this;
 	}
 
@@ -308,6 +331,7 @@ public:
 		x *= in;
 		y *= in;
 		z *= in;
+
 		return *this;
 	}
 
@@ -317,6 +341,11 @@ public:
 		x /= l;
 		y /= l;
 		z /= l;
+	}
+
+	qangle_t& normalized() {
+		normalize();
+		return *this;
 	}
 
 	bool operator==(const qangle_t& in) const {
@@ -389,34 +418,58 @@ struct col_t {
 		return *this;
 	}
 
-	col_t& operator-(const uint8_t in) {
+	col_t& operator-=(const uint8_t in) {
 		set(r() - in, g() - in, b() - in, a() - in);
 		return *this;
 	}
 
-	col_t& operator+(const uint8_t in) {
+	col_t& operator+=(const uint8_t in) {
 		set(r() + in, g() + in, b() + in, a() + in);
 		return *this;
 	}
 
-	col_t& operator/(const uint8_t in) {
+	col_t& operator/=(const uint8_t in) {
 		set(r() / in, g() / in, b() / in, a() / in);
 		return *this;
 	}
 
-	col_t& operator*(const uint8_t in) {
+	col_t& operator*=(const uint8_t in) {
 		set(r() * in, g() * in, b() * in, a() * in );
 		return *this;
 	}
 
-	col_t& operator-(const col_t& in) {
+	col_t& operator-=(const col_t& in) {
 		set(r() - in.r(), g() - in.g(), b() - in.b(), a() - in.a());
 		return *this;
 	}
 
-	col_t& operator+(const col_t& in) {
+	col_t& operator+=(const col_t& in) {
 		set(r() + in.r(), g() + in.g(), b() + in.b(), a() + in.a());
 		return *this;
+	}
+
+	col_t operator-(const uint8_t in) const {
+		return col_t(r() - in, g() - in, b() - in, a() - in);
+	}
+
+	col_t operator+(const uint8_t in) const {
+		return col_t(r() + in, g() + in, b() + in, a() + in);
+	}
+
+	col_t operator/(const uint8_t in) const {
+		return col_t(r() / in, g() / in, b() / in, a() / in);
+	}
+
+	col_t operator*(const uint8_t in) const {
+		return col_t(r() * in, g() * in, b() * in, a() * in);
+	}
+
+	col_t operator-(const col_t& in) const {
+		return col_t(r() - in.r(), g() - in.g(), b() - in.b(), a() - in.a());
+	}
+
+	col_t operator+(const col_t& in) const {
+		return col_t(r() + in.r(), g() + in.g(), b() + in.b(), a() + in.a());
 	}
 
 	bool operator==(const col_t& in) const {
