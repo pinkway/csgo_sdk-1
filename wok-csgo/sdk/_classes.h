@@ -208,7 +208,7 @@ public:
 	VFUNC(think(), 138, void(__thiscall*)(void*))
 	VFUNC(pre_think(), 317, void(__thiscall*)(void*))
 	VFUNC(post_think(), 318, void(__thiscall*)(void*))
-	VFUNC(select_item(const char* name, int sub_type), 328, void(__thiscall*)(void*, const char*, int), name, sub_type)
+	VFUNC(select_item(const char* name, int sub_type), 329, void(__thiscall*)(void*, const char*, int), name, sub_type)
 
 	CUSTOM_VFUNC(unknown_think(int unk), "client_panorama.dll", "55 8B EC 56 57 8B F9 8B B7 ? ? ? ? 8B C6 C1 E8 16 24 01 74 18", void(__thiscall*)(void*, int), unk)
 	CUSTOM_VFUNC(using_standard_weapons_in_vehicle(), "client_panorama.dll", "56 57 8B F9 8B 97 ? ? ? ? 83 FA FF 74 41", bool(__thiscall*)(void*))
