@@ -379,14 +379,14 @@ public:
 
 struct col_t {
 	col_t() = default;
-	col_t(const int r, const int g, const int b) : clr({ 0, 0, 0, 0 }) { set(r, g, b, 255); }
-	col_t(const int r, const int g, const int b, const int a) : clr({ 0, 0, 0, 0 }) { set(r, g, b, a); }
-	col_t(const col_t& col, const int a) : clr({ 0, 0, 0, 0 }) { set(col.r(), col.g(), col.b(), a); }
-	col_t(const int a) { set(clr[0], clr[1], clr[2], a); }
+	col_t(int r, int g, int b) { set(r, g, b, 255); }
+	col_t(int r, int g, int b, int a) { set(r, g, b, a); }
+	col_t(const col_t& col, int a) { set(col.r(), col.g(), col.b(), a); }
+	col_t(int a) { set(clr[0], clr[1], clr[2], a); }
 
 	std::array<uint8_t, 4> clr = {};
 
-	void set(const int r, const int g, const int b, const int a) {
+	void set(int r, int g, int b, int a) {
 		clr[0] = static_cast<uint8_t>(r);
 		clr[1] = static_cast<uint8_t>(g);
 		clr[2] = static_cast<uint8_t>(b);
