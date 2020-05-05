@@ -9,10 +9,10 @@ namespace input {
 	}
 
 	void undo() {
-		SetWindowLongPtrA(FindWindowA(_("Valve001"), NULL), GWL_WNDPROC, (long)m_original_wnd_proc);
+		SetWindowLongPtrA(FindWindowA(_("Valve001"), 0), GWL_WNDPROC, reinterpret_cast<long>(m_original_wnd_proc));
 	}
 
-	long __stdcall wnd_proc(HWND wnd, uint32_t msg, uint32_t w_param, uint32_t l_param) {
+	long __stdcall wnd_proc(HWND hwnd, uint32_t msg, uint32_t w_param, uint32_t l_param) {
 		switch (msg) {
 		case WM_MOUSEMOVE:
 			m_mouse_pos = vec2_t(GET_X_LPARAM(l_param), GET_Y_LPARAM(l_param));
@@ -25,7 +25,7 @@ namespace input {
 		if (m_blocked)
 			return true;
 
-		return CallWindowProcA(m_original_wnd_proc, wnd, msg, w_param, l_param);
+		return CallWindowProcA(m_original_wnd_proc, hwnd, msg, w_param, l_param);
 	}
 
 	bool get_key(uint32_t key, int mode) {
