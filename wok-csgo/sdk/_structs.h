@@ -50,6 +50,39 @@ class c_base_combat_weapon;
 
 class c_anim_state {
 public:
+	void reset() {
+		static const auto reset_fn = reinterpret_cast<void(__thiscall*)(void*)>(SIG("client_panorama.dll", "56 6A 01 68 ? ? ? ? 8B F1"));
+		if (!reset_fn)
+			return;
+
+		reset_fn(this);
+	}
+
+	void create(c_base_entity* entity) {
+		static const auto create_fn = reinterpret_cast<void(__thiscall*)(void*, c_base_entity*)>(SIG("client_panorama.dll", "55 8B EC 56 8B F1 B9 ? ? ? ? C7 46"));
+		if (!create_fn)
+			return;
+
+		create_fn(this, entity);
+	}
+
+	void update(qangle_t angle) {
+		static const auto update_fn = SIG("client_panorama.dll", "55 8B EC 83 E4 F8 83 EC 18 56 57 8B F9 F3 0F 11 54 24");
+		if (!update_fn)
+			return;
+
+		__asm {
+			push 0
+
+			mov ecx, this
+
+			movss xmm1, dword ptr[angle + 4]
+			movss xmm2, dword ptr[angle]
+
+			call update_fn
+		}
+	}
+
 	char					pad0[8];
 	int						m_tickcount;
 	char					pad1[83];
@@ -75,8 +108,7 @@ public:
 	char					pad4[4];
 	vec3_t					m_origin;
 	vec3_t					m_last_origin;
-	float					m_velocity_x;
-	float					m_velocity_y;
+	vec2_t					m_velocity;
 	char					pad5[28];
 	float					m_speed_2d;
 	float					m_up_velocity;
@@ -96,7 +128,10 @@ public:
 	float					m_magic_fraction;
 	char					pad8[60];
 	float					m_world_force;
-	char					pad9[500];
+	char					pad9[452];
+	float					m_min_body_yaw;
+	float					m_max_body_yaw;
+	char					pad10[40];
 };
 
 class c_cs_weapon_data {

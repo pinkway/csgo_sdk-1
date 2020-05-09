@@ -87,38 +87,3 @@ bool c_base_entity::is_enemy() {
 
 	return get_team() != g::local->get_team();
 }
-
-void c_base_player::reset_anim_state(c_anim_state* state) {
-	static const auto reset_fn = reinterpret_cast<void(__thiscall*)(c_anim_state*)>(SIG("client_panorama.dll", "56 6A 01 68 ? ? ? ? 8B F1"));
-	if (!reset_fn)
-		return;
-
-	reset_fn(state);
-}
-
-void c_base_player::update_anim_state(c_anim_state* state, qangle_t angle) {
-	static const auto update_fn = SIG("client_panorama.dll", "55 8B EC 83 E4 F8 83 EC 18 56 57 8B F9 F3 0F 11 54 24");
-	if (!update_fn)
-		return;
-
-	__asm {
-		push 0
-	}
-
-	__asm {
-		mov ecx, state
-
-		movss xmm1, dword ptr[angle + 4]
-		movss xmm2, dword ptr[angle]
-
-		call update_fn
-	}
-}
-
-void c_base_player::create_anim_state(c_anim_state* state) {
-	static const auto create_fn = reinterpret_cast<void(__thiscall*)(c_anim_state*, c_base_player*)>(SIG("client_panorama.dll", "55 8B EC 56 8B F1 B9 ? ? ? ? C7 46"));
-	if (!create_fn)
-		return;
-
-	create_fn(state, this);
-}

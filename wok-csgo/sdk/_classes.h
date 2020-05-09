@@ -214,10 +214,6 @@ public:
 	CUSTOM_VFUNC(using_standard_weapons_in_vehicle(), "client_panorama.dll", "56 57 8B F9 8B 97 ? ? ? ? 83 FA FF 74 41", bool(__thiscall*)(void*))
 	CUSTOM_VFUNC(physics_run_think(int index), "client_panorama.dll", "55 8B EC 83 EC 10 53 56 57 8B F9 8B 87", bool(__thiscall*)(void*, int), index)
 
-	void reset_anim_state(c_anim_state* state);
-	void update_anim_state(c_anim_state* state, qangle_t angle);
-	void create_anim_state(c_anim_state* state);
-
 	bool is_alive() { return get_life_state() == LIFE_ALIVE; }
 
 	vec3_t get_hitbox_position(int hitbox, matrix3x4_t* matrix = nullptr);
