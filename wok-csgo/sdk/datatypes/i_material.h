@@ -1,7 +1,7 @@
 #pragma once
 
 class i_material {
-private:
+public:
 	virtual const char*	get_name() const = 0;
 	virtual const char*	get_texture_group_name() const = 0;
 
