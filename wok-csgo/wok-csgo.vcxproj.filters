@@ -64,7 +64,7 @@
     <ClCompile Include="features\ragebot\prediction.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="sdk\datatypes\key_values.cpp">
+    <ClCompile Include="sdk\datatypes\misc.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>

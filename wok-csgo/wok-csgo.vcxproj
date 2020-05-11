@@ -164,7 +164,7 @@
     <ClCompile Include="hooks\hooks.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="menu\menu.cpp" />
-    <ClCompile Include="sdk\datatypes\key_values.cpp" />
+    <ClCompile Include="sdk\datatypes\misc.cpp" />
     <ClCompile Include="sdk\interfaces.cpp" />
     <ClCompile Include="sdk\other\crc32_t.cpp" />
     <ClCompile Include="sdk\_classes.cpp" />
