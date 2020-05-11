@@ -1,7 +1,16 @@
 #pragma once
 
 struct model_t {
-	char        name[255];
+	void*   table;
+	char    m_name[260];
+	__int32 m_load_flags;
+	__int32 m_server_count;
+	__int32 m_type;
+	__int32 m_flags;
+	vec3_t  m_mins;
+	vec3_t  m_maxs;
+	float   m_radius;
+	char    pad[28];
 };
 
 enum mod_type_t {
@@ -15,25 +24,25 @@ typedef unsigned short model_instance_handle_t;
 
 struct model_render_info_t {
 	model_render_info_t() {
-		model_to_world = nullptr;
-		lighting_offset = nullptr;
-		lighting_origin = nullptr;
+		m_model_to_world = nullptr;
+		m_lighting_offset = nullptr;
+		m_lighting_origin = nullptr;
 	}
 
-	vec3_t					origin;
-	qangle_t				angles;
+	vec3_t					m_origin;
+	qangle_t				m_angles;
 	char					pad[4];
-	i_client_renderable*	renderable;
-	const model_t*			model;
-	const matrix3x4_t*		model_to_world;
-	const matrix3x4_t*		lighting_offset;
-	const vec3_t*			lighting_origin;
-	int						flags;
-	int						index;
-	int						skin;
-	int						body;
-	int						hitboxset;
-	model_instance_handle_t instance;
+	i_client_renderable*	m_renderable;
+	const model_t*			m_model;
+	const matrix3x4_t*		m_model_to_world;
+	const matrix3x4_t*		m_lighting_offset;
+	const vec3_t*			m_lighting_origin;
+	int						m_flags;
+	int						m_index;
+	int						m_skin;
+	int						m_body;
+	int						m_hitboxset;
+	model_instance_handle_t m_instance;
 };
 
 class studiohwdata_t;

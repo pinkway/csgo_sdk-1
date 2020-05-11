@@ -216,21 +216,22 @@ public:
 
 	bool is_alive() { return get_life_state() == LIFE_ALIVE; }
 
-	vec3_t get_hitbox_position(int hitbox, matrix3x4_t* matrix = nullptr);
-
-	vec3_t get_bone_position(int id, matrix3x4_t* matrix) { return vec3_t(matrix[id][0][3], matrix[id][1][3], matrix[id][2][3]); }
-
 	vec3_t get_bone_position(int id) {
-		vec3_t position, rotation;
 		static const auto get_bone_position_fn = reinterpret_cast<void(__thiscall*)(void*, int, vec3_t*, vec3_t*)>(SIG("client_panorama.dll", "55 8B EC 83 E4 F8 83 EC 30 8D"));
+		
+		vec3_t position, rotation;
 		get_bone_position_fn(this, id, &position, &rotation);
+
 		return position;
 	}
 
 	vec3_t get_eye_position() {
 		vec3_t out;
 		memory::get_vfunc<void(__thiscall*)(void*, vec3_t&)>(this, 284)(this, out);
-		out.z -= get_view_offset().z - floor(get_view_offset().z);
+
+		auto view_offset = get_view_offset();
+		out.z -= view_offset.z - floor(view_offset.z);
+
 		return out;
 	}
 };

@@ -44,34 +44,6 @@ int c_base_animating::get_sequence_activity(int sequence) {
 	return get_sequence_activity_fn(this, hdr, sequence);
 }
 
-vec3_t c_base_player::get_hitbox_position(int hitbox, matrix3x4_t* matrix) {
-	auto model = get_model();
-	if (!model)
-		return vec3_t();
-
-	auto hdr = interfaces::model_info->get_studio_model(model);
-	if (!hdr)
-		return vec3_t();
-
-	auto set = hdr->get_hitbox_set(0);
-	if (!set)
-		return vec3_t();
-
-	auto hitbox_ = set->get_hitbox(hitbox);
-	if (!hitbox_)
-		return vec3_t();
-
-	auto bones = !matrix ? get_bone_cache()->m_cached_bones : matrix;
-
-	vec3_t min, max, center;
-	math::vector_transform(hitbox_->min, bones[hitbox_->bone], min);
-	math::vector_transform(hitbox_->max, bones[hitbox_->bone], max);
-
-	center = (min + max) * 0.5f;
-
-	return center;
-}
-
 c_base_combat_weapon* c_base_combat_character::get_active_weapon() {
 	auto handle = get_active_weapon_handle();
 	if (!handle.is_valid())
