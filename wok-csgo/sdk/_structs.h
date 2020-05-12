@@ -128,10 +128,10 @@ public:
 	float					m_magic_fraction;
 	char					pad8[60];
 	float					m_world_force;
-	char					pad9[452];
+	char					pad9[456];
 	float					m_min_body_yaw;
 	float					m_max_body_yaw;
-	char					pad10[40];
+	char					pad10[36];
 };
 
 class c_cs_weapon_data {
