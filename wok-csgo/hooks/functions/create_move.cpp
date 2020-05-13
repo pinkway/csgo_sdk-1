@@ -10,12 +10,12 @@ bool __stdcall hooks::create_move::fn(float input_sample_time, c_user_cmd* cmd) 
 	g::cmd = cmd;
 	g::send_packet = true;
 
-	c_prediction::get().pre_start();
+	engine_prediction->pre_start();
 
-	c_prediction::get().start(g::local, cmd); {
+	engine_prediction->start(g::local, cmd); {
 
 	}
-	c_prediction::get().end(g::local, cmd);
+	engine_prediction->end(g::local, cmd);
 
 	math::normalize_angles(cmd->m_viewangles);
 

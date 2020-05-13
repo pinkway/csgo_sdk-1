@@ -33,6 +33,7 @@ namespace interfaces {
 	extern i_weapon_system*			weapon_system;
 	extern c_cs_player_resource**	player_resource;
 	extern i_localize*				localize;
+	extern i_panel*					panel;
 
 	extern IDirect3DDevice9*		d3d_device;
 }

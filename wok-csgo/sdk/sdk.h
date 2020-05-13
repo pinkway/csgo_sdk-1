@@ -52,5 +52,6 @@
 #include "interfaces/i_weapon_system.h"
 #include "interfaces/c_cs_player_resource.h"
 #include "interfaces/i_localize.h"
+#include "interfaces/i_panel.h"
 
 #include "_classes.h"

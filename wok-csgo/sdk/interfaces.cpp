@@ -41,6 +41,7 @@ namespace interfaces {
 		_INTERFACE_SIG(player_resource, c_cs_player_resource*, "client_panorama.dll", "8B 3D ? ? ? ? 85 FF 0F 84 ? ? ? ? 81 C7", 0x2)
 
 		_INTERFACE(localize, i_localize, "localize.dll", "Localize_001")
+		_INTERFACE(panel, i_panel, "vgui2.dll", "VGUI_Panel009")
 
 		uintptr_t** shader_device = nullptr;
 		_INTERFACE(shader_device, uintptr_t*, "shaderapidx9.dll", "ShaderDevice001")
@@ -80,6 +81,7 @@ namespace interfaces {
 	i_weapon_system*		weapon_system = nullptr;
 	c_cs_player_resource**	player_resource = nullptr;
 	i_localize*				localize = nullptr;
+	i_panel*				panel = nullptr;
 
 	IDirect3DDevice9*		d3d_device = nullptr;
 }

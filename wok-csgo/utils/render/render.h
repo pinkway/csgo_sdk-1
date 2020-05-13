@@ -1,42 +1,37 @@
 #pragma once
 
-struct vertex_t {
-	float x, y, z, rhw;
-	uint32_t clr;
+enum font_flags_t {
+	FONT_NONE = 0,
+	FONT_CENTERED_X = (1 << 0),
+	FONT_CENTERED_Y = (1 << 1),
+	FONT_CENTERED = FONT_CENTERED_X | FONT_CENTERED_Y,
+	FONT_DROP_SHADOW = (1 << 2),
+	FONT_OUTLINE = (1 << 3)
 };
 
 namespace render {
-	void init(IDirect3DDevice9* device);
+	void init();
 
-	void restore(IDirect3DDevice9* device);
-	void invalidate();
+	void add_to_draw_list();
 
-	void set_render_states();
+	void begin();
+
+	vec2_t text(const std::string& txt, const vec2_t& pos, float size, const col_t& clr, ImFont* font, int flags = FONT_NONE);
 
 	void line(const vec2_t& from, const vec2_t& to, const col_t& clr);
 
 	void rect(const vec2_t& pos, const vec2_t& size, const col_t& clr);
 
-	void filled_rect(const vec2_t& pos, const vec2_t& size, const col_t& clr);
-
-	void gradient_rect(const vec2_t& pos, const vec2_t& size, const col_t& clr, const col_t& clr2, bool horizontal = false);
-
-	void gradient_filled_rect(const vec2_t& pos, const vec2_t& size, const col_t& clr, const col_t& clr2, bool horizontal = false);
-
-	void text(std::shared_ptr<c_font>& font, const vec2_t& pos, std::wstring txt, int flags, const col_t& clr = col_t::palette_t::white());
-	void text(std::shared_ptr<c_font>& font, const vec2_t& pos, std::string txt, int flags, const col_t& clr = col_t::palette_t::white());
-
-	void filled_triangle(vec2_t pos, vec2_t pos2, vec2_t pos3, const col_t& clr);
+	void rect_filled(const vec2_t& pos, const vec2_t& size, const col_t& clr);
 
 	bool world_to_screen(const vec3_t& in, vec2_t& out);
 
-	extern bool m_init;
-	extern IDirect3DDevice9* m_device;
-
 	extern vec2_t m_screen_size;
-	extern std::vector<std::shared_ptr<c_font>> m_fonts;
+
+	extern std::shared_ptr<ImDrawList> m_draw_list;
+	extern std::shared_ptr<ImDrawList> m_temp_draw_list;
 }
 
 namespace fonts {
-	extern std::shared_ptr<c_font> m_tahoma12;
+	extern ImFont* m_tahoma14;
 }

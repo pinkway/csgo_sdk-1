@@ -1,193 +1,90 @@
 #include "../utils.h"
+#include "../../sdk/interfaces.h"
+#include "../../features/features.h"
+
+std::mutex mutex;
 
 namespace render {
-	void init(IDirect3DDevice9* device) {
-		if (m_init)
-			return;
+	void init() {
+		ImGui::CreateContext();
 
-		restore(device);
+		ImGui_ImplWin32_Init(input::m_hwnd);
+		ImGui_ImplDX9_Init(interfaces::d3d_device);
 
-		m_fonts.emplace_back(fonts::m_tahoma12 = std::make_shared<c_font>(_("Tahoma"), 12, FW_REGULAR));
+		m_draw_list = std::make_shared<ImDrawList>(ImGui::GetDrawListSharedData());
+		m_temp_draw_list = std::make_shared<ImDrawList>(ImGui::GetDrawListSharedData());
 
-		m_init = true;
+		auto& io = ImGui::GetIO();
+
+		ImFontConfig tahoma14;
+		tahoma14.RasterizerFlags = ImGuiFreeType::ForceAutoHint;
+		fonts::m_tahoma14 = io.Fonts->AddFontFromFileTTF(_("C:\\Windows\\Fonts\\Tahoma.ttf"), 14.f, &tahoma14, io.Fonts->GetGlyphRangesCyrillic());
+
+		ImGuiFreeType::BuildFontAtlas(io.Fonts);
 	}
 
-	void restore(IDirect3DDevice9* device) {
-		m_device = device;
+	vec2_t text(const std::string& txt, const vec2_t& pos, float size, const col_t& clr, ImFont* font, int flags) {
+		if (!font->ContainerAtlas)
+			return vec2_t();
 
-		for (auto& font : m_fonts)
-			font->restore(m_device);
-	}
+		auto new_pos = pos;
+		auto text_size = font->CalcTextSizeA(size, FLT_MAX, 0.f, txt.c_str());
 
-	void invalidate() {
-		m_device = nullptr;
+		flags & FONT_CENTERED_X ? new_pos.x -= text_size.x * 0.5f : 0;
 
-		for (auto& font : m_fonts)
-			font->invalidate();
+		flags & FONT_CENTERED_Y ? new_pos.y -= text_size.y * 0.5f : 0;
+
+		m_draw_list->PushTextureID(font->ContainerAtlas->TexID);
+
+		flags & FONT_DROP_SHADOW ? m_draw_list->AddText(font, size, ImVec2(new_pos.x + 1, new_pos.y + 1), col_t(clr.a()).direct(), txt.c_str()) : 0;
+
+		if (flags & FONT_OUTLINE) {
+			m_draw_list->AddText(font, size, ImVec2(new_pos.x + 1, new_pos.y + 1), col_t(clr.a()).direct(), txt.c_str());
+			m_draw_list->AddText(font, size, ImVec2(new_pos.x - 1, new_pos.y - 1), col_t(clr.a()).direct(), txt.c_str());
+			m_draw_list->AddText(font, size, ImVec2(new_pos.x + 1, new_pos.y - 1), col_t(clr.a()).direct(), txt.c_str());
+			m_draw_list->AddText(font, size, ImVec2(new_pos.x - 1, new_pos.y + 1), col_t(clr.a()).direct(), txt.c_str());
+		}
+
+		m_draw_list->AddText(font, size, ImVec2(new_pos.x, new_pos.y), clr.direct(), txt.c_str());
+
+		m_draw_list->PopTextureID();
+
+		return vec2_t(pos.x + text_size.x, pos.y + text_size.y);
 	}
 
 	void line(const vec2_t& from, const vec2_t& to, const col_t& clr) {
-		auto new_clr = clr.direct();
-
-		vertex_t vert[2] = {
-			{ from.x, from.y, 0.f, 1.f, new_clr },
-			{ to.x, to.y, 0.f, 1.f, new_clr }
-		};
-
-		m_device->SetTexture(0, nullptr);
-		m_device->DrawPrimitiveUP(D3DPT_LINELIST, 1, &vert, sizeof(vertex_t));
+		m_draw_list->AddLine(ImVec2(from.x, from.y), ImVec2(to.x, to.y), clr.direct());
 	}
 
 	void rect(const vec2_t& pos, const vec2_t& size, const col_t& clr) {
-		auto new_clr = clr.direct();
-
-		vertex_t vert[5] = {
-			{ pos.x, pos.y, 1.f, 1.f, new_clr },
-			{ pos.x + size.x, pos.y, 1.f, 1.f, new_clr },
-			{ pos.x + size.x, pos.y + size.y, 1.f, 1.f, new_clr },
-			{ pos.x, pos.y + size.y, 1.f, 1.f, new_clr },
-			{ pos.x, pos.y, 1.f, 1.f, new_clr }
-		};
-
-		m_device->SetTexture(0, nullptr);
-		m_device->DrawPrimitiveUP(D3DPT_LINESTRIP, 4, &vert, sizeof(vertex_t));
+		m_draw_list->AddRect(ImVec2(pos.x, pos.y), ImVec2(pos.x + size.x, pos.y + size.y), clr.direct());
 	}
 
-	void filled_rect(const vec2_t& pos, const vec2_t& size, const col_t& clr) {
-		auto new_clr = clr.direct();
-
-		vertex_t vert[4] = {
-			{ pos.x, pos.y, 1.f, 1.f, new_clr },
-			{ pos.x + size.x, pos.y, 1.f, 1.f, new_clr },
-			{ pos.x, pos.y + size.y, 1.f, 1.f, new_clr },
-			{ pos.x + size.x, pos.y + size.y, 1.f, 1.f, new_clr },
-		};
-
-		m_device->SetTexture(0, nullptr);
-		m_device->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, &vert, sizeof(vertex_t));
+	void rect_filled(const vec2_t& pos, const vec2_t& size, const col_t& clr) {
+		m_draw_list->AddRectFilled(ImVec2(pos.x, pos.y), ImVec2(pos.x + size.x, pos.y + size.y), clr.direct());
 	}
 
-	void gradient_rect(const vec2_t& pos, const vec2_t& size, const col_t& clr, const col_t& clr2, bool horizontal) {
-		auto new_clr = clr.direct();
-		auto new_clr2 = clr2.direct();
-
-		if (horizontal) {
-			auto top_left = new_clr, top_right = new_clr2, bottom_left = new_clr, bottom_right = new_clr2;
-
-			vertex_t vert[5] = {
-				{ pos.x, pos.y, 1.f, 1.f, top_left },
-				{ pos.x + size.x, pos.y, 1.f, 1.f, top_right },
-				{ pos.x + size.x, pos.y + size.y, 1.f, 1.f, bottom_right },
-				{ pos.x, pos.y + size.y, 1.f, 1.f, bottom_left },
-				{ pos.x, pos.y, 1.f, 1.f, top_left }
-			};
-
-			m_device->SetTexture(0, nullptr);
-			m_device->DrawPrimitiveUP(D3DPT_LINESTRIP, 4, &vert, sizeof(vertex_t));
-		}
-		else {
-			auto top_left = new_clr, top_right = new_clr, bottom_left = new_clr2, bottom_right = new_clr2;
-
-			vertex_t vert[5] = {
-				{ pos.x, pos.y, 1.f, 1.f, top_left },
-				{ pos.x + size.x, pos.y, 1.f, 1.f, top_right },
-				{ pos.x + size.x, pos.y + size.y, 1.f, 1.f, bottom_right },
-				{ pos.x, pos.y + size.y, 1.f, 1.f, bottom_left },
-				{ pos.x, pos.y, 1.f, 1.f, top_left }
-			};
-
-			m_device->SetTexture(0, nullptr);
-			m_device->DrawPrimitiveUP(D3DPT_LINESTRIP, 4, &vert, sizeof(vertex_t));
-		}
-	}
-
-	void gradient_filled_rect(const vec2_t& pos, const vec2_t& size, const col_t& clr, const col_t& clr2, bool horizontal) {
-		auto new_clr = clr.direct();
-		auto new_clr2 = clr2.direct();
-
-		if (horizontal) {
-			auto top_left = new_clr, top_right = new_clr2, bottom_left = new_clr, bottom_right = new_clr2;
-
-			vertex_t vert[4] = {
-				 { pos.x, pos.y, 0.f, 1.f, top_left },
-				 { pos.x + size.x, pos.y, 0.f, 1.f, top_right },
-				 { pos.x, pos.y + size.y, 0.f, 1.f, bottom_left },
-				 { pos.x + size.x, pos.y + size.y, 0.f, 1.f, bottom_right }
-			};
-
-			m_device->SetTexture(0, nullptr);
-			m_device->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, &vert, sizeof(vertex_t));
-		}
-		else {
-			auto top_left = new_clr, top_right = new_clr, bottom_left = new_clr2, bottom_right = new_clr2;
-
-			vertex_t vert[4] = {
-				 { pos.x, pos.y, 0.f, 1.f, top_left },
-				 { pos.x + size.x, pos.y, 0.f, 1.f, top_right },
-				 { pos.x, pos.y + size.y, 0.f, 1.f, bottom_left },
-				 { pos.x + size.x, pos.y + size.y, 0.f, 1.f, bottom_right }
-			};
-
-			m_device->SetTexture(0, nullptr);
-			m_device->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, &vert, sizeof(vertex_t));
-		}
-	}
-	void text(std::shared_ptr<c_font>& font, const vec2_t& pos, std::wstring txt, int flags, const col_t& clr) {
-		if (txt.empty())
+	void add_to_draw_list() {
+		std::unique_lock<std::mutex> lock(mutex, std::try_to_lock);
+		if (!lock.owns_lock())
 			return;
 
-		auto new_pos = pos;
+		*ImGui::GetBackgroundDrawList() = *m_temp_draw_list;
+	}
 
-		if (flags) {
-			if (flags & FONT_CENTERED_X 
-				|| flags & FONT_CENTERED_Y) {
-				auto size = font->get_size(txt);
+	void begin() {
+		m_draw_list->Clear();
+		m_draw_list->PushClipRectFullScreen();
 
-				flags & FONT_CENTERED_X ? new_pos.x -= size.x * 0.5f : 0;
+		auto screen_size = ImGui::GetIO().DisplaySize;
+		render::m_screen_size = vec2_t(screen_size.x, screen_size.y);
 
-				flags & FONT_CENTERED_Y ? new_pos.y -= size.y * 0.5f : 0;
-			}
+		// call ur visuals etc... here
 
-			if (flags & FONT_OUTLINE
-				|| flags & FONT_DROPSHADOW) {
-				auto new_clr = col_t(max(0, clr.a() - 100));
-
-				if (flags & FONT_OUTLINE) {
-					font->paint(new_pos - vec2_t(0, 1), txt, new_clr);
-					font->paint(new_pos + vec2_t(0, 1), txt, new_clr);
-					font->paint(new_pos - vec2_t(1, 0), txt, new_clr);
-					font->paint(new_pos + vec2_t(1, 0), txt, new_clr);
-				}
-
-				flags & FONT_DROPSHADOW ? font->paint(new_pos + 1, txt, new_clr) : 0;
-			}
+		{
+			std::unique_lock<std::mutex> lock(mutex);
+			*m_temp_draw_list = *m_draw_list;
 		}
-
-		font->paint(new_pos, txt, clr);
-	}
-
-	void text(std::shared_ptr<c_font>& font, const vec2_t& pos, std::string txt, int flags, const col_t& clr) {
-		if (txt.empty())
-			return;
-
-		wchar_t buf[1024];
-		if (!MultiByteToWideChar(CP_UTF8, 0, txt.data(), -1, buf, 1024))
-			return;
-
-		text(font, pos, buf, flags, clr);
-	}
-
-	void filled_triangle(vec2_t pos, vec2_t pos2, vec2_t pos3, const col_t& clr) {
-		auto new_clr = clr.direct();
-
-		vertex_t vert[3] = {
-			{ pos.x, pos.y, 0.f, 1.f, new_clr },
-			{ pos2.x, pos2.y, 0.f, 1.f, new_clr },
-			{ pos3.x, pos3.y, 0.f, 1.f, new_clr }
-		};
-
-		m_device->SetTexture(0, nullptr);
-		m_device->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 1, &vert, sizeof(vertex_t));
 	}
 
 	bool world_to_screen(const vec3_t& in, vec2_t& out) {
@@ -221,53 +118,12 @@ namespace render {
 		return false;
 	}
 
-	void set_render_states() {
-		D3DVIEWPORT9 viewport;
-		m_device->GetViewport(&viewport);
-		m_screen_size = vec2_t(viewport.Width, viewport.Height);
-
-		m_device->SetVertexShader(nullptr);
-		m_device->SetPixelShader(nullptr);
-		m_device->SetFVF(D3DFVF_XYZRHW | D3DFVF_DIFFUSE);
-		m_device->SetRenderState(D3DRS_LIGHTING, false);
-		m_device->SetRenderState(D3DRS_FOGENABLE, false);
-		m_device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
-		m_device->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
-
-		m_device->SetRenderState(D3DRS_ZENABLE, D3DZB_FALSE);
-		m_device->SetRenderState(D3DRS_SCISSORTESTENABLE, true);
-		m_device->SetRenderState(D3DRS_ZWRITEENABLE, false);
-		m_device->SetRenderState(D3DRS_STENCILENABLE, false);
-
-		m_device->SetRenderState(D3DRS_ALPHABLENDENABLE, true);
-		m_device->SetRenderState(D3DRS_ALPHATESTENABLE, false);
-		m_device->SetRenderState(D3DRS_SEPARATEALPHABLENDENABLE, true);
-		m_device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-		m_device->SetRenderState(D3DRS_SRCBLENDALPHA, D3DBLEND_INVDESTALPHA);
-		m_device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
-		m_device->SetRenderState(D3DRS_DESTBLENDALPHA, D3DBLEND_ONE);
-
-		m_device->SetRenderState(D3DRS_SRGBWRITEENABLE, false);
-		m_device->SetRenderState(D3DRS_COLORWRITEENABLE, D3DCOLORWRITEENABLE_RED | D3DCOLORWRITEENABLE_GREEN | D3DCOLORWRITEENABLE_BLUE | D3DCOLORWRITEENABLE_ALPHA);
-
-		m_device->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
-		m_device->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-		m_device->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
-		m_device->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
-		m_device->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
-		m_device->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
-
-		m_device->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
-		m_device->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
-	}
-
-	bool m_init = false;
-	IDirect3DDevice9* m_device = nullptr;
-
 	vec2_t m_screen_size;
-	std::vector<std::shared_ptr<c_font>> m_fonts;
+
+	std::shared_ptr<ImDrawList> m_draw_list;
+	std::shared_ptr<ImDrawList> m_temp_draw_list;
 }
 
 namespace fonts {
-	std::shared_ptr<c_font> m_tahoma12;
+	ImFont* m_tahoma14 = nullptr;
 }

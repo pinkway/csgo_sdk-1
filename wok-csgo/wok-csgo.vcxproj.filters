@@ -31,9 +31,6 @@
     <ClCompile Include="sdk\interfaces.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="utils\render\font\font.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
     <ClCompile Include="sdk\other\crc32_t.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
@@ -67,6 +64,30 @@
     <ClCompile Include="sdk\datatypes\misc.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="utils\imgui\imgui.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\imgui\imgui_demo.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\imgui\imgui_impl_dx9.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\imgui\imgui_impl_win32.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\imgui\imgui_widgets.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\imgui\imgui_freetype.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\imgui\imgui_draw.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="hooks\functions\paint_traverse.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common_includes.h" />
@@ -81,7 +102,6 @@
     <ClInclude Include="utils\utils.h" />
     <ClInclude Include="hooks\hooks.h" />
     <ClInclude Include="sdk\interfaces.h" />
-    <ClInclude Include="utils\render\font\font.h" />
     <ClInclude Include="sdk\sdk.h" />
     <ClInclude Include="features\features.h" />
     <ClInclude Include="sdk\interfaces\c_global_vars.h" />
@@ -137,5 +157,15 @@
     <ClInclude Include="utils\input\input.h" />
     <ClInclude Include="features\ragebot\prediction.h" />
     <ClInclude Include="sdk\interfaces\i_localize.h" />
+    <ClInclude Include="utils\imgui\imconfig.h" />
+    <ClInclude Include="utils\imgui\imgui.h" />
+    <ClInclude Include="utils\imgui\imgui_impl_dx9.h" />
+    <ClInclude Include="utils\imgui\imgui_impl_win32.h" />
+    <ClInclude Include="utils\imgui\imgui_internal.h" />
+    <ClInclude Include="utils\imgui\imstb_rectpack.h" />
+    <ClInclude Include="utils\imgui\imstb_textedit.h" />
+    <ClInclude Include="utils\imgui\imstb_truetype.h" />
+    <ClInclude Include="utils\imgui\imgui_freetype.h" />
+    <ClInclude Include="sdk\interfaces\i_panel.h" />
   </ItemGroup>
 </Project>

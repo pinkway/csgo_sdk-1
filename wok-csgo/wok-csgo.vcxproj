@@ -72,16 +72,16 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;$(SolutionDir)wok-csgo\utils\imgui\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86;$(SolutionDir)wok-csgo\utils\imgui\win32;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;$(SolutionDir)wok-csgo\utils\imgui\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86;$(SolutionDir)wok-csgo\utils\imgui\win32;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -159,6 +159,7 @@
     <ClCompile Include="hooks\functions\create_move.cpp" />
     <ClCompile Include="hooks\functions\frame_stage_notify.cpp" />
     <ClCompile Include="hooks\functions\override_view.cpp" />
+    <ClCompile Include="hooks\functions\paint_traverse.cpp" />
     <ClCompile Include="hooks\functions\present.cpp" />
     <ClCompile Include="hooks\functions\reset.cpp" />
     <ClCompile Include="hooks\hooks.cpp" />
@@ -168,11 +169,17 @@
     <ClCompile Include="sdk\interfaces.cpp" />
     <ClCompile Include="sdk\other\crc32_t.cpp" />
     <ClCompile Include="sdk\_classes.cpp" />
+    <ClCompile Include="utils\imgui\imgui.cpp" />
+    <ClCompile Include="utils\imgui\imgui_demo.cpp" />
+    <ClCompile Include="utils\imgui\imgui_draw.cpp" />
+    <ClCompile Include="utils\imgui\imgui_freetype.cpp" />
+    <ClCompile Include="utils\imgui\imgui_impl_dx9.cpp" />
+    <ClCompile Include="utils\imgui\imgui_impl_win32.cpp" />
+    <ClCompile Include="utils\imgui\imgui_widgets.cpp" />
     <ClCompile Include="utils\input\input.cpp" />
     <ClCompile Include="utils\math\math.cpp" />
     <ClCompile Include="utils\netvars\netvars.cpp" />
     <ClCompile Include="utils\obfuscation\fnv1a.cpp" />
-    <ClCompile Include="utils\render\font\font.cpp" />
     <ClCompile Include="utils\render\render.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -210,6 +217,7 @@
     <ClInclude Include="sdk\interfaces\i_mdl_cache.h" />
     <ClInclude Include="sdk\interfaces\i_model_render.h" />
     <ClInclude Include="sdk\interfaces\i_move_helper.h" />
+    <ClInclude Include="sdk\interfaces\i_panel.h" />
     <ClInclude Include="sdk\interfaces\i_prediction.h" />
     <ClInclude Include="sdk\interfaces\i_surface.h" />
     <ClInclude Include="sdk\interfaces\i_surface_data.h" />
@@ -232,6 +240,15 @@
     <ClInclude Include="sdk\sdk.h" />
     <ClInclude Include="sdk\_structs.h" />
     <ClInclude Include="singleton.h" />
+    <ClInclude Include="utils\imgui\imconfig.h" />
+    <ClInclude Include="utils\imgui\imgui.h" />
+    <ClInclude Include="utils\imgui\imgui_freetype.h" />
+    <ClInclude Include="utils\imgui\imgui_impl_dx9.h" />
+    <ClInclude Include="utils\imgui\imgui_impl_win32.h" />
+    <ClInclude Include="utils\imgui\imgui_internal.h" />
+    <ClInclude Include="utils\imgui\imstb_rectpack.h" />
+    <ClInclude Include="utils\imgui\imstb_textedit.h" />
+    <ClInclude Include="utils\imgui\imstb_truetype.h" />
     <ClInclude Include="utils\input\input.h" />
     <ClInclude Include="utils\math\datatypes.h" />
     <ClInclude Include="utils\math\math.h" />
@@ -241,7 +258,6 @@
     <ClInclude Include="utils\netvars\netvars.h" />
     <ClInclude Include="utils\obfuscation\fnv1a.h" />
     <ClInclude Include="utils\obfuscation\obfuscation.h" />
-    <ClInclude Include="utils\render\font\font.h" />
     <ClInclude Include="utils\render\render.h" />
     <ClInclude Include="utils\utils.h" />
   </ItemGroup>

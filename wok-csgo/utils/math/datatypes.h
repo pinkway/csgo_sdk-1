@@ -409,8 +409,8 @@ struct col_t {
 		return clr[3];
 	}
 
-	D3DCOLOR direct() const {
-		return D3DCOLOR_ARGB(a(), r(), g(), b());
+	unsigned int direct() const {
+		return ((clr[3] & 0xff) << 24) + ((clr[2] & 0xff) << 16) + ((clr[1] & 0xff) << 8) + (clr[0] & 0xff);
 	}
 
 	col_t& operator=(const col_t& in) {

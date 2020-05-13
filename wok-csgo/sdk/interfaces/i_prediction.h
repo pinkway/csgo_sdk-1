@@ -5,7 +5,7 @@ public:
 	bool		m_first_run_of_functions : 1;
 	bool		m_game_code_moved_player : 1;
 	int			m_player_handle;
-	int			m_impulse_command;
+	int			m_impulse_cmd;
 	qangle_t	m_viewangles;
 	qangle_t	m_abs_viewangles;
 	int			m_buttons;
@@ -47,4 +47,5 @@ public:
 	bool m_first_time_predicted;
 	char pad3[7];
 	int	 m_server_commands_acknowledged;
+	bool m_had_prediction_errors;
 };

@@ -9,6 +9,7 @@ namespace hooks {
 	extern std::unique_ptr<memory::hook_t> d3d_device;
 	extern std::unique_ptr<memory::hook_t> client_dll;
 	extern std::unique_ptr<memory::hook_t> client_mode;
+	extern std::unique_ptr<memory::hook_t> panel;
 	extern std::unique_ptr<memory::hook_t> c_cs_player_;
 	extern std::unique_ptr<memory::hook_t> i_client_renderable_;
 
@@ -40,5 +41,11 @@ namespace hooks {
 		static const auto index = 18;
 		typedef void(__stdcall* t) (c_view_setup*);
 		void __stdcall fn(c_view_setup* setup);
+	}
+
+	namespace paint_traverse {
+		static const auto index = 41;
+		typedef void(__thiscall* t)(void*, uint32_t, bool, bool);
+		void __fastcall fn(void* ecx, void* edx, uint32_t id, bool force_repaint, bool allow_force);
 	}
 }

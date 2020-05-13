@@ -10,6 +10,7 @@ namespace wok {
 
 		input::init();
 		interfaces::init();
+		render::init();
 		netvars::init();
 		hooks::init();
 	}

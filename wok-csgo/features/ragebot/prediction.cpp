@@ -14,11 +14,11 @@ void c_prediction::start(c_cs_player* player, c_user_cmd* cmd) {
 	if (!player)
 		return;
 
-	m_backup.curtime = interfaces::global_vars->m_curtime;
-	m_backup.frametime = interfaces::global_vars->m_frametime;
+	m_backup.m_curtime = interfaces::global_vars->m_curtime;
+	m_backup.m_frametime = interfaces::global_vars->m_frametime;
 
-	m_backup.in_prediction = interfaces::prediction->m_in_prediction;
-	m_backup.first_time_predicted = interfaces::prediction->m_first_time_predicted;
+	m_backup.m_in_prediction = interfaces::prediction->m_in_prediction;
+	m_backup.m_first_time_predicted = interfaces::prediction->m_first_time_predicted;
 
 	interfaces::global_vars->m_curtime = TICKS_TO_TIME(player->get_tickbase());
 	interfaces::global_vars->m_frametime = interfaces::prediction->m_engine_paused ? 0.f : interfaces::global_vars->m_interval_per_tick;
@@ -92,8 +92,8 @@ void c_prediction::start(c_cs_player* player, c_user_cmd* cmd) {
 
 	post_think(player);
 
-	interfaces::prediction->m_in_prediction = m_backup.in_prediction;
-	interfaces::prediction->m_first_time_predicted = m_backup.first_time_predicted;
+	interfaces::prediction->m_in_prediction = m_backup.m_in_prediction;
+	interfaces::prediction->m_first_time_predicted = m_backup.m_first_time_predicted;
 }
 
 void c_prediction::end(c_cs_player* player, c_user_cmd* cmd) {
@@ -110,6 +110,6 @@ void c_prediction::end(c_cs_player* player, c_user_cmd* cmd) {
 
 	!interfaces::prediction->m_engine_paused && interfaces::global_vars->m_frametime ? player->get_tickbase()++ : 0;
 
-	interfaces::global_vars->m_curtime = m_backup.curtime;
-	interfaces::global_vars->m_frametime = m_backup.frametime;
+	interfaces::global_vars->m_curtime = m_backup.m_curtime;
+	interfaces::global_vars->m_frametime = m_backup.m_frametime;
 }

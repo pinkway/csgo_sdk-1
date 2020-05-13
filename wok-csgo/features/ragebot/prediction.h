@@ -4,8 +4,8 @@
 class c_prediction : public c_singleton<c_prediction> {
 private:
 	struct {
-		float curtime, frametime;
-		bool in_prediction, first_time_predicted;
+		float m_curtime, m_frametime;
+		bool m_in_prediction, m_first_time_predicted;
 	} m_backup;
 
 	void* m_move_data;
@@ -45,3 +45,4 @@ public:
 	void start(c_cs_player* player, c_user_cmd* cmd);
 	void end(c_cs_player* player, c_user_cmd* cmd);
 };
+#define engine_prediction c_prediction::instance()
