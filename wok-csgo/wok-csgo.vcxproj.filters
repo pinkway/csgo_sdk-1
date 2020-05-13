@@ -88,6 +88,12 @@
     <ClCompile Include="hooks\functions\paint_traverse.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="features\visuals\chams.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="hooks\functions\draw_model_execute.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common_includes.h" />
@@ -167,5 +173,6 @@
     <ClInclude Include="utils\imgui\imstb_truetype.h" />
     <ClInclude Include="utils\imgui\imgui_freetype.h" />
     <ClInclude Include="sdk\interfaces\i_panel.h" />
+    <ClInclude Include="features\visuals\chams.h" />
   </ItemGroup>
 </Project>

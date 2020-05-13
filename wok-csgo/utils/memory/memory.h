@@ -200,4 +200,4 @@ namespace memory {
 #define _PINTERFACE_SIG(val, type, module_name, sig, add) { static const auto addr = SIG(module_name, sig); val = **reinterpret_cast<type***>(addr + add); }
 
 #define VFUNC(func, index, type, ...) auto func { return memory::get_vfunc<type>(this, index)(this, __VA_ARGS__); };
-#define CUSTOM_VFUNC(func, module_name, sig, type, ...) auto func { static const auto addr = SIG(module_name, sig); return reinterpret_cast<type>(addr)(this, __VA_ARGS__); };
+#define VFUNC_SIG(func, module_name, sig, type, ...) auto func { static const auto addr = SIG(module_name, sig); return reinterpret_cast<type>(addr)(this, __VA_ARGS__); };

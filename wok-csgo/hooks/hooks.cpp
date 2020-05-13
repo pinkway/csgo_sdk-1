@@ -4,6 +4,7 @@ namespace hooks {
 	std::unique_ptr<memory::hook_t> d3d_device = nullptr;
 	std::unique_ptr<memory::hook_t> client_dll = nullptr;
 	std::unique_ptr<memory::hook_t> client_mode = nullptr;
+	std::unique_ptr<memory::hook_t> model_render = nullptr;
 	std::unique_ptr<memory::hook_t> panel = nullptr;
 	std::unique_ptr<memory::hook_t> c_cs_player_ = nullptr;
 	std::unique_ptr<memory::hook_t> i_client_renderable_ = nullptr;
@@ -28,6 +29,12 @@ namespace hooks {
 
 		client_mode->hook(create_move::index, create_move::fn);
 		client_mode->hook(override_view::index, override_view::fn);
+
+		// // // // // // // // // // // // // // // // // // // // // // //
+
+		model_render = std::make_unique<memory::hook_t>(interfaces::model_render);
+
+		model_render->hook(draw_model_execute::index, draw_model_execute::fn);
 
 		// // // // // // // // // // // // // // // // // // // // // // //
 

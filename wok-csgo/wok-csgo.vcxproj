@@ -155,8 +155,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="features\ragebot\prediction.cpp" />
+    <ClCompile Include="features\visuals\chams.cpp" />
     <ClCompile Include="globals.cpp" />
     <ClCompile Include="hooks\functions\create_move.cpp" />
+    <ClCompile Include="hooks\functions\draw_model_execute.cpp" />
     <ClCompile Include="hooks\functions\frame_stage_notify.cpp" />
     <ClCompile Include="hooks\functions\override_view.cpp" />
     <ClCompile Include="hooks\functions\paint_traverse.cpp" />
@@ -186,6 +188,7 @@
     <ClInclude Include="common_includes.h" />
     <ClInclude Include="features\features.h" />
     <ClInclude Include="features\ragebot\prediction.h" />
+    <ClInclude Include="features\visuals\chams.h" />
     <ClInclude Include="globals.h" />
     <ClInclude Include="hooks\hooks.h" />
     <ClInclude Include="menu\menu.h" />

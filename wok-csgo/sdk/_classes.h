@@ -2,21 +2,21 @@
 
 class ik_context {
 public:
-	CUSTOM_VFUNC(init(void* hdr, qangle_t& angles, vec3_t& origin, float time, int framecount, int mask), "client_panorama.dll", "55 8B EC 83 EC ? 8B 45 ? 56 57 8B F9 8D 8F ? ? ? ?",
+	VFUNC_SIG(init(void* hdr, qangle_t& angles, vec3_t& origin, float time, int framecount, int mask), "client_panorama.dll", "55 8B EC 83 EC ? 8B 45 ? 56 57 8B F9 8D 8F ? ? ? ?",
 		void(__thiscall*)(void*, void*, qangle_t&, vec3_t&, float, int, int), hdr, angles, origin, time, framecount, mask)
 
-	CUSTOM_VFUNC(update_targets(vec3_t* pos, quaternion* q, matrix3x4_t* bones, uint8_t* computed), "client_panorama.dll", "55 8B EC 83 E4 ? 81 EC ? ? ? ? 33 D2",
+	VFUNC_SIG(update_targets(vec3_t* pos, quaternion* q, matrix3x4_t* bones, uint8_t* computed), "client_panorama.dll", "55 8B EC 83 E4 ? 81 EC ? ? ? ? 33 D2",
 		void(__thiscall*)(void*, vec3_t*, void*, matrix3x4_t*, uint8_t*), pos, q, bones, computed)
 
-	CUSTOM_VFUNC(solve_dependencies(vec3_t* pos, quaternion* q, matrix3x4_t* bones, uint8_t* computed), "client_panorama.dll", "55 8B EC 83 E4 ? 81 EC ? ? ? ? 8B 81 ? ? ? ? 56",
+	VFUNC_SIG(solve_dependencies(vec3_t* pos, quaternion* q, matrix3x4_t* bones, uint8_t* computed), "client_panorama.dll", "55 8B EC 83 E4 ? 81 EC ? ? ? ? 8B 81 ? ? ? ? 56",
 		void(__thiscall*)(void*, vec3_t*, void*, matrix3x4_t*, uint8_t*), pos, q, bones, computed)
 
 	void clear_targets() {
 		auto i = 0;
-		auto count = *reinterpret_cast<int*>(uintptr_t(this) + 4080);
+		auto count = *reinterpret_cast<int*>(reinterpret_cast<uintptr_t>(this) + 4080);
 
 		if (count > 0) {
-			auto target = reinterpret_cast<int*>(uintptr_t(this) + 208);
+			auto target = reinterpret_cast<int*>(reinterpret_cast<uintptr_t>(this) + 208);
 			do {
 				*target = -9999;
 				target += 85;
@@ -28,7 +28,7 @@ public:
 
 class c_bone_setup {
 public:
-	CUSTOM_VFUNC(accumulate_pose(vec3_t* pos, quaternion* q, int sequence, float cycle, float weight, float time, ik_context* ik),
+	VFUNC_SIG(accumulate_pose(vec3_t* pos, quaternion* q, int sequence, float cycle, float weight, float time, ik_context* ik),
 		"client_panorama.dll", "55 8B EC 83 E4 F0 B8 ? ? ? ? E8 ? ? ? ? A1", void(__thiscall*)(void*, vec3_t*, quaternion*, int, float, float, float, ik_context*), pos, q, sequence, cycle, weight, time, ik)
 };
 
@@ -58,8 +58,8 @@ public:
 	VFUNC(is_weapon(), 165, bool(__thiscall*)(void*))
 	VFUNC(set_model_index(int id), 75, void(__thiscall*)(void*, int), id)
 
-	CUSTOM_VFUNC(set_abs_angles(qangle_t angles), "client_panorama.dll", "55 8B EC 83 E4 F8 83 EC 64 53 56 57 8B F1", void(__thiscall*)(void*, const qangle_t&), angles)
-	CUSTOM_VFUNC(set_abs_origin(vec3_t origin), "client_panorama.dll", "55 8B EC 83 E4 F8 51 53 56 57 8B F1", void(__thiscall*)(void*, const vec3_t&), origin)
+	VFUNC_SIG(set_abs_angles(qangle_t angles), "client_panorama.dll", "55 8B EC 83 E4 F8 83 EC 64 53 56 57 8B F1", void(__thiscall*)(void*, const qangle_t&), angles)
+	VFUNC_SIG(set_abs_origin(vec3_t origin), "client_panorama.dll", "55 8B EC 83 E4 F8 51 53 56 57 8B F1", void(__thiscall*)(void*, const vec3_t&), origin)
 
 	OFFSET(get_renderable(), i_client_renderable*, 0x4)
 	OFFSET(get_networkable(), i_client_networkable*, 0x8)
@@ -210,9 +210,9 @@ public:
 	VFUNC(post_think(), 318, void(__thiscall*)(void*))
 	VFUNC(select_item(const char* name, int sub_type), 329, void(__thiscall*)(void*, const char*, int), name, sub_type)
 
-	CUSTOM_VFUNC(unknown_think(int unk), "client_panorama.dll", "55 8B EC 56 57 8B F9 8B B7 ? ? ? ? 8B C6 C1 E8 16 24 01 74 18", void(__thiscall*)(void*, int), unk)
-	CUSTOM_VFUNC(using_standard_weapons_in_vehicle(), "client_panorama.dll", "56 57 8B F9 8B 97 ? ? ? ? 83 FA FF 74 41", bool(__thiscall*)(void*))
-	CUSTOM_VFUNC(physics_run_think(int index), "client_panorama.dll", "55 8B EC 83 EC 10 53 56 57 8B F9 8B 87", bool(__thiscall*)(void*, int), index)
+	VFUNC_SIG(unknown_think(int unk), "client_panorama.dll", "55 8B EC 56 57 8B F9 8B B7 ? ? ? ? 8B C6 C1 E8 16 24 01 74 18", void(__thiscall*)(void*, int), unk)
+	VFUNC_SIG(using_standard_weapons_in_vehicle(), "client_panorama.dll", "56 57 8B F9 8B 97 ? ? ? ? 83 FA FF 74 41", bool(__thiscall*)(void*))
+	VFUNC_SIG(physics_run_think(int index), "client_panorama.dll", "55 8B EC 83 EC 10 53 56 57 8B F9 8B 87", bool(__thiscall*)(void*, int), index)
 
 	bool is_alive() { return get_life_state() == LIFE_ALIVE; }
 
