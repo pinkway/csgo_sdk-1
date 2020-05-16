@@ -1,14 +1,6 @@
 #include "hooks.h"
 
 namespace hooks {
-	std::unique_ptr<memory::hook_t> d3d_device = nullptr;
-	std::unique_ptr<memory::hook_t> client_dll = nullptr;
-	std::unique_ptr<memory::hook_t> client_mode = nullptr;
-	std::unique_ptr<memory::hook_t> model_render = nullptr;
-	std::unique_ptr<memory::hook_t> panel = nullptr;
-	std::unique_ptr<memory::hook_t> c_cs_player_ = nullptr;
-	std::unique_ptr<memory::hook_t> i_client_renderable_ = nullptr;
-
 	void init() {
 		// // // // // // // // // // // // // // // // // // // // // // //
 
@@ -65,4 +57,12 @@ namespace hooks {
 		c_cs_player_->unhook();
 		i_client_renderable_->unhook();
 	}
+
+	std::unique_ptr<memory::hook_t> d3d_device = nullptr;
+	std::unique_ptr<memory::hook_t> client_dll = nullptr;
+	std::unique_ptr<memory::hook_t> client_mode = nullptr;
+	std::unique_ptr<memory::hook_t> model_render = nullptr;
+	std::unique_ptr<memory::hook_t> panel = nullptr;
+	std::unique_ptr<memory::hook_t> c_cs_player_ = nullptr;
+	std::unique_ptr<memory::hook_t> i_client_renderable_ = nullptr;
 }

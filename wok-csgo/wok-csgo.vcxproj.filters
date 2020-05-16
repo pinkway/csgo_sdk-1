@@ -31,9 +31,6 @@
     <ClCompile Include="sdk\interfaces.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="sdk\other\crc32_t.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
     <ClCompile Include="utils\netvars\netvars.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
@@ -94,6 +91,12 @@
     <ClCompile Include="hooks\functions\draw_model_execute.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="events\events.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="events\callbacks\player_hurt.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common_includes.h" />
@@ -134,7 +137,6 @@
     <ClInclude Include="sdk\_classes.h" />
     <ClInclude Include="sdk\interfaces\i_surface.h" />
     <ClInclude Include="sdk\interfaces\c_input.h" />
-    <ClInclude Include="sdk\other\crc32_t.h" />
     <ClInclude Include="sdk\interfaces\i_prediction.h" />
     <ClInclude Include="sdk\interfaces\i_move_helper.h" />
     <ClInclude Include="sdk\interfaces\i_game_movement.h" />
@@ -174,5 +176,6 @@
     <ClInclude Include="utils\imgui\imgui_freetype.h" />
     <ClInclude Include="sdk\interfaces\i_panel.h" />
     <ClInclude Include="features\visuals\chams.h" />
+    <ClInclude Include="events\events.h" />
   </ItemGroup>
 </Project>

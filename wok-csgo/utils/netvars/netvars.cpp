@@ -37,5 +37,6 @@ namespace netvars {
 	std::unordered_map<uint32_t, data> props;
 
 	uint32_t get_offset(uint32_t hash) { return props[hash].offset; }
+
 	recv_prop* get_prop(uint32_t hash) { return props[hash].prop; }
 }

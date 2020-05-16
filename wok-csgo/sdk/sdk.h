@@ -13,7 +13,6 @@
 #include "datatypes/i_material_var.h"
 #include "datatypes/i_material.h"
 
-#include "other/crc32_t.h"
 #include "other/i_collideable.h"
 #include "other/i_client_entity.h"
 #include "datatypes/c_base_handle.h"

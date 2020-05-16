@@ -4,15 +4,8 @@
 
 namespace hooks {
 	void init();
-	void undo();
 
-	extern std::unique_ptr<memory::hook_t> d3d_device;
-	extern std::unique_ptr<memory::hook_t> client_dll;
-	extern std::unique_ptr<memory::hook_t> client_mode;
-	extern std::unique_ptr<memory::hook_t> model_render;
-	extern std::unique_ptr<memory::hook_t> panel;
-	extern std::unique_ptr<memory::hook_t> c_cs_player_;
-	extern std::unique_ptr<memory::hook_t> i_client_renderable_;
+	void undo();
 
 	namespace reset {
 		static const auto index = 16;
@@ -55,4 +48,12 @@ namespace hooks {
 		typedef void(__thiscall* t)(i_model_render*, void*, const draw_model_state_t&, const model_render_info_t&, matrix3x4_t*);
 		void __fastcall fn(i_model_render* ecx, void* edx, void* context, const draw_model_state_t& state, const model_render_info_t& info, matrix3x4_t* bones);
 	}
+
+	extern std::unique_ptr<memory::hook_t> d3d_device;
+	extern std::unique_ptr<memory::hook_t> client_dll;
+	extern std::unique_ptr<memory::hook_t> client_mode;
+	extern std::unique_ptr<memory::hook_t> model_render;
+	extern std::unique_ptr<memory::hook_t> panel;
+	extern std::unique_ptr<memory::hook_t> c_cs_player_;
+	extern std::unique_ptr<memory::hook_t> i_client_renderable_;
 }

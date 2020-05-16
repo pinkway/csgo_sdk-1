@@ -23,7 +23,7 @@ public:
 class c_verified_user_cmd {
 public:
 	c_user_cmd  m_cmd;
-	crc32_t		m_crc;
+	uint32_t	m_crc;
 };
 
 class c_input {
@@ -54,5 +54,9 @@ public:
 
 	VFUNC(get_user_cmd(int sequence_number), 8, c_user_cmd*(__thiscall*)(void*, int, int), 0, sequence_number)
 	VFUNC(get_user_cmd(int slot, int sequence_number), 8, c_user_cmd*(__thiscall*)(void*, int, int), slot, sequence_number)
-	c_verified_user_cmd* get_verified_cmd(int sequence_number) { return &m_verified_commands[sequence_number % MULTIPLAYER_BACKUP]; }
+
+	c_verified_user_cmd* get_verified_cmd(int sequence_number) {
+		auto verified_commands = *reinterpret_cast<c_verified_user_cmd**>(reinterpret_cast<uintptr_t>(this) + 0xF8);
+		return &verified_commands[sequence_number % MULTIPLAYER_BACKUP];
+	}
 };

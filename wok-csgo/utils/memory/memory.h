@@ -96,7 +96,7 @@ namespace memory {
 		std::unique_ptr<uintptr_t[]> m_replace = nullptr;
 	};
 
-	__forceinline uintptr_t get_module_handle(const uintptr_t module, const uintptr_t process = 0) {
+	__forceinline uintptr_t get_module_handle(const uint32_t module, const uint32_t process = 0) {
 		MODULEENTRY32 entry;
 		entry.dwSize = sizeof(MODULEENTRY32);
 
@@ -118,7 +118,7 @@ namespace memory {
 		return 0;
 	}
 
-	__forceinline uint8_t* find_sig(const uintptr_t offset, const char* signature, const uintptr_t range = 0) {
+	__forceinline uint8_t* find_sig(const uint32_t offset, const char* sig, const uint32_t range = 0) {
 		static auto sig_to_bytes = [](const char* pattern) -> std::vector<int> {
 			std::vector<int> bytes;
 			const auto start = const_cast<char*>(pattern);
@@ -140,7 +140,7 @@ namespace memory {
 			return bytes;
 		};
 
-		auto sig_bytes = sig_to_bytes(signature);
+		auto sig_bytes = sig_to_bytes(sig);
 		const auto size = sig_bytes.size();
 		const auto data = sig_bytes.data();
 
@@ -162,17 +162,15 @@ namespace memory {
 		return nullptr;
 	}
 
-	__forceinline uint8_t* find_module_sig(const uintptr_t name, const char* signature) {
-		auto module = get_module_handle(name);
+	__forceinline uint8_t* find_module_sig(const uint32_t hash, const char* sig) {
+		auto module = get_module_handle(hash);
+		if (!module)
+			return nullptr;
 
-		if (module) {
-			const auto dos_header = PIMAGE_DOS_HEADER(module);
-			const auto nt_headers = PIMAGE_NT_HEADERS(reinterpret_cast<uint8_t*>(module) + dos_header->e_lfanew);
+		const auto dos_header = PIMAGE_DOS_HEADER(module);
+		const auto nt_headers = PIMAGE_NT_HEADERS(reinterpret_cast<uint8_t*>(module) + dos_header->e_lfanew);
 
-			return find_sig(module, signature, nt_headers->OptionalHeader.SizeOfImage);
-		}
-
-		return nullptr;
+		return find_sig(module, sig, nt_headers->OptionalHeader.SizeOfImage);
 	}
 
 	template<typename T>
