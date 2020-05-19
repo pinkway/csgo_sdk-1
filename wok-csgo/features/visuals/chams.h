@@ -10,7 +10,7 @@ private:
 	};
 
 	bool override_material(int type, const col_t& clr, bool ignorez);
-	i_material* create_material(std::string material_name, std::string shader_type, std::string material_data);
+	i_material* create_material(const std::string& material_name, const std::string& shader_type, const std::string& material_data);
 
 	i_material* m_regular;
 	i_material* m_regular_z;

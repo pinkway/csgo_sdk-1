@@ -2,8 +2,10 @@
 
 namespace events {
 	void listener::fire_game_event(i_game_event* event) {
+		auto hash = fnv1a_rt(event->get_name());
+		
 		for (auto& callback : m_callbacks) {
-			if (fnv1a_rt(event->get_name()) != callback.m_hash)
+			if (hash != callback.m_hash)
 				continue;
 
 			callback.m_fn(event);

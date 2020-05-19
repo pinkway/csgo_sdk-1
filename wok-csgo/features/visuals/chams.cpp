@@ -1,7 +1,7 @@
 #include "../features.h"
 #include "../../hooks/hooks.h"
 
-i_material* c_chams::create_material(std::string material_name, std::string shader_type, std::string material_data) {
+i_material* c_chams::create_material(const std::string& material_name, const std::string& shader_type, const std::string& material_data) {
 	auto k_v = static_cast<key_values*>(interfaces::mem_alloc->alloc(36u));
 
 	k_v->init(shader_type.c_str());

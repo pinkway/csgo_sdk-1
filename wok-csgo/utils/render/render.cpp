@@ -15,6 +15,9 @@ namespace render {
 		m_temp_draw_list = std::make_shared<ImDrawList>(ImGui::GetDrawListSharedData());
 
 		auto& io = ImGui::GetIO();
+		auto& style = ImGui::GetStyle();
+
+		style.WindowMinSize = ImVec2(500, 450);
 
 		ImFontConfig tahoma14;
 		tahoma14.RasterizerFlags = ImGuiFreeType::ForceAutoHint;
@@ -49,7 +52,7 @@ namespace render {
 
 		m_draw_list->PopTextureID();
 
-		return vec2_t(pos.x + text_size.x, pos.y + text_size.y);
+		return vec2_t(text_size.x, text_size.y);
 	}
 
 	void line(const vec2_t& from, const vec2_t& to, const col_t& clr) {

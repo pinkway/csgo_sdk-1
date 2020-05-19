@@ -1,7 +1,6 @@
 #pragma once
 
-class vec2_t {
-public:
+struct vec2_t {
 	vec2_t() = default;
 	vec2_t(float ix, float iy) { x = ix; y = iy; }
 
@@ -15,44 +14,44 @@ public:
 		return vec2_t(x - in.x, y - in.y);
 	}
 
-	vec2_t operator+(const float in) const {
+	vec2_t operator+(float in) const {
 		return vec2_t(x + in, y + in);
 	}
 
-	vec2_t operator-(const float in) const {
+	vec2_t operator-(float in) const {
 		return vec2_t(x - in, y - in);
 	}
 
-	vec2_t operator/(const float in) const {
+	vec2_t operator/(float in) const {
 		return vec2_t(x / in, y / in);
 	}
 
-	vec2_t operator*(const float in) const {
+	vec2_t operator*(float in) const {
 		return vec2_t(x * in, y * in);
 	}
 
-	vec2_t& operator-=(const vec2_t& v) {
-		x -= v.x;
-		y -= v.y;
+	vec2_t& operator-=(const vec2_t& in) {
+		x -= in.x;
+		y -= in.y;
 
 		return *this;
 	}
 
-	vec2_t& operator+=(const vec2_t& v) {
-		x += v.x;
-		y += v.y;
+	vec2_t& operator+=(const vec2_t& in) {
+		x += in.x;
+		y += in.y;
 
 		return *this;
 	}
 
-	vec2_t& operator/=(const float in) {
+	vec2_t& operator/=(float in) {
 		x /= in;
 		y /= in;
 
 		return *this;
 	}
 
-	vec2_t& operator*=(const float in) {
+	vec2_t& operator*=(float in) {
 		x *= in;
 		y *= in;
 
@@ -91,7 +90,7 @@ public:
 		return fast_sqrt(length_sqr());
 	}
 
-	float dot_product(vec2_t in) const {
+	float dot_product(const vec2_t& in) const {
 		return (x * in.x) + (y * in.y);
 	}
 
@@ -99,7 +98,7 @@ public:
 		return (x * in[0]) + (y * in[1]);
 	}
 
-	float dist_to(vec2_t in) const {
+	float dist_to(const vec2_t& in) const {
 		return (*this - in).length();
 	}
 
@@ -112,8 +111,7 @@ public:
 	}
 };
 
-class vec3_t {
-public:
+struct vec3_t {
 	vec3_t() = default;
 	vec3_t(float ix, float iy, float iz) { x = ix; y = iy; z = iz; }
 
@@ -127,19 +125,19 @@ public:
 		return vec3_t(x - in.x, y - in.y, z - in.z);
 	}
 
-	vec3_t operator-(const float in) const{
+	vec3_t operator-(float in) const{
 		return vec3_t(x - in, y - in, z - in);
 	}
 
-	vec3_t operator+(const float in) const {
+	vec3_t operator+(float in) const {
 		return vec3_t(x + in, y + in, z + in);
 	}
 
-	vec3_t operator/(const float in) const {
+	vec3_t operator/(float in) const {
 		return vec3_t(x / in, y / in, z / in);
 	}
 
-	vec3_t operator*(const float in) const {
+	vec3_t operator*(float in) const {
 		return vec3_t(x * in, y * in, z * in);
 	}
 
@@ -163,7 +161,23 @@ public:
 		return *this;
 	}
 
-	vec3_t& operator/=(const float in) {
+	vec3_t& operator/=(const vec3_t& in) {
+		x /= in.x;
+		y /= in.y;
+		z /= in.z;
+
+		return *this;
+	}
+
+	vec3_t& operator*=(const vec3_t& in) {
+		x *= in.x;
+		y *= in.y;
+		z *= in.z;
+
+		return *this;
+	}
+
+	vec3_t& operator/=(float in) {
 		x /= in;
 		y /= in;
 		z /= in;
@@ -171,7 +185,7 @@ public:
 		return *this;
 	}
 
-	vec3_t& operator*=(const float in) {
+	vec3_t& operator*=(float in) {
 		x *= in;
 		y *= in;
 		z *= in;
@@ -218,7 +232,7 @@ public:
 		return fast_sqrt((x * x) + (y * y));
 	}
 
-	float dot_product(const vec3_t in) const {
+	float dot_product(const vec3_t& in) const {
 		return (x * in.x) + (y * in.y) + (z * in.z);
 	}
 
@@ -226,15 +240,15 @@ public:
 		return (x * in[0]) + (y * in[1]) + (z * in[2]);
 	}
 
-	vec3_t cross_product(const vec3_t in) const {
+	vec3_t cross_product(const vec3_t& in) const {
 		return vec3_t(y * in.z - z * in.y, z * in.x - x * in.z, x * in.y - y * in.x);
 	}
 
-	float dist_to(const vec3_t in) const {
+	float dist_to(const vec3_t& in) const {
 		return (*this - in).length();
 	}
 
-	float dist_to_2d(const vec3_t in) const {
+	float dist_to_2d(const vec3_t& in) const {
 		return (*this - in).length_2d();
 	}
 
@@ -247,8 +261,7 @@ public:
 	}
 };
 
-class ALIGN16 vector_aligned : public vec3_t {
-public:
+struct ALIGN16 vector_aligned : public vec3_t {
 	vector_aligned() = default;
 	vector_aligned(float ix, float iy, float iz) { x = ix; y = iy; z = iz; }
 	vector_aligned(const vec3_t& in) { x = in.x; y = in.y; z = in.z; }
@@ -272,8 +285,7 @@ public:
 	float w;
 };
 
-class qangle_t {
-public:
+struct qangle_t {
 	qangle_t() = default;
 	qangle_t(float ix, float iy, float iz) { x = ix; y = iy; z = iz; }
 
@@ -287,19 +299,19 @@ public:
 		return qangle_t(x - in.x, y - in.y, z - in.z);
 	}
 
-	qangle_t operator-(const float in) const {
+	qangle_t operator-(float in) const {
 		return qangle_t(x - in, y - in, z - in);
 	}
 
-	qangle_t operator+(const float in) const {
+	qangle_t operator+(float in) const {
 		return qangle_t(x + in, y + in, z + in);
 	}
 
-	qangle_t operator/(const float in) const {
+	qangle_t operator/(float in) const {
 		return qangle_t(x / in, y / in, z / in);
 	}
 
-	qangle_t operator*(const float in) const {
+	qangle_t operator*(float in) const {
 		return qangle_t(x * in, y * in, z * in);
 	}
 
@@ -319,7 +331,7 @@ public:
 		return *this;
 	}
 
-	qangle_t& operator/=(const float in) {
+	qangle_t& operator/=(float in) {
 		x /= in;
 		y /= in;
 		z /= in;
@@ -327,7 +339,7 @@ public:
 		return *this;
 	}
 
-	qangle_t& operator*=(const float in) {
+	qangle_t& operator*=(float in) {
 		x *= in;
 		y *= in;
 		z *= in;
@@ -418,22 +430,22 @@ struct col_t {
 		return *this;
 	}
 
-	col_t& operator-=(const uint8_t in) {
+	col_t& operator-=(uint8_t in) {
 		set(r() - in, g() - in, b() - in, a() - in);
 		return *this;
 	}
 
-	col_t& operator+=(const uint8_t in) {
+	col_t& operator+=(uint8_t in) {
 		set(r() + in, g() + in, b() + in, a() + in);
 		return *this;
 	}
 
-	col_t& operator/=(const uint8_t in) {
+	col_t& operator/=(uint8_t in) {
 		set(r() / in, g() / in, b() / in, a() / in);
 		return *this;
 	}
 
-	col_t& operator*=(const uint8_t in) {
+	col_t& operator*=(uint8_t in) {
 		set(r() * in, g() * in, b() * in, a() * in );
 		return *this;
 	}
@@ -448,19 +460,19 @@ struct col_t {
 		return *this;
 	}
 
-	col_t operator-(const uint8_t in) const {
+	col_t operator-(uint8_t in) const {
 		return col_t(r() - in, g() - in, b() - in, a() - in);
 	}
 
-	col_t operator+(const uint8_t in) const {
+	col_t operator+(uint8_t in) const {
 		return col_t(r() + in, g() + in, b() + in, a() + in);
 	}
 
-	col_t operator/(const uint8_t in) const {
+	col_t operator/(uint8_t in) const {
 		return col_t(r() / in, g() / in, b() / in, a() / in);
 	}
 
-	col_t operator*(const uint8_t in) const {
+	col_t operator*(uint8_t in) const {
 		return col_t(r() * in, g() * in, b() * in, a() * in);
 	}
 
