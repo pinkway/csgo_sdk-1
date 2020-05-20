@@ -6,7 +6,7 @@
 #include "math/math.h"
 
 #include "obfuscation/fnv1a.h"
-#include "obfuscation/obfuscation.h"
+#include "obfuscation/xor.h"
 
 #include "memory/memory.h"
 

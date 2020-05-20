@@ -13,9 +13,6 @@
     <ClCompile Include="globals.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="utils\obfuscation\fnv1a.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
     <ClCompile Include="utils\render\render.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
@@ -106,7 +103,6 @@
     <ClInclude Include="globals.h" />
     <ClInclude Include="utils\memory\memory.h" />
     <ClInclude Include="utils\obfuscation\fnv1a.h" />
-    <ClInclude Include="utils\obfuscation\obfuscation.h" />
     <ClInclude Include="init.h" />
     <ClInclude Include="utils\math\math.h" />
     <ClInclude Include="utils\math\datatypes.h" />
@@ -213,5 +209,6 @@
     <ClInclude Include="utils\cfg\json\detail\conversions\to_json.hpp" />
     <ClInclude Include="utils\cfg\json\detail\conversions\to_chars.hpp" />
     <ClInclude Include="utils\cfg\json\detail\conversions\from_json.hpp" />
+    <ClInclude Include="utils\obfuscation\xor.h" />
   </ItemGroup>
 </Project>

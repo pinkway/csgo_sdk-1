@@ -183,7 +183,6 @@
     <ClCompile Include="utils\input\input.cpp" />
     <ClCompile Include="utils\math\math.cpp" />
     <ClCompile Include="utils\netvars\netvars.cpp" />
-    <ClCompile Include="utils\obfuscation\fnv1a.cpp" />
     <ClCompile Include="utils\render\render.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -295,7 +294,7 @@
     <ClInclude Include="utils\netvars\datamap.h" />
     <ClInclude Include="utils\netvars\netvars.h" />
     <ClInclude Include="utils\obfuscation\fnv1a.h" />
-    <ClInclude Include="utils\obfuscation\obfuscation.h" />
+    <ClInclude Include="utils\obfuscation\xor.h" />
     <ClInclude Include="utils\render\render.h" />
     <ClInclude Include="utils\utils.h" />
   </ItemGroup>
