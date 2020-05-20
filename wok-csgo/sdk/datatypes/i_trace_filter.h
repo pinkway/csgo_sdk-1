@@ -4,17 +4,17 @@ class c_base_entity;
 class i_handle_entity;
 
 struct csurface_t {
-	const char*		name;
-	short			surface_props;
-	unsigned short	flags;
+	const char*		m_name;
+	short			m_surface_props;
+	unsigned short	m_flags;
 };
 
 struct cplane_t {
-	vec3_t		normal;
-	float		dist;
-	byte		type;
-	byte		signbits;
-	byte		pad[2];
+	vec3_t		m_normal;
+	float		m_dist;
+	char		m_type;
+	char		m_signbits;
+	char		pad0[2];
 };
 
 enum trace_type_t {
