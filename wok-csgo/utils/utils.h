@@ -21,3 +21,5 @@
 #include "netvars/netvars.h"
 
 #include "input/input.h"
+
+#include "cfg/cfg.h"

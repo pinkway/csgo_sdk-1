@@ -21,6 +21,8 @@
 #include <array>
 #include <windowsx.h>
 #include <intrin.h>
+#include <any>
+#include <filesystem>
 
 #include <d3d9.h>
 #include <d3dx9core.h>

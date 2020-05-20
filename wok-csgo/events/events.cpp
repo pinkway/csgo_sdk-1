@@ -14,7 +14,7 @@ namespace events {
 
 	void init() {
 		auto add = [](std::string name, const std::function<void(i_game_event*)>& fn) -> void {
-			m_callbacks.push_back(callback_t(fnv1a_rt(name.c_str()), fn));
+			m_callbacks.emplace_back(fnv1a_rt(name.c_str()), fn);
 
 			interfaces::event_manager->add_listener(&m_listener, name.c_str(), false);
 		};

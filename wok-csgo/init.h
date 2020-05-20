@@ -17,6 +17,8 @@ namespace wok {
 
 		netvars::init();
 
+		cfg::init();
+
 		hooks::init();
 
 		events::init();
