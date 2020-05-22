@@ -43,6 +43,12 @@ namespace hooks {
 		void __fastcall fn(void* ecx, void* edx, uint32_t id, bool force_repaint, bool allow_force);
 	}
 
+	namespace lock_cursor {
+		static const auto index = 67;
+		typedef void(__thiscall* t)(i_surface*);
+		void __fastcall fn(i_surface* ecx, void* edx);
+	}
+
 	namespace draw_model_execute {
 		static const auto index = 21;
 		typedef void(__thiscall* t)(i_model_render*, void*, const draw_model_state_t&, const model_render_info_t&, matrix3x4_t*);
@@ -54,6 +60,7 @@ namespace hooks {
 	extern std::unique_ptr<memory::hook_t> client_mode;
 	extern std::unique_ptr<memory::hook_t> model_render;
 	extern std::unique_ptr<memory::hook_t> panel;
+	extern std::unique_ptr<memory::hook_t> surface;
 	extern std::unique_ptr<memory::hook_t> c_cs_player_;
 	extern std::unique_ptr<memory::hook_t> i_client_renderable_;
 }

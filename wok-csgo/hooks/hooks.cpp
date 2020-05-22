@@ -36,6 +36,12 @@ namespace hooks {
 
 		// // // // // // // // // // // // // // // // // // // // // // //
 
+		surface = std::make_unique<memory::hook_t>(interfaces::surface);
+
+		surface->hook(lock_cursor::index, lock_cursor::fn);
+
+		// // // // // // // // // // // // // // // // // // // // // // //
+
 		static const auto addr = SIG("client_panorama.dll", "55 8B EC 83 E4 F8 83 EC 18 56 57 8B F9 89 7C 24 0C");
 
 		static const auto c_cs_player_vtable = reinterpret_cast<uintptr_t*>(addr + 0x47);
@@ -63,6 +69,7 @@ namespace hooks {
 	std::unique_ptr<memory::hook_t> client_mode = nullptr;
 	std::unique_ptr<memory::hook_t> model_render = nullptr;
 	std::unique_ptr<memory::hook_t> panel = nullptr;
+	std::unique_ptr<memory::hook_t> surface = nullptr;
 	std::unique_ptr<memory::hook_t> c_cs_player_ = nullptr;
 	std::unique_ptr<memory::hook_t> i_client_renderable_ = nullptr;
 }
