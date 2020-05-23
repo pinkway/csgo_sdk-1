@@ -2,7 +2,7 @@
 #include "../../menu/menu.h"
 
 long __stdcall hooks::present::fn(IDirect3DDevice9* device, RECT* src_rect, RECT* dest_rect, HWND dest_wnd_override, RGNDATA* dirty_region) {
-	static const auto original = d3d_device->get_original<t>(index);
+	static const auto original = m_d3d_device->get_original<t>(index);
 
 	IDirect3DVertexDeclaration9* vert_dec;
 	if (device->GetVertexDeclaration(&vert_dec))

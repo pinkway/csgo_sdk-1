@@ -1,7 +1,7 @@
 #include "../hooks.h"
 
 void __fastcall hooks::paint_traverse::fn(void* ecx, void* edx, uint32_t id, bool force_repaint, bool allow_force) {
-	static const auto original = panel->get_original<t>(index);
+	static const auto original = m_panel->get_original<t>(index);
 
 	original(ecx, id, force_repaint, allow_force);
 

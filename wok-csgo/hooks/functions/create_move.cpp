@@ -1,7 +1,7 @@
 #include "../hooks.h"
 
 bool __stdcall hooks::create_move::fn(float input_sample_time, c_user_cmd* cmd) {
-	static const auto original = client_mode->get_original<t>(index);
+	static const auto original = m_client_mode->get_original<t>(index);
 
 	if (!cmd 
 		|| !cmd->m_commandnumber)
@@ -18,6 +18,8 @@ bool __stdcall hooks::create_move::fn(float input_sample_time, c_user_cmd* cmd) 
 	engine_prediction->end(g::local, cmd);
 
 	math::normalize_angles(cmd->m_viewangles);
+
+	g::angles::real = cmd->m_viewangles;
 
 	cmd->m_move.x = std::clamp(cmd->m_move.x, -450.f, 450.f);
 	cmd->m_move.y = std::clamp(cmd->m_move.y, -450.f, 450.f);

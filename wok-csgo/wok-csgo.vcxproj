@@ -161,6 +161,7 @@
     <ClCompile Include="globals.cpp" />
     <ClCompile Include="hooks\functions\create_move.cpp" />
     <ClCompile Include="hooks\functions\draw_model_execute.cpp" />
+    <ClCompile Include="hooks\functions\eye_angles.cpp" />
     <ClCompile Include="hooks\functions\frame_stage_notify.cpp" />
     <ClCompile Include="hooks\functions\lock_cursor.cpp" />
     <ClCompile Include="hooks\functions\override_view.cpp" />

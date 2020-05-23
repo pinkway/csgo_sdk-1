@@ -4,41 +4,41 @@ namespace hooks {
 	void init() {
 		// // // // // // // // // // // // // // // // // // // // // // //
 
-		d3d_device = std::make_unique<memory::hook_t>(interfaces::d3d_device);
+		m_d3d_device = std::make_unique<memory::hook_t>(interfaces::d3d_device);
 
-		d3d_device->hook(reset::index, reset::fn);
-		d3d_device->hook(present::index, present::fn);
-
-		// // // // // // // // // // // // // // // // // // // // // // //
-
-		client_dll = std::make_unique<memory::hook_t>(interfaces::client_dll);
-
-		client_dll->hook(frame_stage_notify::index, frame_stage_notify::fn);
+		m_d3d_device->hook(reset::index, reset::fn);
+		m_d3d_device->hook(present::index, present::fn);
 
 		// // // // // // // // // // // // // // // // // // // // // // //
 
-		client_mode = std::make_unique<memory::hook_t>(interfaces::client_mode);
+		m_client_dll = std::make_unique<memory::hook_t>(interfaces::client_dll);
 
-		client_mode->hook(create_move::index, create_move::fn);
-		client_mode->hook(override_view::index, override_view::fn);
-
-		// // // // // // // // // // // // // // // // // // // // // // //
-
-		model_render = std::make_unique<memory::hook_t>(interfaces::model_render);
-
-		model_render->hook(draw_model_execute::index, draw_model_execute::fn);
+		m_client_dll->hook(frame_stage_notify::index, frame_stage_notify::fn);
 
 		// // // // // // // // // // // // // // // // // // // // // // //
 
-		panel = std::make_unique<memory::hook_t>(interfaces::panel);
+		m_client_mode = std::make_unique<memory::hook_t>(interfaces::client_mode);
 
-		panel->hook(paint_traverse::index, paint_traverse::fn);
+		m_client_mode->hook(create_move::index, create_move::fn);
+		m_client_mode->hook(override_view::index, override_view::fn);
 
 		// // // // // // // // // // // // // // // // // // // // // // //
 
-		surface = std::make_unique<memory::hook_t>(interfaces::surface);
+		m_model_render = std::make_unique<memory::hook_t>(interfaces::model_render);
 
-		surface->hook(lock_cursor::index, lock_cursor::fn);
+		m_model_render->hook(draw_model_execute::index, draw_model_execute::fn);
+
+		// // // // // // // // // // // // // // // // // // // // // // //
+
+		m_panel = std::make_unique<memory::hook_t>(interfaces::panel);
+
+		m_panel->hook(paint_traverse::index, paint_traverse::fn);
+
+		// // // // // // // // // // // // // // // // // // // // // // //
+
+		m_surface = std::make_unique<memory::hook_t>(interfaces::surface);
+
+		m_surface->hook(lock_cursor::index, lock_cursor::fn);
 
 		// // // // // // // // // // // // // // // // // // // // // // //
 
@@ -47,29 +47,31 @@ namespace hooks {
 		static const auto c_cs_player_vtable = reinterpret_cast<uintptr_t*>(addr + 0x47);
 		static const auto i_client_renderable_vtable = reinterpret_cast<uintptr_t*>(addr + 0x4E);
 
-		c_cs_player_ = std::make_unique<memory::hook_t>(c_cs_player_vtable);
+		m_player = std::make_unique<memory::hook_t>(c_cs_player_vtable);
+
+		m_player->hook(eye_angles::index, eye_angles::fn);
 
 		// // // // // // // // // // // // // // // // // // // // // // //
 
-		i_client_renderable_ = std::make_unique<memory::hook_t>(i_client_renderable_vtable);
+		m_renderable = std::make_unique<memory::hook_t>(i_client_renderable_vtable);
 
 		// // // // // // // // // // // // // // // // // // // // // // //
 	}
 
 	void undo() {
-		d3d_device->unhook();
-		client_dll->unhook();
-		client_mode->unhook();
-		c_cs_player_->unhook();
-		i_client_renderable_->unhook();
+		m_d3d_device->unhook();
+		m_client_dll->unhook();
+		m_client_mode->unhook();
+		m_player->unhook();
+		m_renderable->unhook();
 	}
 
-	std::unique_ptr<memory::hook_t> d3d_device = nullptr;
-	std::unique_ptr<memory::hook_t> client_dll = nullptr;
-	std::unique_ptr<memory::hook_t> client_mode = nullptr;
-	std::unique_ptr<memory::hook_t> model_render = nullptr;
-	std::unique_ptr<memory::hook_t> panel = nullptr;
-	std::unique_ptr<memory::hook_t> surface = nullptr;
-	std::unique_ptr<memory::hook_t> c_cs_player_ = nullptr;
-	std::unique_ptr<memory::hook_t> i_client_renderable_ = nullptr;
+	std::unique_ptr<memory::hook_t> m_d3d_device = nullptr;
+	std::unique_ptr<memory::hook_t> m_client_dll = nullptr;
+	std::unique_ptr<memory::hook_t> m_client_mode = nullptr;
+	std::unique_ptr<memory::hook_t> m_model_render = nullptr;
+	std::unique_ptr<memory::hook_t> m_panel = nullptr;
+	std::unique_ptr<memory::hook_t> m_surface = nullptr;
+	std::unique_ptr<memory::hook_t> m_player = nullptr;
+	std::unique_ptr<memory::hook_t> m_renderable = nullptr;
 }

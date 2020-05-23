@@ -55,12 +55,18 @@ namespace hooks {
 		void __fastcall fn(i_model_render* ecx, void* edx, void* context, const draw_model_state_t& state, const model_render_info_t& info, matrix3x4_t* bones);
 	}
 
-	extern std::unique_ptr<memory::hook_t> d3d_device;
-	extern std::unique_ptr<memory::hook_t> client_dll;
-	extern std::unique_ptr<memory::hook_t> client_mode;
-	extern std::unique_ptr<memory::hook_t> model_render;
-	extern std::unique_ptr<memory::hook_t> panel;
-	extern std::unique_ptr<memory::hook_t> surface;
-	extern std::unique_ptr<memory::hook_t> c_cs_player_;
-	extern std::unique_ptr<memory::hook_t> i_client_renderable_;
+	namespace eye_angles {
+		static const auto index = 169;
+		typedef qangle_t*(__thiscall* t)(c_cs_player*);
+		qangle_t* __fastcall fn(c_cs_player* ecx, void* edx);
+	}
+
+	extern std::unique_ptr<memory::hook_t> m_d3d_device;
+	extern std::unique_ptr<memory::hook_t> m_client_dll;
+	extern std::unique_ptr<memory::hook_t> m_client_mode;
+	extern std::unique_ptr<memory::hook_t> m_model_render;
+	extern std::unique_ptr<memory::hook_t> m_panel;
+	extern std::unique_ptr<memory::hook_t> m_surface;
+	extern std::unique_ptr<memory::hook_t> m_player;
+	extern std::unique_ptr<memory::hook_t> m_renderable;
 }
