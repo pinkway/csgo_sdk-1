@@ -36,9 +36,7 @@ class c_base_entity : public i_client_entity {
 public:
 	VFUNC(get_pred_desc_map(), 17, datamap_t*(__thiscall*)(void*))
 
-	NETVAR(did_smoke_effect(), bool, "CSmokeGrenadeProjectile->m_bDidSmokeEffect")
 	NETVAR(get_last_made_noise_time(), float, "CBaseEntity->m_flLastMadeNoiseTime")
-
 	NETVAR(get_rotation(), qangle_t, "CBaseEntity->m_angRotation")
 	NETVAR(get_team(), team_id, "CBaseEntity->m_iTeamNum")
 	NETVAR(get_origin(), vec3_t, "CBaseEntity->m_vecOrigin")
@@ -117,6 +115,18 @@ public:
 
 		return ret;
 	}
+};
+
+class c_inferno : public c_base_entity {
+public:
+	ANETVAR(get_fire_x_delta(), int, 64, "CInferno->m_fireXDelta")
+	ANETVAR(get_fire_y_delta(), int, 64, "CInferno->m_fireYDelta")
+	ANETVAR(get_fire_z_delta(), int, 64, "CInferno->m_fireZDelta")
+};
+
+class c_smoke_grenade_projectile : public c_base_entity {
+public:
+	NETVAR(did_smoke_effect(), bool, "CSmokeGrenadeProjectile->m_bDidSmokeEffect")
 };
 
 class c_base_view_model : public c_base_entity {

@@ -27,6 +27,13 @@ namespace netvars {
 		return *reinterpret_cast<type*>(reinterpret_cast<uintptr_t>(this) + offset); \
 	}
 
+#define ANETVAR(func, type, size, name) \
+	std::array<type, size>& func { \
+		static const auto hash = fnv1a_rt(name); \
+		static const auto offset = netvars::get_offset_by_hash(hash); \
+		return *reinterpret_cast<std::array<type, size>*>(reinterpret_cast<uintptr_t>(this) + offset); \
+	}
+	
 #define PNETVAR(func, type, name) \
 	type* func { \
 		static const auto hash = fnv1a_rt(name); \
