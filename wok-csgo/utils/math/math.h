@@ -13,6 +13,8 @@ namespace math {
 
 	void vector_angles(const vec3_t& forward, qangle_t& angles);
 
+	float clamp(float value, float min, float max);
+
 	float fast_asin(float x);
 
 	float fast_atan2(const float y, const float x);

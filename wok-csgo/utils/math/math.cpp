@@ -36,9 +36,9 @@ namespace math {
 	}
 
 	void normalize_angles(qangle_t& angles) {
-		angles.x = std::clamp(remainderf(angles.x, 360.f), -89.f, 89.f);
-		angles.y = std::clamp(remainderf(angles.y, 360.f), -180.f, 180.f);
-		angles.z = std::clamp(remainderf(angles.z, 360.f), -45.f, 45.f);
+		angles.x = clamp(remainderf(angles.x, 360.f), -89.f, 89.f);
+		angles.y = clamp(remainderf(angles.y, 360.f), -180.f, 180.f);
+		angles.z = clamp(remainderf(angles.z, 360.f), -45.f, 45.f);
 	}
 
 	qangle_t calc_angle(const vec3_t& src, const vec3_t& dst) {
@@ -46,16 +46,13 @@ namespace math {
 		if (delta.empty())
 			return qangle_t();
 
-		auto len = delta.length();
+		auto length = delta.length();
 
-		if (delta.z == 0.f && len == 0.f
+		if (delta.z == 0.f && length == 0.f
 			|| delta.y == 0.f && delta.x == 0.f)
 			return qangle_t();
 
-		qangle_t angles;
-		angles.x = (fast_asin(delta.z / delta.length()) * M_RADPI);
-		angles.y = (fast_atan(delta.y / delta.x) * M_RADPI);
-		angles.z = 0.f;
+		auto angles = qangle_t(fast_asin(delta.z / length) * M_RADPI, fast_atan(delta.y / delta.x) * M_RADPI, 0.f);
 
 		if (delta.x >= 0.f)
 			angles.y += 180.f;
@@ -66,14 +63,12 @@ namespace math {
 	}
 
 	void vector_angles(const vec3_t& forward, qangle_t& angles) {
-		float yaw, pitch;
-		if (forward.z == 0.f && forward.x == 0.f) {
-			yaw = 0;
+		auto yaw = 0.f, pitch = 0.f;
 
-			if (forward.z > 0.f)
-				pitch = 90.f;
-			else
-				pitch = 270.f;
+		if (forward.z == 0.f
+			&& forward.x == 0.f) {
+			yaw = 0.f;
+			pitch = forward.z > 0.f ? 90.f : 270.f;
 		}
 		else {
 			yaw = (fast_atan2(forward.y, forward.x) * 180.f / M_PI);
@@ -81,25 +76,20 @@ namespace math {
 			if (yaw < 0.f)
 				yaw += 360.f;
 
-			auto sqin = forward.x * forward.x + forward.y * forward.y;
-
-			pitch = (fast_atan2(-forward.z, fast_sqrt(sqin)) * 180.f / M_PI);
+			pitch = (fast_atan2(-forward.z, forward.length_2d()) * 180.f / M_PI);
 
 			if (pitch < 0.f)
 				pitch += 360.f;
 		}
 
-		pitch -= floorf(pitch / 360.f + 0.5f) * 360.f;
-		yaw -= floorf(yaw / 360.f + 0.5f) * 360.f;
+		angles.x = clamp(remainderf(pitch, 360.f), -89.f, 89.f);
+		angles.y = clamp(remainderf(yaw, 360.f), -180.f, 180.f);
+		angles.z = 0.f;
+	}
 
-		if (pitch > 89.f)
-			pitch = 89.f;
-		else if (pitch < -89.f)
-			pitch = -89.f;
-
-		angles.x = pitch;
-		angles.y = yaw;
-		angles.z = 0;
+	float clamp(float value, float min, float max) {
+		_mm_store_ss(&value, _mm_min_ss(_mm_max_ss(_mm_set_ss(value), _mm_set_ss(min)), _mm_set_ss(max)));
+		return value;
 	}
 
 	float fast_asin(float x) {
