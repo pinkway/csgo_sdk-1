@@ -6,7 +6,7 @@ public:
 	VFUNC(set_value(const char* value), 14, void(__thiscall*)(void*, const char*), value)
 	VFUNC(set_value(float value), 15, void(__thiscall*)(void*, float), value)
 	VFUNC(set_value(int value), 16, void(__thiscall*)(void*, int), value)
-	VFUNC(set_value(col_t value), 17, void(__thiscall*)(void*, col_t), value)
+	VFUNC(set_value(const col_t& value), 17, void(__thiscall*)(void*, col_t), value)
 
 	char* get_default() { return m_default_value; }
 
