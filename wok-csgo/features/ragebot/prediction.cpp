@@ -29,7 +29,7 @@ void c_prediction::start(c_cs_player* player, c_user_cmd* cmd) {
 	player->get_cur_cmd() = cmd;
 	*reinterpret_cast<c_user_cmd**>(reinterpret_cast<uintptr_t>(player) + 0x3288) = cmd;
 
-	static const auto md5_pseudo_random_fn = reinterpret_cast<uint32_t(__thiscall*)(uint32_t)>(SIG("client_panorama.dll", "55 8B EC 83 E4 F8 83 EC 70 6A"));
+	static const auto md5_pseudo_random_fn = reinterpret_cast<uint32_t(__thiscall*)(uint32_t)>(SIG("client.dll", "55 8B EC 83 E4 F8 83 EC 70 6A"));
 
 	*m_prediction_player = reinterpret_cast<int>(player);
 	*m_prediction_random_seed = md5_pseudo_random_fn(cmd->m_commandnumber) & 0x7FFFFFFF;

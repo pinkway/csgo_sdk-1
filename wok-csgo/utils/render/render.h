@@ -16,7 +16,7 @@ namespace render {
 
 	void begin();
 
-	vec2_t text(const std::string& txt, const vec2_t& pos, float size, const col_t& clr, ImFont* font, int flags = FONT_NONE);
+	vec2_t text(const std::string& txt, vec2_t pos, float size, const col_t& clr, ImFont* font, int flags = FONT_NONE);
 
 	void line(const vec2_t& from, const vec2_t& to, const col_t& clr);
 

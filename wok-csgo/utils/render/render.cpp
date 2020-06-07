@@ -26,29 +26,28 @@ namespace render {
 		ImGuiFreeType::BuildFontAtlas(io.Fonts);
 	}
 
-	vec2_t text(const std::string& txt, const vec2_t& pos, float size, const col_t& clr, ImFont* font, int flags) {
+	vec2_t text(const std::string& txt, vec2_t pos, float size, const col_t& clr, ImFont* font, int flags) {
 		if (!font->ContainerAtlas)
 			return vec2_t();
 
-		auto new_pos = pos;
 		auto text_size = font->CalcTextSizeA(size, FLT_MAX, 0.f, txt.c_str());
 
-		flags & FONT_CENTERED_X ? new_pos.x -= text_size.x * 0.5f : 0;
+		flags & FONT_CENTERED_X ? pos.x -= text_size.x * 0.5f : 0;
 
-		flags & FONT_CENTERED_Y ? new_pos.y -= text_size.y * 0.5f : 0;
+		flags & FONT_CENTERED_Y ? pos.y -= text_size.y * 0.5f : 0;
 
 		m_draw_list->PushTextureID(font->ContainerAtlas->TexID);
 
-		flags & FONT_DROP_SHADOW ? m_draw_list->AddText(font, size, ImVec2(new_pos.x + 1, new_pos.y + 1), col_t(clr.a()).direct(), txt.c_str()) : 0;
+		flags & FONT_DROP_SHADOW ? m_draw_list->AddText(font, size, ImVec2(pos.x + 1, pos.y + 1), col_t(clr.a()).direct(), txt.c_str()) : 0;
 
 		if (flags & FONT_OUTLINE) {
-			m_draw_list->AddText(font, size, ImVec2(new_pos.x + 1, new_pos.y + 1), col_t(clr.a()).direct(), txt.c_str());
-			m_draw_list->AddText(font, size, ImVec2(new_pos.x - 1, new_pos.y - 1), col_t(clr.a()).direct(), txt.c_str());
-			m_draw_list->AddText(font, size, ImVec2(new_pos.x + 1, new_pos.y - 1), col_t(clr.a()).direct(), txt.c_str());
-			m_draw_list->AddText(font, size, ImVec2(new_pos.x - 1, new_pos.y + 1), col_t(clr.a()).direct(), txt.c_str());
+			m_draw_list->AddText(font, size, ImVec2(pos.x + 1, pos.y + 1), col_t(clr.a()).direct(), txt.c_str());
+			m_draw_list->AddText(font, size, ImVec2(pos.x - 1, pos.y - 1), col_t(clr.a()).direct(), txt.c_str());
+			m_draw_list->AddText(font, size, ImVec2(pos.x + 1, pos.y - 1), col_t(clr.a()).direct(), txt.c_str());
+			m_draw_list->AddText(font, size, ImVec2(pos.x - 1, pos.y + 1), col_t(clr.a()).direct(), txt.c_str());
 		}
 
-		m_draw_list->AddText(font, size, ImVec2(new_pos.x, new_pos.y), clr.direct(), txt.c_str());
+		m_draw_list->AddText(font, size, ImVec2(pos.x, pos.y), clr.direct(), txt.c_str());
 
 		m_draw_list->PopTextureID();
 
@@ -92,7 +91,7 @@ namespace render {
 
 	bool world_to_screen(const vec3_t& in, vec2_t& out) {
 		auto screen_transform = [](const vec3_t& in, vec2_t& out) -> bool {
-			static const auto& matrix = *reinterpret_cast<v_matrix*>(*reinterpret_cast<uintptr_t*>(SIG("client_panorama.dll", "0F 10 05 ? ? ? ? 8D 85 ? ? ? ? B9") + 0x3) + 0xB0);
+			static const auto& matrix = *reinterpret_cast<v_matrix*>(*reinterpret_cast<uintptr_t*>(SIG("client.dll", "0F 10 05 ? ? ? ? 8D 85 ? ? ? ? B9") + 0x3) + 0xB0);
 
 			out.x = matrix[0][0] * in.x + matrix[0][1] * in.y + matrix[0][2] * in.z + matrix[0][3];
 			out.y = matrix[1][0] * in.x + matrix[1][1] * in.y + matrix[1][2] * in.z + matrix[1][3];

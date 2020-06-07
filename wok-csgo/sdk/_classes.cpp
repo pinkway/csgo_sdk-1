@@ -39,7 +39,7 @@ int c_base_animating::get_sequence_activity(int sequence) {
 	if (!hdr)
 		return -1;
 
-	static const auto get_sequence_activity_fn = reinterpret_cast<int(__fastcall*)(void*, studiohdr_t*, int)>(SIG("client_panorama.dll", "55 8B EC 53 8B 5D 08 56 8B F1 83"));
+	static const auto get_sequence_activity_fn = reinterpret_cast<int(__fastcall*)(void*, studiohdr_t*, int)>(SIG("client.dll", "55 8B EC 53 8B 5D 08 56 8B F1 83"));
 
 	return get_sequence_activity_fn(this, hdr, sequence);
 }

@@ -42,7 +42,7 @@ namespace hooks {
 
 		// // // // // // // // // // // // // // // // // // // // // // //
 
-		static const auto addr = SIG("client_panorama.dll", "55 8B EC 83 E4 F8 83 EC 18 56 57 8B F9 89 7C 24 0C");
+		static const auto addr = SIG("client.dll", "55 8B EC 83 E4 F8 83 EC 18 56 57 8B F9 89 7C 24 0C");
 
 		static const auto c_cs_player_vtable = reinterpret_cast<uintptr_t*>(addr + 0x47);
 		static const auto i_client_renderable_vtable = reinterpret_cast<uintptr_t*>(addr + 0x4E);

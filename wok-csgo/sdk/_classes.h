@@ -2,13 +2,13 @@
 
 class ik_context {
 public:
-	VFUNC_SIG(init(void* hdr, qangle_t& angles, vec3_t& origin, float time, int framecount, int mask), "client_panorama.dll", "55 8B EC 83 EC ? 8B 45 ? 56 57 8B F9 8D 8F ? ? ? ?",
+	VFUNC_SIG(init(void* hdr, qangle_t& angles, vec3_t& origin, float time, int framecount, int mask), "client.dll", "55 8B EC 83 EC ? 8B 45 ? 56 57 8B F9 8D 8F ? ? ? ?",
 		void(__thiscall*)(void*, void*, qangle_t&, vec3_t&, float, int, int), hdr, angles, origin, time, framecount, mask)
 
-	VFUNC_SIG(update_targets(vec3_t* pos, quaternion* q, matrix3x4_t* bones, uint8_t* computed), "client_panorama.dll", "55 8B EC 83 E4 ? 81 EC ? ? ? ? 33 D2",
+	VFUNC_SIG(update_targets(vec3_t* pos, quaternion* q, matrix3x4_t* bones, uint8_t* computed), "client.dll", "55 8B EC 83 E4 ? 81 EC ? ? ? ? 33 D2",
 		void(__thiscall*)(void*, vec3_t*, void*, matrix3x4_t*, uint8_t*), pos, q, bones, computed)
 
-	VFUNC_SIG(solve_dependencies(vec3_t* pos, quaternion* q, matrix3x4_t* bones, uint8_t* computed), "client_panorama.dll", "55 8B EC 83 E4 ? 81 EC ? ? ? ? 8B 81 ? ? ? ? 56",
+	VFUNC_SIG(solve_dependencies(vec3_t* pos, quaternion* q, matrix3x4_t* bones, uint8_t* computed), "client.dll", "55 8B EC 83 E4 ? 81 EC ? ? ? ? 8B 81 ? ? ? ? 56",
 		void(__thiscall*)(void*, vec3_t*, void*, matrix3x4_t*, uint8_t*), pos, q, bones, computed)
 
 	void clear_targets() {
@@ -29,7 +29,7 @@ public:
 class c_bone_setup {
 public:
 	VFUNC_SIG(accumulate_pose(vec3_t* pos, quaternion* q, int sequence, float cycle, float weight, float time, ik_context* ik),
-		"client_panorama.dll", "55 8B EC 83 E4 F0 B8 ? ? ? ? E8 ? ? ? ? A1", void(__thiscall*)(void*, vec3_t*, quaternion*, int, float, float, float, ik_context*), pos, q, sequence, cycle, weight, time, ik)
+		"client.dll", "55 8B EC 83 E4 F0 B8 ? ? ? ? E8 ? ? ? ? A1", void(__thiscall*)(void*, vec3_t*, quaternion*, int, float, float, float, ik_context*), pos, q, sequence, cycle, weight, time, ik)
 };
 
 class c_base_entity : public i_client_entity {
@@ -56,8 +56,8 @@ public:
 	VFUNC(is_weapon(), 165, bool(__thiscall*)(void*))
 	VFUNC(set_model_index(int id), 75, void(__thiscall*)(void*, int), id)
 
-	VFUNC_SIG(set_abs_angles(qangle_t angles), "client_panorama.dll", "55 8B EC 83 E4 F8 83 EC 64 53 56 57 8B F1", void(__thiscall*)(void*, const qangle_t&), angles)
-	VFUNC_SIG(set_abs_origin(vec3_t origin), "client_panorama.dll", "55 8B EC 83 E4 F8 51 53 56 57 8B F1", void(__thiscall*)(void*, const vec3_t&), origin)
+	VFUNC_SIG(set_abs_angles(qangle_t angles), "client.dll", "55 8B EC 83 E4 F8 83 EC 64 53 56 57 8B F1", void(__thiscall*)(void*, const qangle_t&), angles)
+	VFUNC_SIG(set_abs_origin(vec3_t origin), "client.dll", "55 8B EC 83 E4 F8 51 53 56 57 8B F1", void(__thiscall*)(void*, const vec3_t&), origin)
 
 	OFFSET(get_renderable(), i_client_renderable*, 0x4)
 	OFFSET(get_networkable(), i_client_networkable*, 0x8)
@@ -88,7 +88,7 @@ public:
 	DATAMAP(get_abs_rotation(), qangle_t, "m_angAbsRotation")
 
 	void invalidate_bone_cache() {
-		static const auto addr = SIG("client_panorama.dll", "80 3D ? ? ? ? ? 74 16 A1 ? ? ? ? 48 C7 81");
+		static const auto addr = SIG("client.dll", "80 3D ? ? ? ? ? 74 16 A1 ? ? ? ? 48 C7 81");
 		auto model_bone_counter = **reinterpret_cast<unsigned long**>(addr + 0xA);
 		
 		get_last_setup_bones_time() = -FLT_MAX;
@@ -102,7 +102,7 @@ public:
 			return false;
 
 		auto backup_take_damage = get_take_damage();
-		static const auto is_breakable_fn = reinterpret_cast<bool(__thiscall*)(void*)>(SIG("client_panorama.dll", "55 8B EC 51 56 8B F1 85 F6 74 68"));
+		static const auto is_breakable_fn = reinterpret_cast<bool(__thiscall*)(void*)>(SIG("client.dll", "55 8B EC 51 56 8B F1 85 F6 74 68"));
 
 		auto class_id = get_client_class()->m_class_id;
 		auto is_breakable_class = class_id == CBaseDoor
@@ -220,14 +220,14 @@ public:
 	VFUNC(post_think(), 318, void(__thiscall*)(void*))
 	VFUNC(select_item(const char* name, int sub_type), 329, void(__thiscall*)(void*, const char*, int), name, sub_type)
 
-	VFUNC_SIG(unknown_think(int unk), "client_panorama.dll", "55 8B EC 56 57 8B F9 8B B7 ? ? ? ? 8B C6 C1 E8 16 24 01 74 18", void(__thiscall*)(void*, int), unk)
-	VFUNC_SIG(using_standard_weapons_in_vehicle(), "client_panorama.dll", "56 57 8B F9 8B 97 ? ? ? ? 83 FA FF 74 41", bool(__thiscall*)(void*))
-	VFUNC_SIG(physics_run_think(int index), "client_panorama.dll", "55 8B EC 83 EC 10 53 56 57 8B F9 8B 87", bool(__thiscall*)(void*, int), index)
+	VFUNC_SIG(unknown_think(int unk), "client.dll", "55 8B EC 56 57 8B F9 8B B7 ? ? ? ? 8B C6 C1 E8 16 24 01 74 18", void(__thiscall*)(void*, int), unk)
+	VFUNC_SIG(using_standard_weapons_in_vehicle(), "client.dll", "56 57 8B F9 8B 97 ? ? ? ? 83 FA FF 74 41", bool(__thiscall*)(void*))
+	VFUNC_SIG(physics_run_think(int index), "client.dll", "55 8B EC 83 EC 10 53 56 57 8B F9 8B 87", bool(__thiscall*)(void*, int), index)
 
 	bool is_alive() { return get_life_state() == LIFE_ALIVE; }
 
 	vec3_t get_bone_position(int id) {
-		static const auto get_bone_position_fn = reinterpret_cast<void(__thiscall*)(void*, int, vec3_t*, vec3_t*)>(SIG("client_panorama.dll", "55 8B EC 83 E4 F8 83 EC 30 8D"));
+		static const auto get_bone_position_fn = reinterpret_cast<void(__thiscall*)(void*, int, vec3_t*, vec3_t*)>(SIG("client.dll", "55 8B EC 83 E4 F8 83 EC 30 8D"));
 		
 		vec3_t position, rotation;
 		get_bone_position_fn(this, id, &position, &rotation);
@@ -259,7 +259,7 @@ public:
 	void set_pose_params(pose_params params) { std::copy(std::begin(params), std::end(params), std::begin(get_pose_params())); }
 
 	void set_pose_parameter(int param, float value) {
-		static const auto studio_set_pose_parameter_fn = reinterpret_cast<void*>(SIG("client_panorama.dll", "55 8B EC 83 E4 F8 83 EC 08 F3 0F 11 54 24 ? 85 D2"));
+		static const auto studio_set_pose_parameter_fn = reinterpret_cast<void*>(SIG("client.dll", "55 8B EC 83 E4 F8 83 EC 08 F3 0F 11 54 24 ? 85 D2"));
 
 		auto result = 0.0f;
 		auto hdr = get_model_hdr();
@@ -305,7 +305,7 @@ public:
 	VFUNC(update_client_side_animation(), 223, void(__thiscall*)(void*))
 
 	void invalidate_physics_recursive(int flags) {
-		static const auto invalidate_physics_recursive_fn = reinterpret_cast<void(__thiscall*)(void*, int)>(SIG("client_panorama.dll", "55 8B EC 83 E4 F8 83 EC 0C 53 8B 5D 08 8B C3 56"));
+		static const auto invalidate_physics_recursive_fn = reinterpret_cast<void(__thiscall*)(void*, int)>(SIG("client.dll", "55 8B EC 83 E4 F8 83 EC 0C 53 8B 5D 08 8B C3 56"));
 		invalidate_physics_recursive_fn(this, flags);
 	}
 
