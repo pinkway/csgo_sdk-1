@@ -89,6 +89,26 @@ namespace render {
 		}
 	}
 
+	void multi_rect(const std::vector<vec2_t> points, const col_t& clr) {
+		m_draw_list->_Path.reserve(m_draw_list->_Path.Size + points.size() + 1);
+
+		for (auto& point : points)
+			m_draw_list->_Path.push_back(ImVec2(point.x, point.y));
+
+		m_draw_list->AddPolyline(m_draw_list->_Path.Data, m_draw_list->_Path.Size, clr.direct(), true, 1.f);
+		m_draw_list->_Path.Size = 0;
+	}
+
+	void multi_rect_filled(const std::vector<vec2_t> points, const col_t& clr) {
+		m_draw_list->_Path.reserve(m_draw_list->_Path.Size + points.size() + 1);
+
+		for (auto& point : points)
+			m_draw_list->_Path.push_back(ImVec2(point.x, point.y));
+
+		m_draw_list->AddConvexPolyFilled(m_draw_list->_Path.Data, m_draw_list->_Path.Size, clr.direct());
+		m_draw_list->_Path.Size = 0;
+	}
+
 	bool world_to_screen(const vec3_t& in, vec2_t& out) {
 		auto screen_transform = [](const vec3_t& in, vec2_t& out) -> bool {
 			static const auto& matrix = *reinterpret_cast<v_matrix*>(*SIG("client.dll", "0F 10 05 ? ? ? ? 8D 85 ? ? ? ? B9").self_offset(0x3).cast<uintptr_t*>() + 0xB0);
@@ -99,8 +119,8 @@ namespace render {
 			auto w = matrix[3][0] * in.x + matrix[3][1] * in.y + matrix[3][2] * in.z + matrix[3][3];
 
 			if (w < 0.001f) {
-				out.x *= 100000;
-				out.y *= 100000;
+				out.x *= 100000.f;
+				out.y *= 100000.f;
 				return true;
 			}
 

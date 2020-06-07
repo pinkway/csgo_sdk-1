@@ -24,6 +24,10 @@ namespace render {
 
 	void rect_filled(const vec2_t& pos, const vec2_t& size, const col_t& clr);
 
+	void multi_rect(const std::vector<vec2_t> points, const col_t& clr);
+
+	void multi_rect_filled(const std::vector<vec2_t> points, const col_t& clr);
+	
 	bool world_to_screen(const vec3_t& in, vec2_t& out);
 
 	extern vec2_t m_screen_size;
