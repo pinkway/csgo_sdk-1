@@ -88,7 +88,7 @@ public:
 	DATAMAP(get_abs_rotation(), qangle_t, "m_angAbsRotation")
 
 	void invalidate_bone_cache() {
-		static const auto addr = SIG("client.dll", "80 3D ? ? ? ? ? 74 16 A1 ? ? ? ? 48 C7 81");
+		static const auto addr = SIG("client.dll", "80 3D ? ? ? ? ? 74 16 A1 ? ? ? ? 48 C7 81").get();
 		auto model_bone_counter = **reinterpret_cast<unsigned long**>(addr + 0xA);
 		
 		get_last_setup_bones_time() = -FLT_MAX;
@@ -102,7 +102,8 @@ public:
 			return false;
 
 		auto backup_take_damage = get_take_damage();
-		static const auto is_breakable_fn = reinterpret_cast<bool(__thiscall*)(void*)>(SIG("client.dll", "55 8B EC 51 56 8B F1 85 F6 74 68"));
+
+		static const auto is_breakable_fn = SIG("client.dll", "55 8B EC 51 56 8B F1 85 F6 74 68").cast<bool(__thiscall*)(void*)>();
 
 		auto class_id = get_client_class()->m_class_id;
 		auto is_breakable_class = class_id == CBaseDoor
@@ -227,7 +228,7 @@ public:
 	bool is_alive() { return get_life_state() == LIFE_ALIVE; }
 
 	vec3_t get_bone_position(int id) {
-		static const auto get_bone_position_fn = reinterpret_cast<void(__thiscall*)(void*, int, vec3_t*, vec3_t*)>(SIG("client.dll", "55 8B EC 83 E4 F8 83 EC 30 8D"));
+		static const auto get_bone_position_fn = SIG("client.dll", "55 8B EC 83 E4 F8 83 EC 30 8D").cast<void(__thiscall*)(void*, int, vec3_t*, vec3_t*)>();
 		
 		vec3_t position, rotation;
 		get_bone_position_fn(this, id, &position, &rotation);
@@ -259,7 +260,7 @@ public:
 	void set_pose_params(pose_params params) { std::copy(std::begin(params), std::end(params), std::begin(get_pose_params())); }
 
 	void set_pose_parameter(int param, float value) {
-		static const auto studio_set_pose_parameter_fn = reinterpret_cast<void*>(SIG("client.dll", "55 8B EC 83 E4 F8 83 EC 08 F3 0F 11 54 24 ? 85 D2"));
+		static const auto studio_set_pose_parameter_fn = SIG("client.dll", "55 8B EC 83 E4 F8 83 EC 08 F3 0F 11 54 24 ? 85 D2").get();
 
 		auto result = 0.0f;
 		auto hdr = get_model_hdr();
@@ -304,10 +305,7 @@ public:
 	VFUNC(calculate_ik_locks(float time), 192, void(__thiscall*)(void*, float), time)
 	VFUNC(update_client_side_animation(), 223, void(__thiscall*)(void*))
 
-	void invalidate_physics_recursive(int flags) {
-		static const auto invalidate_physics_recursive_fn = reinterpret_cast<void(__thiscall*)(void*, int)>(SIG("client.dll", "55 8B EC 83 E4 F8 83 EC 0C 53 8B 5D 08 8B C3 56"));
-		invalidate_physics_recursive_fn(this, flags);
-	}
+	VFUNC_SIG(invalidate_physics_recursive(int flags), "client.dll", "55 8B EC 83 E4 F8 83 EC 0C 53 8B 5D 08 8B C3 56", void(__thiscall*)(void*, int), flags)
 
 	player_info_t get_info();
 };

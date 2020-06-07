@@ -50,24 +50,11 @@ class c_base_combat_weapon;
 
 class c_anim_state {
 public:
-	void reset() {
-		static const auto reset_fn = reinterpret_cast<void(__thiscall*)(void*)>(SIG("client.dll", "56 6A 01 68 ? ? ? ? 8B F1"));
-		if (!reset_fn)
-			return;
-
-		reset_fn(this);
-	}
-
-	void create(c_base_entity* entity) {
-		static const auto create_fn = reinterpret_cast<void(__thiscall*)(void*, c_base_entity*)>(SIG("client.dll", "55 8B EC 56 8B F1 B9 ? ? ? ? C7 46"));
-		if (!create_fn)
-			return;
-
-		create_fn(this, entity);
-	}
+	VFUNC_SIG(reset(), "client.dll", "56 6A 01 68 ? ? ? ? 8B F1", void(__thiscall*)(void*))
+	VFUNC_SIG(create(c_base_entity* entity), "client.dll", "55 8B EC 56 8B F1 B9 ? ? ? ? C7 46", void(__thiscall*)(void*, c_base_entity*), entity)
 
 	void update(qangle_t angle) {
-		static const auto update_fn = SIG("client.dll", "55 8B EC 83 E4 F8 83 EC 18 56 57 8B F9 F3 0F 11 54 24");
+		static const auto update_fn = SIG("client.dll", "55 8B EC 83 E4 F8 83 EC 18 56 57 8B F9 F3 0F 11 54 24").get();
 		if (!update_fn)
 			return;
 

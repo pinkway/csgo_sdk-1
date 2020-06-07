@@ -1,7 +1,7 @@
 #include "../hooks.h"
 
 bool __stdcall hooks::create_move::fn(float input_sample_time, c_user_cmd* cmd) {
-	static const auto original = m_client_mode->get_original<t>(index);
+	static const auto original = m_client_mode->get_original<T>(index);
 
 	if (!cmd 
 		|| !cmd->m_commandnumber)

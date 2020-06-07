@@ -7,7 +7,7 @@ namespace wok {
 		while (!memory::get_module_handle(fnv1a("serverbrowser.dll")))
 			std::this_thread::sleep_for(std::chrono::milliseconds(200));
 
-		g::local = *reinterpret_cast<c_local_player*>(SIG("client.dll", "8B 0D ? ? ? ? 83 FF FF 74 07") + 0x2);
+		g::local = *SIG("client.dll", "8B 0D ? ? ? ? 83 FF FF 74 07").self_offset(0x2).cast<c_local_player*>();
 
 		input::init();
 

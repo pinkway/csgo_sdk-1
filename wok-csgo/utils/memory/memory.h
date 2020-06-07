@@ -26,8 +26,18 @@ namespace memory {
 
 	struct hook_t {
 		hook_t() = default;
-		hook_t(uintptr_t ptr) : m_vtable(reinterpret_cast<uintptr_t**>(ptr)) { init(); };
-		hook_t(void* ptr) : m_vtable(reinterpret_cast<uintptr_t**>(ptr)) { init(); };
+
+		hook_t(uintptr_t ptr) {
+			m_vtable = reinterpret_cast<uintptr_t**>(ptr);
+
+			init();
+		};
+
+		hook_t(void* ptr) {
+			m_vtable = reinterpret_cast<uintptr_t**>(ptr);
+
+			init();
+		};
 
 		bool init() {
 			if (!m_vtable)
@@ -35,9 +45,9 @@ namespace memory {
 
 			auto protect = protect_t(m_vtable, sizeof(uintptr_t), PAGE_READWRITE);
 
-			m_orig = *m_vtable;
+			m_original = *m_vtable;
 
-			m_table_length = get_vtable_length(m_orig);
+			m_table_length = get_vtable_length(m_original);
 			if (!m_table_length)
 				return false;
 
@@ -45,9 +55,9 @@ namespace memory {
 
 			std::memset(m_replace.get(), 0, m_table_length * sizeof(uintptr_t) + sizeof(uintptr_t));
 
-			std::memcpy(&m_replace[1], m_orig, m_table_length * sizeof(uintptr_t));
+			std::memcpy(&m_replace[1], m_original, m_table_length * sizeof(uintptr_t));
 
-			std::memcpy(m_replace.get(), &m_orig[-1], sizeof(uintptr_t));
+			std::memcpy(m_replace.get(), &m_original[-1], sizeof(uintptr_t));
 
 			*m_vtable = &m_replace[1];
 
@@ -55,8 +65,8 @@ namespace memory {
 		}
 
 		template<typename T>
-		void hook(const uint32_t index, T replace_function) {
-			if (index < 0 
+		void hook(uint32_t index, T replace_function) {
+			if (index < 0
 				|| index > m_table_length)
 				return;
 
@@ -64,39 +74,72 @@ namespace memory {
 		}
 
 		template<typename T>
-		T get_original(const uint32_t index) {
-			if (index < 0 
+		T get_original(uint32_t index) {
+			if (index < 0
 				|| index > m_table_length)
 				return nullptr;
 
-			return reinterpret_cast<T>(m_orig[index]);
+			return reinterpret_cast<T>(m_original[index]);
 		}
 
-		void unhook(const uint32_t index) {
+		void unhook(uint32_t index) {
 			if (index < 0
 				|| index > m_table_length)
 				return;
 
-			m_replace[index + 1] = m_orig[index];
+			m_replace[index + 1] = m_original[index];
 		}
 
 		void unhook() {
-			if (!m_orig)
+			if (!m_original)
 				return;
 
 			auto protect = protect_t(m_vtable, sizeof(uintptr_t), PAGE_READWRITE);
 
-			*m_vtable = m_orig;
-			m_orig = nullptr;
+			*m_vtable = m_original;
+			m_original = nullptr;
 		}
 
-		uintptr_t* m_orig = nullptr;
 		uint32_t m_table_length = 0;
 		uintptr_t** m_vtable = nullptr;
+		uintptr_t* m_original = nullptr;
 		std::unique_ptr<uintptr_t[]> m_replace = nullptr;
 	};
 
-	__forceinline uintptr_t get_module_handle(const uint32_t module, const uint32_t process = 0) {
+	struct address_t {
+		address_t() = default;
+		address_t(uint8_t* ptr) { m_ptr = ptr; };
+		address_t(uintptr_t* ptr) { m_ptr = reinterpret_cast<uint8_t*>(ptr); };
+
+		inline operator uint8_t*() { return m_ptr; }
+
+		inline operator void*() { return reinterpret_cast<void*>(m_ptr); }
+
+		inline uint8_t* get() { return m_ptr; }
+
+		template<typename T>
+		inline T cast() { return reinterpret_cast<T>(m_ptr); }
+
+		inline uint8_t* offset(int offset) const { return m_ptr + offset; };
+
+		inline address_t self_offset(int offset) {
+			m_ptr += offset;
+
+			return *this;
+		}
+
+		inline uint8_t* jmp(int offset = 0x1) const { return m_ptr + offset + sizeof(uintptr_t) + *reinterpret_cast<int*>(m_ptr + offset); }
+
+		inline address_t self_jmp(int offset = 0x1) {
+			m_ptr = jmp(offset);
+
+			return *this;
+		}
+
+		uint8_t* m_ptr = nullptr;
+	};
+
+	__forceinline uintptr_t get_module_handle(uint32_t module, uint32_t process = 0) {
 		MODULEENTRY32 entry;
 		entry.dwSize = sizeof(MODULEENTRY32);
 
@@ -115,12 +158,14 @@ namespace memory {
 		}
 
 		CloseHandle(snapshot);
+
 		return 0;
 	}
 
-	__forceinline uint8_t* find_sig(const uint32_t offset, const char* sig, const uint32_t range = 0) {
+	__forceinline address_t find_sig(uint32_t offset, const char* sig, uint32_t range = 0) {
 		static auto sig_to_bytes = [](const char* pattern) -> std::vector<int> {
 			std::vector<int> bytes;
+
 			const auto start = const_cast<char*>(pattern);
 			const auto end = const_cast<char*>(pattern) + strlen(pattern);
 
@@ -133,8 +178,9 @@ namespace memory {
 
 					bytes.push_back(-1);
 				}
-				else
+				else {
 					bytes.push_back(static_cast<int>(strtoul(current, &current, 0x10)));
+				}
 			}
 
 			return bytes;
@@ -146,26 +192,27 @@ namespace memory {
 
 		const auto scan_bytes = reinterpret_cast<uint8_t*>(offset);
 
-		for (auto i = 0ul; i < range - size; i++) {
+		for (int i = 0; i < range - size; i++) {
 			auto found = true;
 
-			for (auto j = 0ul; j < size; j++)
+			for (int j = 0; j < size; j++) {
 				if (scan_bytes[i + j] != data[j] && data[j] != -1) {
 					found = false;
 					break;
 				}
+			}
 
 			if (found)
 				return &scan_bytes[i];
 		}
 
-		return nullptr;
+		return address_t();
 	}
 
-	__forceinline uint8_t* find_module_sig(const uint32_t hash, const char* sig) {
+	__forceinline address_t find_module_sig(uint32_t hash, const char* sig) {
 		auto module = get_module_handle(hash);
 		if (!module)
-			return nullptr;
+			return address_t();
 
 		const auto dos_header = PIMAGE_DOS_HEADER(module);
 		const auto nt_headers = PIMAGE_NT_HEADERS(reinterpret_cast<uint8_t*>(module) + dos_header->e_lfanew);
@@ -192,10 +239,10 @@ namespace memory {
 
 #define SIG(module_name, sig) memory::find_module_sig(fnv1a(module_name), _ot(sig))
 
-#define _INTERFACE(val, type, module_name, interface_name) val = memory::capture_interface<type*>(_(module_name), _(interface_name));
-#define _INTERFACE_OFFSET(val, type, ptr, index, add) val = **reinterpret_cast<type***>((*reinterpret_cast<uintptr_t**>(ptr))[index] + add);
-#define _INTERFACE_SIG(val, type, module_name, sig, add) { static const auto addr = SIG(module_name, sig); val = *reinterpret_cast<type**>(addr + add); }
-#define _PINTERFACE_SIG(val, type, module_name, sig, add) { static const auto addr = SIG(module_name, sig); val = **reinterpret_cast<type***>(addr + add); }
+#define _INTERFACE(value, type, module_name, interface_name) value = memory::capture_interface<type*>(_(module_name), _(interface_name));
+#define _INTERFACE_OFFSET(value, type, ptr, index, add) value = **reinterpret_cast<type***>((*reinterpret_cast<uintptr_t**>(ptr))[index] + add);
+#define _INTERFACE_SIG(value, type, module_name, sig, add) { value = *SIG(module_name, sig).self_offset(add).cast<type**>(); }
+#define _PINTERFACE_SIG(value, type, module_name, sig, add) { value = **SIG(module_name, sig).self_offset(add).cast<type***>(); }
 
 #define VFUNC(func, index, type, ...) auto func { return memory::get_vfunc<type>(this, index)(this, __VA_ARGS__); };
-#define VFUNC_SIG(func, module_name, sig, type, ...) auto func { static const auto addr = SIG(module_name, sig); return reinterpret_cast<type>(addr)(this, __VA_ARGS__); };
+#define VFUNC_SIG(func, module_name, sig, type, ...) auto func { static const auto fn = SIG(module_name, sig).cast<type>(); return fn(this, __VA_ARGS__); };

@@ -91,7 +91,7 @@ namespace render {
 
 	bool world_to_screen(const vec3_t& in, vec2_t& out) {
 		auto screen_transform = [](const vec3_t& in, vec2_t& out) -> bool {
-			static const auto& matrix = *reinterpret_cast<v_matrix*>(*reinterpret_cast<uintptr_t*>(SIG("client.dll", "0F 10 05 ? ? ? ? 8D 85 ? ? ? ? B9") + 0x3) + 0xB0);
+			static const auto& matrix = *reinterpret_cast<v_matrix*>(*SIG("client.dll", "0F 10 05 ? ? ? ? 8D 85 ? ? ? ? B9").self_offset(0x3).cast<uintptr_t*>() + 0xB0);
 
 			out.x = matrix[0][0] * in.x + matrix[0][1] * in.y + matrix[0][2] * in.z + matrix[0][3];
 			out.y = matrix[1][0] * in.x + matrix[1][1] * in.y + matrix[1][2] * in.z + matrix[1][3];

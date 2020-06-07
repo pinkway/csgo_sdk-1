@@ -65,3 +65,17 @@ public:
 	bool			m_initialized;
 	bool			m_in_main_list;
 };
+
+struct recv_prop_hook_t {
+	recv_prop_hook_t(recv_prop* prop) { m_prop = prop; }
+
+	void hook(recv_var_proxy_fn proxy_fn) {
+		m_original = m_prop->m_proxy_fn;
+		m_prop->m_proxy_fn = proxy_fn;
+	}
+
+	recv_var_proxy_fn get_original() { return m_original; }
+
+	recv_prop* m_prop;
+	recv_var_proxy_fn m_original;
+};

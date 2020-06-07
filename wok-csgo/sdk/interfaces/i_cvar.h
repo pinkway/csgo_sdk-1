@@ -26,7 +26,7 @@ public:
 
 	template <typename... args>
 	void console_color_printf(bool developer, const col_t& clr, const char* format, args... arg) {
-		static const auto print_developer_fn = reinterpret_cast<void(__stdcall*)(const col_t&, char const*)>(SIG("engine.dll", "55 8B EC 81 EC 10 08 00 00 80 3D"));
+		static const auto print_developer_fn = SIG("engine.dll", "55 8B EC 81 EC 10 08 00 00 80 3D").cast<void(__stdcall*)(const col_t&, char const*)>();
 
 		if (developer) {
 			char buf[100];
