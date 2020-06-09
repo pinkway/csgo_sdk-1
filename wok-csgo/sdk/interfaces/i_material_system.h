@@ -4,7 +4,7 @@ typedef unsigned short material_handle_t;
 
 class i_material_system {
 public:
-	VFUNC(create_material(const char* name, key_values* values), 83, i_material*(__thiscall*)(void*, const char*, key_values*), name, values)
+	VFUNC(create_material(const char* name, c_key_values* key_values), 83, i_material*(__thiscall*)(void*, const char*, c_key_values*), name, key_values)
 	VFUNC(find_material(const char* name, const char* group, bool complain = true, const char* complain_prefix = nullptr), 84,
 		i_material*(__thiscall*)(void*, const char*, const char*, bool, const char*), name, group, complain, complain_prefix)
 	VFUNC(first_material(), 86, material_handle_t(__thiscall*)(void*))

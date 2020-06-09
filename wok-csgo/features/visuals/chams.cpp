@@ -2,12 +2,12 @@
 #include "../../hooks/hooks.h"
 
 i_material* c_chams::create_material(const std::string& material_name, const std::string& shader_type, const std::string& material_data) {
-	auto k_v = static_cast<key_values*>(interfaces::mem_alloc->alloc(36u));
+	auto key_values = static_cast<c_key_values*>(interfaces::mem_alloc->alloc(36u));
 
-	k_v->init(shader_type.c_str());
-	k_v->load_from_buffer(material_name.c_str(), material_data.c_str());
+	key_values->init(shader_type.c_str());
+	key_values->load_from_buffer(material_name.c_str(), material_data.c_str());
 
-	return interfaces::material_system->create_material(material_name.c_str(), k_v);
+	return interfaces::material_system->create_material(material_name.c_str(), key_values);
 }
 
 bool c_chams::override_material(int type, const col_t& clr, bool ignorez) {

@@ -24,6 +24,7 @@ struct mstudiobbox_t {
 		vec3_t min, max;
 		math::vector_transform(m_obb_min, bones[m_bone], min);
 		math::vector_transform(m_obb_max, bones[m_bone], max);
+		
 		return (min + max) * 0.5f;
 	}
 };
@@ -78,6 +79,10 @@ struct mstudiobone_t {
 	mstudiobone_t() {}
 private:
 	mstudiobone_t(const mstudiobone_t& vOther);
+};
+
+struct mstudioseqdesc_t {
+	char pad0[212];
 };
 
 class studiohdr_t {

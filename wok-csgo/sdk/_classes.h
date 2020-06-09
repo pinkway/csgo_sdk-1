@@ -1,9 +1,13 @@
 #pragma once
 
-class ik_context {
+class c_ik_context {
 public:
 	VFUNC_SIG(init(void* hdr, qangle_t& angles, vec3_t& origin, float time, int framecount, int mask), "client.dll", "55 8B EC 83 EC ? 8B 45 ? 56 57 8B F9 8D 8F ? ? ? ?",
 		void(__thiscall*)(void*, void*, qangle_t&, vec3_t&, float, int, int), hdr, angles, origin, time, framecount, mask)
+
+	VFUNC_SIG(add_dependencies(mstudioseqdesc_t& seqdesc, int sequence, float cycle, const float pose_params*, float weight), "client.dll",
+		"55 8B EC 81 EC ? ? ? ? 53 56 57 8B F9 0F 28 CB F3 0F 11 4D ? 8B 8F ? ? ? ? 8B 01",
+		void(__thiscall*)(void*, mstudioseqdesc_t&, int, float, const float*, float), seqdesc, sequence, cycle, pose_params, weight)
 
 	VFUNC_SIG(update_targets(vec3_t* pos, quaternion* q, matrix3x4_t* bones, uint8_t* computed), "client.dll", "55 8B EC 83 E4 ? 81 EC ? ? ? ? 33 D2",
 		void(__thiscall*)(void*, vec3_t*, void*, matrix3x4_t*, uint8_t*), pos, q, bones, computed)
@@ -28,8 +32,8 @@ public:
 
 class c_bone_setup {
 public:
-	VFUNC_SIG(accumulate_pose(vec3_t* pos, quaternion* q, int sequence, float cycle, float weight, float time, ik_context* ik),
-		"client.dll", "55 8B EC 83 E4 F0 B8 ? ? ? ? E8 ? ? ? ? A1", void(__thiscall*)(void*, vec3_t*, quaternion*, int, float, float, float, ik_context*), pos, q, sequence, cycle, weight, time, ik)
+	VFUNC_SIG(accumulate_pose(vec3_t* pos, quaternion* q, int sequence, float cycle, float weight, float time, c_ik_context* ik),
+		"client.dll", "55 8B EC 83 E4 F0 B8 ? ? ? ? E8 ? ? ? ? A1", void(__thiscall*)(void*, vec3_t*, quaternion*, int, float, float, float, c_ik_context*), pos, q, sequence, cycle, weight, time, ik)
 };
 
 class c_base_entity : public i_client_entity {
@@ -62,7 +66,7 @@ public:
 	OFFSET(get_renderable(), i_client_renderable*, 0x4)
 	OFFSET(get_networkable(), i_client_networkable*, 0x8)
 
-	OFFSET(get_model_hdr(), c_studio_hdr*, 0x294C)
+	OFFSET(get_studio_hdr(), c_studio_hdr*, 0x294C)
 	POFFSET(get_bone_cache(), c_bone_cache, 0x290C + 0x4)
 	OFFSET(get_occlusion_mask(), int, 0xA24)
 	OFFSET(get_occlusion_framecount(), int, 0xA30)
@@ -77,7 +81,7 @@ public:
 	OFFSET(get_writable_bones(), int, 0x26AC + 0x4)
 	OFFSET(get_most_recent_model_bone_counter(), unsigned long, 0x268C + 0x4)
 	OFFSET(get_last_setup_bones_time(), float, 0x2920 + 0x4)
-	OFFSET(get_ik_context(), ik_context*, 0x266C + 0x4)
+	OFFSET(get_ik_context(), c_ik_context*, 0x266C + 0x4)
 	OFFSET(get_setup_bones_pos(), vec3_t, 0xA68 + 0x4)
 	OFFSET(get_setup_bones_quaternion(), quaternion, 0x166C + 0x4)
 	OFFSET(get_take_damage(), int, 0x280)
@@ -263,7 +267,7 @@ public:
 		static const auto studio_set_pose_parameter_fn = SIG("client.dll", "55 8B EC 83 E4 F8 83 EC 08 F3 0F 11 54 24 ? 85 D2").get();
 
 		auto result = 0.0f;
-		auto hdr = get_model_hdr();
+		auto hdr = get_studio_hdr();
 
 		__asm {
 			pushad
