@@ -253,7 +253,7 @@ public:
 
 class c_base_animating : public c_base_player {
 public:
-	PPOFFSET(get_anim_layers(), anim_layers, 0x2990)
+	PPOFFSET(get_anim_layers(), anim_layers, 0x2980)
 	NETVAR(get_pose_params(), pose_params, "CBaseAnimating->m_flPoseParameter")
 	NETPROP(get_client_side_animation_prop(), "CBaseAnimating->m_bClientSideAnimation")
 	NETVAR(get_client_side_animation(), bool, "CBaseAnimating->m_bClientSideAnimation")
