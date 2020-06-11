@@ -197,7 +197,7 @@ public:
 
 	DATAMAP(get_collision_state(), int, "m_vphysicsCollisionState")
 
-	OFFSET(get_spawn_time(), float, 0xA360)
+	OFFSET(get_spawn_time(), float, 0xA370)
 
 	NETVAR(get_fall_velocity(), float, "CBasePlayer->m_flFallVelocity")
 	NETVAR(get_observer_mode(), observer_mode, "CBasePlayer->m_iObserverMode")
@@ -301,7 +301,7 @@ public:
 	NETVAR(get_lby(), float, "CCSPlayer->m_flLowerBodyYawTarget")
 	NETVAR_OFFSET(get_flash_alpha(), float, "CCSPlayer->m_flFlashMaxAlpha", -0x8)
 
-	OFFSET(get_anim_state(), c_anim_state*, 0x3900)
+	OFFSET(get_anim_state(), c_anim_state*, 0x3914)
 
 	VFUNC(standard_blending_rules(studiohdr_t* hdr, vec3_t* vec, quaternion* q, const float time, const int mask), 205, void(__thiscall*)(void*, studiohdr_t*, vec3_t*, quaternion*, float, int), hdr, vec, q, time, mask)
 	VFUNC(build_transformations(studiohdr_t* hdr, vec3_t* vec, quaternion* q, matrix3x4_t& transform, const int mask, uint8_t* computed), 189, void(__thiscall*)(void*, studiohdr_t*, vec3_t*, quaternion*, matrix3x4_t const&, int, uint8_t*), hdr, vec, q, transform, mask, computed)
