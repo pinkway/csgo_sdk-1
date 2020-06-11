@@ -2,12 +2,12 @@
 
 class c_ik_context {
 public:
-	VFUNC_SIG(init(void* hdr, qangle_t& angles, vec3_t& origin, float time, int framecount, int mask), "client.dll", "55 8B EC 83 EC ? 8B 45 ? 56 57 8B F9 8D 8F ? ? ? ?",
-		void(__thiscall*)(void*, void*, qangle_t&, vec3_t&, float, int, int), hdr, angles, origin, time, framecount, mask)
+	VFUNC_SIG(init(c_studio_hdr* hdr, qangle_t& angles, vec3_t& origin, float time, int framecount, int mask), "client.dll", "55 8B EC 83 EC ? 8B 45 ? 56 57 8B F9 8D 8F ? ? ? ?",
+		void(__thiscall*)(void*, c_studio_hdr*, qangle_t&, vec3_t&, float, int, int), hdr, angles, origin, time, framecount, mask)
 
-	VFUNC_SIG(add_dependencies(mstudioseqdesc_t& seqdesc, int sequence, float cycle, const float pose_params*, float weight), "client.dll",
+	VFUNC_SIG(add_dependencies(mstudioseqdesc_t& seqdesc, int sequence, float cycle, const float pose_params[], float weight), "client.dll",
 		"55 8B EC 81 EC ? ? ? ? 53 56 57 8B F9 0F 28 CB F3 0F 11 4D ? 8B 8F ? ? ? ? 8B 01",
-		void(__thiscall*)(void*, mstudioseqdesc_t&, int, float, const float*, float), seqdesc, sequence, cycle, pose_params, weight)
+		void(__thiscall*)(void*, mstudioseqdesc_t&, int, float, const float[], float), seqdesc, sequence, cycle, pose_params, weight)
 
 	VFUNC_SIG(update_targets(vec3_t* pos, quaternion* q, matrix3x4_t* bones, uint8_t* computed), "client.dll", "55 8B EC 83 E4 ? 81 EC ? ? ? ? 33 D2",
 		void(__thiscall*)(void*, vec3_t*, void*, matrix3x4_t*, uint8_t*), pos, q, bones, computed)
