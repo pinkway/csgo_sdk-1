@@ -61,7 +61,7 @@ public:
 	VFUNC(set_model_index(int id), 75, void(__thiscall*)(void*, int), id)
 
 	VFUNC_SIG(set_abs_angles(qangle_t angles), "client.dll", "55 8B EC 83 E4 F8 83 EC 64 53 56 57 8B F1", void(__thiscall*)(void*, const qangle_t&), angles)
-	VFUNC_SIG(set_abs_origin(vec3_t origin), "client.dll", "55 8B EC 83 E4 F8 51 53 56 57 8B F1", void(__thiscall*)(void*, const vec3_t&), origin)
+	VFUNC_SIG(set_abs_origin(vec3_t origin), "client.dll", "55 8B EC 83 E4 F8 51 53 56 57 8B F1 E8 ? ? ? ? 8B 7D", void(__thiscall*)(void*, const vec3_t&), origin)
 
 	OFFSET(get_renderable(), i_client_renderable*, 0x4)
 	OFFSET(get_networkable(), i_client_networkable*, 0x8)
