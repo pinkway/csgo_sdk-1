@@ -34,7 +34,7 @@ bool c_chams::override_material(int type, const col_t& clr, bool ignorez) {
 }
 
 void c_chams::on_dme(i_model_render* ecx, void* context, const draw_model_state_t& state, const model_render_info_t& info, matrix3x4_t* bones, bool& should_call_original) {
-	static const auto original = hooks::m_model_render->get_original<hooks::draw_model_execute::t>(hooks::draw_model_execute::index);
+	static const auto original = hooks::m_model_render->get_original<hooks::draw_model_execute::T>(hooks::draw_model_execute::index);
 
 	auto model_name = interfaces::model_info->get_model_name(info.m_model);
 	if (strlen(model_name) <= 19
