@@ -3,8 +3,6 @@
 namespace math {
 	void sin_cos(float radian, float& sin, float& cos);
 
-	void vector_transform(const vec3_t& in1, const matrix3x4_t& in2, vec3_t& out);
-
 	void angle_vectors(const qangle_t& angles, vec3_t* forward, vec3_t* right = nullptr, vec3_t* up = nullptr);
 
 	void normalize_angles(qangle_t& angles);

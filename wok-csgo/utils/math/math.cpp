@@ -6,12 +6,9 @@ namespace math {
 		cos = std::cos(radian);
 	}
 
-	void vector_transform(const vec3_t& in1, const matrix3x4_t& in2, vec3_t& out) {
-		out = vec3_t(in1.dot_product(in2[0]) + in2[0][3], in1.dot_product(in2[1]) + in2[1][3], in1.dot_product(in2[2]) + in2[2][3]);
-	}
-
 	void angle_vectors(const qangle_t& angles, vec3_t* forward, vec3_t* right, vec3_t* up) {
 		vec3_t cos, sin;
+
 		sin_cos(DEG2RAD(angles.x), sin.x, cos.x);
 		sin_cos(DEG2RAD(angles.y), sin.y, cos.y);
 		sin_cos(DEG2RAD(angles.z), sin.z, cos.z);
@@ -54,8 +51,9 @@ namespace math {
 
 		auto angles = qangle_t(fast_asin(delta.z / length) * M_RADPI, fast_atan(delta.y / delta.x) * M_RADPI, 0.f);
 
-		if (delta.x >= 0.f)
+		if (delta.x >= 0.f) {
 			angles.y += 180.f;
+		}
 
 		normalize_angles(angles);
 
@@ -71,15 +69,17 @@ namespace math {
 			pitch = forward.z > 0.f ? 90.f : 270.f;
 		}
 		else {
-			yaw = (fast_atan2(forward.y, forward.x) * 180.f / M_PI);
+			yaw = fast_atan2(forward.y, forward.x) * 180.f / M_PI;
 
-			if (yaw < 0.f)
+			if (yaw < 0.f) {
 				yaw += 360.f;
+			}
 
-			pitch = (fast_atan2(-forward.z, forward.length_2d()) * 180.f / M_PI);
+			pitch = fast_atan2(-forward.z, forward.length_2d()) * 180.f / M_PI;
 
-			if (pitch < 0.f)
+			if (pitch < 0.f) {
 				pitch += 360.f;
+			}
 		}
 
 		angles.x = clamp(remainderf(pitch, 360.f), -89.f, 89.f);
