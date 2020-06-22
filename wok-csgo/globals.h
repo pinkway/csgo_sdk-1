@@ -6,6 +6,7 @@
 
 namespace g {
 	namespace angles {
+		extern qangle_t		view;
 		extern qangle_t		real;
 	}
 

@@ -2,6 +2,7 @@
 
 namespace g {
 	namespace angles {
+		qangle_t    view = {};
 		qangle_t    real = {};
 	}
 

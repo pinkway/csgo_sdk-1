@@ -106,6 +106,9 @@
     <ClCompile Include="utils\math\datatypes.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="features\misc\movement.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common_includes.h" />
@@ -219,5 +222,6 @@
     <ClInclude Include="utils\cfg\json\detail\conversions\to_chars.hpp" />
     <ClInclude Include="utils\cfg\json\detail\conversions\from_json.hpp" />
     <ClInclude Include="utils\obfuscation\xor.h" />
+    <ClInclude Include="features\misc\movement.h" />
   </ItemGroup>
 </Project>

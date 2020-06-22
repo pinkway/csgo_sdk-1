@@ -9,6 +9,7 @@ bool __stdcall hooks::create_move::fn(float input_sample_time, c_user_cmd* cmd) 
 
 	g::cmd = cmd;
 	g::send_packet = true;
+	g::angles::view = cmd->m_viewangles;
 
 	engine_prediction->pre_start();
 
@@ -17,9 +18,11 @@ bool __stdcall hooks::create_move::fn(float input_sample_time, c_user_cmd* cmd) 
 	}
 	engine_prediction->end(g::local, cmd);
 
-	math::normalize_angles(cmd->m_viewangles);
+	cmd->m_viewangles.normalize();
 
 	g::angles::real = cmd->m_viewangles;
+
+	movement->fix(g::angles::view, cmd->m_viewangles);
 
 	cmd->m_move.x = std::clamp(cmd->m_move.x, -450.f, 450.f);
 	cmd->m_move.y = std::clamp(cmd->m_move.y, -450.f, 450.f);

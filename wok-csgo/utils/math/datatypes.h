@@ -18,6 +18,8 @@ struct vec2_t {
 
 	vec2_t operator*(float in) const { return vec2_t(x * in, y * in); }
 
+	vec2_t operator-() const { return vec2_t(-x, -y); }
+	
 	vec2_t& operator-=(const vec2_t& in) {
 		x -= in.x;
 		y -= in.y;
@@ -46,10 +48,6 @@ struct vec2_t {
 		return *this;
 	}
 
-	vec2_t operator-() const {
-		return vec2_t(-x, -y);
-	}
-
 	void normalize() {
 		auto l = length();
 
@@ -67,13 +65,13 @@ struct vec2_t {
 
 	bool operator!=(const vec2_t& in) const { return !(operator==(in)); }
 
-	float length_sqr() const { return (x * x) + (y * y); }
+	float length_sqr() const { return x * x + y * y; }
 
 	float length() const { return fast_sqrt(length_sqr()); }
 
-	float dot_product(const vec2_t& in) const { return (x * in.x) + (y * in.y); }
+	float dot_product(const vec2_t& in) const { return x * in.x + y * in.y; }
 
-	float dot_product(const float* in) const { return (x * in[0]) + (y * in[1]); }
+	float dot_product(const float* in) const { return x * in[0] + y * in[1]; }
 
 	float dist_to(const vec2_t& in) const { return (*this - in).length(); }
 
@@ -176,15 +174,15 @@ struct vec3_t {
 		z = abs(z);
 	}
 
-	float length_sqr() const { return (x * x) + (y * y) + (z * z); }
+	float length_sqr() const { return x * x + y * y + z * z; }
 
 	float length() const { return fast_sqrt(length_sqr()); }
 
-	float length_2d() const { return fast_sqrt((x * x) + (y * y)); }
+	float length_2d() const { return fast_sqrt(x * x + y * y); }
 
-	float dot_product(const vec3_t& in) const { return (x * in.x) + (y * in.y) + (z * in.z); }
+	float dot_product(const vec3_t& in) const { return x * in.x + y * in.y + z * in.z; }
 
-	float dot_product(const float* in) const { return (x * in[0]) + (y * in[1]) + (z * in[2]); }
+	float dot_product(const float* in) const { return x * in[0] + y * in[1] + z * in[2]; }
 
 	vec3_t cross_product(const vec3_t& in) const { return vec3_t(y * in.z - z * in.y, z * in.x - x * in.z, x * in.y - y * in.x); }
 
@@ -280,13 +278,7 @@ struct qangle_t {
 		return *this;
 	}
 
-	void normalize() {
-		auto l = length();
-
-		x /= l;
-		y /= l;
-		z /= l;
-	}
+	void normalize();
 
 	qangle_t& normalized() {
 		normalize();
@@ -298,11 +290,11 @@ struct qangle_t {
 
 	bool operator!=(const qangle_t& in) const { return !(operator==(in)); }
 
-	float length_sqr() const { return (x * x) + (y * y) + (z * z); }
+	float length_sqr() const { return x * x + y * y + z * z; }
 
 	float length() const { return fast_sqrt(length_sqr()); }
 
-	float length_2d() const { return fast_sqrt((x * x) + (y * y)); }
+	float length_2d() const { return fast_sqrt(x * x + y * y); }
 
 	bool is_valid() const { return std::isfinite(x) && std::isfinite(y) && std::isfinite(z); }
 

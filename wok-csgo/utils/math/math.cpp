@@ -32,12 +32,6 @@ namespace math {
 		}
 	}
 
-	void normalize_angles(qangle_t& angles) {
-		angles.x = clamp(remainderf(angles.x, 360.f), -89.f, 89.f);
-		angles.y = clamp(remainderf(angles.y, 360.f), -180.f, 180.f);
-		angles.z = clamp(remainderf(angles.z, 360.f), -45.f, 45.f);
-	}
-
 	qangle_t calc_angle(const vec3_t& src, const vec3_t& dst) {
 		auto delta = src - dst;
 		if (delta.empty())
@@ -55,9 +49,7 @@ namespace math {
 			angles.y += 180.f;
 		}
 
-		normalize_angles(angles);
-
-		return angles;
+		return angles.normalized();
 	}
 
 	void vector_angles(const vec3_t& forward, qangle_t& angles) {

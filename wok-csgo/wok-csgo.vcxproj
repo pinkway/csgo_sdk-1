@@ -156,6 +156,7 @@
   <ItemGroup>
     <ClCompile Include="events\callbacks\player_hurt.cpp" />
     <ClCompile Include="events\events.cpp" />
+    <ClCompile Include="features\misc\movement.cpp" />
     <ClCompile Include="features\ragebot\prediction.cpp" />
     <ClCompile Include="features\visuals\chams.cpp" />
     <ClCompile Include="globals.cpp" />
@@ -192,6 +193,7 @@
     <ClInclude Include="common_includes.h" />
     <ClInclude Include="events\events.h" />
     <ClInclude Include="features\features.h" />
+    <ClInclude Include="features\misc\movement.h" />
     <ClInclude Include="features\ragebot\prediction.h" />
     <ClInclude Include="features\visuals\chams.h" />
     <ClInclude Include="globals.h" />
