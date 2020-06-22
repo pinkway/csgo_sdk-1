@@ -3,11 +3,11 @@
 class i_net_msg {
 public:
 	virtual					~i_net_msg() = default;
-	virtual void			set_net_channel(void* netchan) = 0;
+	virtual void			set_net_channel(void* net_channel) = 0;
 	virtual void			set_reliable(bool state) = 0;
 	virtual bool			process() = 0;
-	virtual	bool			read_from_buffer(void* buffer) = 0;
-	virtual	bool			write_to_buffer(void* buffer) = 0;
+	virtual	bool			read_from_buffer(void* buf) = 0;
+	virtual	bool			write_to_buffer(void* buf) = 0;
 	virtual bool			is_reliable() const = 0;
 	virtual int				get_type() const = 0;
 	virtual int				get_group() const = 0;
@@ -17,12 +17,14 @@ public:
 };
 
 template<typename T>
-class i_net_msg_pb : public i_net_msg, public T {};
+class i_net_msg_pb : public i_net_msg, public T {
+public:
+
+};
 
 class i_move_msg {
-private:
-	char			pad0[8];
 public:
+	char			pad0[8];
 	int				m_backup_commands;
 	int				m_new_commands;
 	std::string*	m_data;
@@ -30,7 +32,7 @@ public:
 	bf_write		m_data_out;
 };
 
-using i_move_msg_t = i_net_msg_pb<i_move_msg>;
+typedef i_net_msg_pb<i_move_msg> i_move_msg_t;
 
 class i_net_channel {
 public:
