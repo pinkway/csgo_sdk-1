@@ -22,11 +22,13 @@ bool c_chams::override_material(int type, const col_t& clr, bool ignorez) {
 	material->alpha_modulate(clr.a() / 255.f);
 	material->color_modulate(clr.r() / 255.f, clr.g() / 255.f, clr.b() / 255.f);
 
-	if (auto $alpha = material->find_var(_("$alpha"), nullptr, false))
+	if (auto $alpha = material->find_var(_("$alpha"), nullptr, false)) {
 		$alpha->set_value(clr.a() / 255.f);
+	}
 
-	if (auto $envmaptint = material->find_var(_("$envmaptint"), nullptr, false))
+	if (auto $envmaptint = material->find_var(_("$envmaptint"), nullptr, false)) {
 		$envmaptint->set_value(vec3_t(clr.r() / 255.f, clr.g() / 255.f, clr.b() / 255.f));
+	}
 
 	interfaces::model_render->forced_material_override(material);
 

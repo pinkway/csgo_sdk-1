@@ -27,6 +27,16 @@ public:
 	unsigned int	m_cached_bones_count;
 };
 
+class c_base_animating;
+
+class c_bone_accessor {
+public:
+	c_base_animating*	m_animating;
+	matrix3x4_t*		m_bones;
+	int					m_readable_bones;
+	int					m_writable_bones;
+};
+
 class c_animation_layer {
 public:
 	float			m_anim_time;
@@ -71,7 +81,7 @@ public:
 	}
 
 	char					pad0[8];
-	int						m_tickcount;
+	int						m_tick_count;
 	char					pad1[83];
 	c_base_entity*			m_base_entity;
 	c_base_combat_weapon*	m_active_weapon;

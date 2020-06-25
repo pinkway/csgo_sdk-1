@@ -5,6 +5,7 @@ namespace memory {
 		protect_t(LPVOID address, uint32_t size, DWORD flags) {
 			m_size = size;
 			m_address = address;
+
 			VirtualProtect(m_address, m_size, flags, &m_flags);
 		}
 
@@ -17,9 +18,11 @@ namespace memory {
 
 	__forceinline uint32_t get_vtable_length(uintptr_t* table) {
 		uint32_t length;
-		for (length = 0; table[length]; length++)
+
+		for (length = 0; table[length]; length++) {
 			if (IS_INTRESOURCE(table[length]))
 				break;
+		}
 
 		return length;
 	}
@@ -111,26 +114,26 @@ namespace memory {
 		address_t(uint8_t* ptr) { m_ptr = ptr; };
 		address_t(uintptr_t* ptr) { m_ptr = reinterpret_cast<uint8_t*>(ptr); };
 
-		inline operator uint8_t*() { return m_ptr; }
+		__forceinline operator uint8_t*() { return m_ptr; }
 
-		inline operator void*() { return reinterpret_cast<void*>(m_ptr); }
+		__forceinline operator void*() { return reinterpret_cast<void*>(m_ptr); }
 
-		inline uint8_t* get() { return m_ptr; }
+		__forceinline uint8_t* get() { return m_ptr; }
 
 		template<typename T>
-		inline T cast() { return reinterpret_cast<T>(m_ptr); }
+		__forceinline T cast() { return reinterpret_cast<T>(m_ptr); }
 
-		inline uint8_t* offset(int offset) const { return m_ptr + offset; };
+		__forceinline uint8_t* offset(int offset) const { return m_ptr + offset; };
 
-		inline address_t self_offset(int offset) {
+		__forceinline address_t self_offset(int offset) {
 			m_ptr += offset;
 
 			return *this;
 		}
 
-		inline uint8_t* jmp(int offset = 0x1) const { return m_ptr + offset + sizeof(uintptr_t) + *reinterpret_cast<int*>(m_ptr + offset); }
+		__forceinline uint8_t* jmp(int offset = 0x1) const { return m_ptr + offset + sizeof(uintptr_t) + *reinterpret_cast<int*>(m_ptr + offset); }
 
-		inline address_t self_jmp(int offset = 0x1) {
+		__forceinline address_t self_jmp(int offset = 0x1) {
 			m_ptr = jmp(offset);
 
 			return *this;

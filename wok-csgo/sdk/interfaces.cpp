@@ -7,15 +7,15 @@ namespace interfaces {
 		_INTERFACE(entity_list, i_client_entity_list, "client.dll", "VClientEntityList003")
 
 		_INTERFACE_OFFSET(client_mode, i_client_mode, client_dll, 10, 0x5)
-		_INTERFACE_OFFSET(global_vars, c_global_vars, client_dll, 0, 0x1B)
-		_INTERFACE_OFFSET(client_state, c_client_state, engine, 12, 0x10)
+		_INTERFACE_OFFSET(global_vars, i_global_vars, client_dll, 0, 0x1B)
+		_INTERFACE_OFFSET(client_state, i_client_state, engine, 12, 0x10)
 
 		mem_alloc = *reinterpret_cast<i_mem_alloc**>(GetProcAddress(reinterpret_cast<HMODULE>(memory::get_module_handle(fnv1a("tier0.dll"))), _("g_pMemAlloc")));
 
 		_INTERFACE(model_info, i_model_info, "engine.dll", "VModelInfoClient004")
 		_INTERFACE(surface, i_surface, "vguimatsurface.dll", "VGUI_Surface031")
 
-		_INTERFACE_SIG(input, c_input, "client.dll", "B9 ? ? ? ? 8B 40 38 FF D0 84 C0 0F 85", 0x1)
+		_INTERFACE_SIG(input, i_input, "client.dll", "B9 ? ? ? ? 8B 40 38 FF D0 84 C0 0F 85", 0x1)
 
 		_PINTERFACE_SIG(move_helper, i_move_helper, "client.dll", "8B 0D ? ? ? ? 8B 45 ? 51 8B D4 89 02 8B 01", 0x2)
 
@@ -35,7 +35,7 @@ namespace interfaces {
 		_INTERFACE(model_render, i_model_render, "engine.dll", "VEngineModel016")
 		_INTERFACE(material_system, i_material_system, "materialsystem.dll", "VMaterialSystem080")
 
-		_INTERFACE_SIG(glow_manager, c_glow_object_manager, "client.dll", "0F 11 05 ? ? ? ? 83 C8 01", 0x3)
+		_INTERFACE_SIG(glow_manager, i_glow_object_manager, "client.dll", "0F 11 05 ? ? ? ? 83 C8 01", 0x3)
 		_INTERFACE_SIG(beams, i_view_render_beams, "client.dll", "B9 ? ? ? ? A1 ? ? ? ? FF 10 A1 ? ? ? ? B9", 0x1)
 		_INTERFACE_SIG(weapon_system, i_weapon_system, "client.dll", "8B 35 ? ? ? ? FF 10 0F B7 C0", 0x2)
 		_INTERFACE_SIG(player_resource, c_cs_player_resource*, "client.dll", "8B 3D ? ? ? ? 85 FF 0F 84 ? ? ? ? 81 C7", 0x2)
@@ -56,12 +56,12 @@ namespace interfaces {
 	i_engine_client*		engine = nullptr;
 	i_client_entity_list*	entity_list = nullptr;
 	i_client_mode*			client_mode = nullptr;
-	c_global_vars*			global_vars = nullptr;
-	c_client_state*			client_state = nullptr;
+	i_global_vars*			global_vars = nullptr;
+	i_client_state*			client_state = nullptr;
 	i_mem_alloc*			mem_alloc = nullptr;
 	i_model_info*			model_info = nullptr;
 	i_surface*				surface = nullptr;
-	c_input*				input = nullptr;
+	i_input*				input = nullptr;
 	i_move_helper*			move_helper = nullptr;
 	i_prediction*			prediction = nullptr;
 	i_game_movement*		game_movement = nullptr;
@@ -76,7 +76,7 @@ namespace interfaces {
 	i_mdl_cache*			model_cache = nullptr;
 	i_model_render*			model_render = nullptr;
 	i_material_system*		material_system = nullptr;
-	c_glow_object_manager*	glow_manager = nullptr;
+	i_glow_object_manager*	glow_manager = nullptr;
 	i_view_render_beams*	beams = nullptr;
 	i_weapon_system*		weapon_system = nullptr;
 	c_cs_player_resource**	player_resource = nullptr;

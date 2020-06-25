@@ -5,19 +5,16 @@ class c_base_handle;
 class i_handle_entity {
 public:
 	virtual							~i_handle_entity() {}
-	virtual void					set_ref_handle(const c_base_handle &handle) = 0;
+	virtual void					set_ref_handle(const c_base_handle& handle) = 0;
 	virtual const c_base_handle&	get_handle() const = 0;
 };
-
-class c_client_think_handle_ptr;
-typedef c_client_think_handle_ptr* client_think_handle_t;
 
 class i_client_thinkable {
 public:
 	virtual i_client_unknown*		get_client_unknown() = 0;
 	virtual void					client_think() = 0;
-	virtual client_think_handle_t	get_think_handle() = 0;
-	virtual void					set_think_handle(client_think_handle_t think) = 0;
+	virtual void*					get_think_handle() = 0;
+	virtual void					set_think_handle(void* think) = 0;
 	virtual void					release() = 0;
 };
 
@@ -31,7 +28,7 @@ public:
 	virtual void				on_data_changed(int update_type) = 0;
 	virtual void				pre_data_update(int update_type) = 0;
 	virtual void				post_data_update(int update_type) = 0;
-	virtual void				unused0() = 0;
+	virtual void				unknown0() = 0;
 	virtual bool				is_dormant() = 0;
 	virtual int					get_index() const = 0;
 	virtual void				receive_message(int class_id, bf_read& msg) = 0;
@@ -50,7 +47,7 @@ public:
 	virtual qangle_t const&			get_render_angles() = 0;
 	virtual bool					should_draw() = 0;
 	virtual int						get_render_flags() = 0;
-	virtual void					unused0() const = 0;
+	virtual void					unknown0() const = 0;
 	virtual client_shadow_handle_t	get_shadow_handle() const = 0;
 	virtual client_render_handle_t& render_handle() = 0;
 	virtual const model_t*			get_model() const = 0;
@@ -105,14 +102,7 @@ public:
 	virtual i_client_alpha_property*   get_client_alpha_property() = 0;
 };
 
-struct spatialization_info_t;
-
 class i_client_entity : public i_client_unknown, public i_client_renderable, public i_client_networkable, public i_client_thinkable {
 public:
 	virtual void             release() = 0;
-	virtual const vec3_t	 get_abs_origin() const = 0;
-	virtual const qangle_t   get_abs_angles() const = 0;
-	virtual void*            get_mouth() = 0;
-	virtual bool             get_sound_spatialization(spatialization_info_t info) = 0;
-	virtual bool             is_blurred() = 0;
 };

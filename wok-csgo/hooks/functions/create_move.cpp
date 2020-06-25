@@ -4,12 +4,12 @@ bool __stdcall hooks::create_move::fn(float input_sample_time, c_user_cmd* cmd) 
 	static const auto original = m_client_mode->get_original<T>(index);
 
 	if (!cmd 
-		|| !cmd->m_commandnumber)
+		|| !cmd->m_command_number)
 		return original(input_sample_time, cmd);
 
 	g::cmd = cmd;
 	g::send_packet = true;
-	g::angles::view = cmd->m_viewangles;
+	g::angles::view = cmd->m_view_angles;
 
 	engine_prediction->pre_start();
 
@@ -18,11 +18,11 @@ bool __stdcall hooks::create_move::fn(float input_sample_time, c_user_cmd* cmd) 
 	}
 	engine_prediction->end(g::local, cmd);
 
-	cmd->m_viewangles.normalize();
+	cmd->m_view_angles.normalize();
 
-	g::angles::real = cmd->m_viewangles;
+	g::angles::real = cmd->m_view_angles;
 
-	movement->fix(g::angles::view, cmd->m_viewangles);
+	movement->fix(g::angles::view, cmd->m_view_angles);
 
 	cmd->m_move.x = std::clamp(cmd->m_move.x, -450.f, 450.f);
 	cmd->m_move.y = std::clamp(cmd->m_move.y, -450.f, 450.f);

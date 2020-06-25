@@ -6,8 +6,8 @@ public:
 	bool		m_game_code_moved_player : 1;
 	int			m_player_handle;
 	int			m_impulse_cmd;
-	qangle_t	m_viewangles;
-	qangle_t	m_abs_viewangles;
+	qangle_t	m_view_angles;
+	qangle_t	m_abs_view_angles;
 	int			m_buttons;
 	int			m_old_buttons;
 	vec3_t		m_move;
@@ -26,7 +26,6 @@ public:
 	float		pad0[5];
 	vec3_t		m_abs_origin;
 };
-
 
 class c_base_player;
 

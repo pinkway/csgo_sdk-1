@@ -4,7 +4,7 @@
 class c_prediction : public c_singleton<c_prediction> {
 private:
 	struct {
-		float m_curtime, m_frametime;
+		float m_cur_time, m_frame_time;
 		bool m_in_prediction, m_first_time_predicted;
 	} m_backup;
 

@@ -9,10 +9,10 @@ public:
 		"55 8B EC 81 EC ? ? ? ? 53 56 57 8B F9 0F 28 CB F3 0F 11 4D ? 8B 8F ? ? ? ? 8B 01",
 		void(__thiscall*)(void*, mstudioseqdesc_t&, int, float, float*, float), seqdesc, sequence, cycle, pose_params, weight)
 
-	VFUNC_SIG(update_targets(vec3_t* pos, quaternion* q, matrix3x4_t* bones, uint8_t* computed), "client.dll", "55 8B EC 83 E4 ? 81 EC ? ? ? ? 33 D2",
+	VFUNC_SIG(update_targets(vec3_t* pos, quaternion_t* q, matrix3x4_t* bones, uint8_t* computed), "client.dll", "55 8B EC 83 E4 ? 81 EC ? ? ? ? 33 D2",
 		void(__thiscall*)(void*, vec3_t*, void*, matrix3x4_t*, uint8_t*), pos, q, bones, computed)
 
-	VFUNC_SIG(solve_dependencies(vec3_t* pos, quaternion* q, matrix3x4_t* bones, uint8_t* computed), "client.dll", "55 8B EC 83 E4 ? 81 EC ? ? ? ? 8B 81 ? ? ? ? 56",
+	VFUNC_SIG(solve_dependencies(vec3_t* pos, quaternion_t* q, matrix3x4_t* bones, uint8_t* computed), "client.dll", "55 8B EC 83 E4 ? 81 EC ? ? ? ? 8B 81 ? ? ? ? 56",
 		void(__thiscall*)(void*, vec3_t*, void*, matrix3x4_t*, uint8_t*), pos, q, bones, computed)
 
 	void clear_targets() {
@@ -32,8 +32,12 @@ public:
 
 class c_bone_setup {
 public:
-	VFUNC_SIG(accumulate_pose(vec3_t* pos, quaternion* q, int sequence, float cycle, float weight, float time, c_ik_context* ik),
-		"client.dll", "55 8B EC 83 E4 F0 B8 ? ? ? ? E8 ? ? ? ? A1", void(__thiscall*)(void*, vec3_t*, quaternion*, int, float, float, float, c_ik_context*), pos, q, sequence, cycle, weight, time, ik)
+	VFUNC_SIG(accumulate_pose(vec3_t* pos, quaternion_t* q, int sequence, float cycle, float weight, float time, c_ik_context* ik),
+		"client.dll", "55 8B EC 83 E4 F0 B8 ? ? ? ? E8 ? ? ? ? A1", void(__thiscall*)(void*, vec3_t*, quaternion_t*, int, float, float, float, c_ik_context*), pos, q, sequence, cycle, weight, time, ik)
+};
+
+class c_bone_merge_cache {
+
 };
 
 class c_base_entity : public i_client_entity {
@@ -60,8 +64,8 @@ public:
 	VFUNC(is_weapon(), 165, bool(__thiscall*)(void*))
 	VFUNC(set_model_index(int id), 75, void(__thiscall*)(void*, int), id)
 
-	VFUNC_SIG(set_abs_angles(qangle_t angles), "client.dll", "55 8B EC 83 E4 F8 83 EC 64 53 56 57 8B F1", void(__thiscall*)(void*, const qangle_t&), angles)
-	VFUNC_SIG(set_abs_origin(vec3_t origin), "client.dll", "55 8B EC 83 E4 F8 51 53 56 57 8B F1 E8 ? ? ? ? 8B 7D", void(__thiscall*)(void*, const vec3_t&), origin)
+	VFUNC_SIG(set_abs_angles(const qangle_t& angles), "client.dll", "55 8B EC 83 E4 F8 83 EC 64 53 56 57 8B F1", void(__thiscall*)(void*, const qangle_t&), angles)
+	VFUNC_SIG(set_abs_origin(const vec3_t& origin), "client.dll", "55 8B EC 83 E4 F8 51 53 56 57 8B F1 E8 ? ? ? ? 8B 7D", void(__thiscall*)(void*, const vec3_t&), origin)
 
 	OFFSET(get_renderable(), i_client_renderable*, 0x4)
 	OFFSET(get_networkable(), i_client_networkable*, 0x8)
@@ -77,13 +81,11 @@ public:
 	OFFSET(get_predictable(), int, 0x2EA + 0x4)
 	OFFSET(get_accumulated_bone_mask(), int, 0x269C + 0x4)
 	OFFSET(get_prev_bone_mask(), int, 0x2698 + 0x4)
-	OFFSET(get_readable_bones(), int, 0x26A8 + 0x4)
-	OFFSET(get_writable_bones(), int, 0x26AC + 0x4)
 	OFFSET(get_most_recent_model_bone_counter(), unsigned long, 0x268C + 0x4)
 	OFFSET(get_last_setup_bones_time(), float, 0x2920 + 0x4)
 	OFFSET(get_ik_context(), c_ik_context*, 0x266C + 0x4)
 	OFFSET(get_setup_bones_pos(), vec3_t, 0xA68 + 0x4)
-	OFFSET(get_setup_bones_quaternion(), quaternion, 0x166C + 0x4)
+	OFFSET(get_setup_bones_quaternion_t(), quaternion_t, 0x166C + 0x4)
 	OFFSET(get_take_damage(), int, 0x280)
 
 	DATAMAP(get_effects(), int, "m_fEffects")
@@ -92,17 +94,17 @@ public:
 	DATAMAP(get_abs_rotation(), qangle_t, "m_angAbsRotation")
 
 	void invalidate_bone_cache() {
-		static const auto addr = SIG("client.dll", "80 3D ? ? ? ? ? 74 16 A1 ? ? ? ? 48 C7 81").get();
-		auto model_bone_counter = **reinterpret_cast<unsigned long**>(addr + 0xA);
-		
+		static const auto most_recent_model_bone_counter = **SIG("client.dll", "80 3D ? ? ? ? ? 74 16 A1 ? ? ? ? 48 C7 81").self_offset(0xA).cast<unsigned long**>();
+
 		get_last_setup_bones_time() = -FLT_MAX;
-		get_most_recent_model_bone_counter() = model_bone_counter - 1;
+		get_most_recent_model_bone_counter() = most_recent_model_bone_counter - 1;
 	}
 
 	bool is_enemy();
 
 	bool is_breakable() {
-		if (!this)
+		if (!this
+			|| get_index() == 0)
 			return false;
 
 		auto backup_take_damage = get_take_damage();
@@ -110,13 +112,16 @@ public:
 		static const auto is_breakable_fn = SIG("client.dll", "55 8B EC 51 56 8B F1 85 F6 74 68").cast<bool(__thiscall*)(void*)>();
 
 		auto class_id = get_client_class()->m_class_id;
-		auto is_breakable_class = class_id == CBaseDoor
-			|| class_id == CBreakableSurface || class_id == CFuncBrush
-			|| class_id == CBaseEntity && get_collideable()->get_solid() == SOLID_BSP;
 
-		is_breakable_class ? get_take_damage() = DAMAGE_YES : 0;
+		if (class_id == CBaseDoor
+			|| class_id == CBreakableSurface || class_id == CFuncBrush
+			|| class_id == CBaseEntity && get_collideable()->get_solid() == SOLID_BSP) {
+			get_take_damage() = DAMAGE_YES;
+		}
+
 		auto ret = is_breakable_fn(this);
-		is_breakable_class ? get_take_damage() = backup_take_damage : 0;
+
+		get_take_damage() = backup_take_damage;
 
 		return ret;
 	}
@@ -207,7 +212,7 @@ public:
 	NETVAR(get_vehicle(), c_base_handle, "CBasePlayer->m_hVehicle")
 	NETVAR(get_water_level(), int, "CBasePlayer->m_nWaterLevel")
 	NETVAR(get_next_think_tick(), int, "CBasePlayer->m_nNextThinkTick")
-	NETVAR(get_tickbase(), int, "CBasePlayer->m_nTickBase")
+	NETVAR(get_tick_base(), int, "CBasePlayer->m_nTickBase")
 	NETVAR(get_duck_speed(), float, "CBasePlayer->m_flDuckSpeed")
 	NETVAR(get_view_offset(), vec3_t, "CBasePlayer->m_vecViewOffset[0]")
 	NETVAR(get_health(), int, "CBasePlayer->m_iHealth")
@@ -218,7 +223,7 @@ public:
 	NETVAR(get_view_model(), c_base_handle, "CBasePlayer->m_hViewModel[0]")
 	NETVAR_OFFSET(get_cur_cmd(), c_user_cmd*, "CBasePlayer->m_hConstraintEntity", -0xC)
 
-	VFUNC(set_local_view_angles(qangle_t& angle), 372, void(__thiscall*)(void*, qangle_t&), angle)
+	VFUNC(set_local_view_angles(const qangle_t& angle), 372, void(__thiscall*)(void*, const qangle_t&), angle)
 
 	VFUNC(think(), 138, void(__thiscall*)(void*))
 	VFUNC(pre_think(), 317, void(__thiscall*)(void*))
@@ -258,6 +263,9 @@ public:
 	NETPROP(get_client_side_animation_prop(), "CBaseAnimating->m_bClientSideAnimation")
 	NETVAR(get_client_side_animation(), bool, "CBaseAnimating->m_bClientSideAnimation")
 	NETVAR(get_sequence(), int, "CBaseAnimating->m_nSequence")
+
+	OFFSET(get_bone_accessor(), c_bone_accessor, 0x26A4)
+	OFFSET(get_bone_merge_cache(), c_bone_merge_cache*, 0x290C)
 
 	void set_anim_layers(anim_layers layers) { std::copy(std::begin(layers), std::end(layers), std::begin(get_anim_layers())); }
 
@@ -303,8 +311,8 @@ public:
 
 	OFFSET(get_anim_state(), c_anim_state*, 0x3914)
 
-	VFUNC(standard_blending_rules(studiohdr_t* hdr, vec3_t* vec, quaternion* q, const float time, const int mask), 205, void(__thiscall*)(void*, studiohdr_t*, vec3_t*, quaternion*, float, int), hdr, vec, q, time, mask)
-	VFUNC(build_transformations(studiohdr_t* hdr, vec3_t* vec, quaternion* q, matrix3x4_t& transform, const int mask, uint8_t* computed), 189, void(__thiscall*)(void*, studiohdr_t*, vec3_t*, quaternion*, matrix3x4_t const&, int, uint8_t*), hdr, vec, q, transform, mask, computed)
+	VFUNC(standard_blending_rules(studiohdr_t* hdr, vec3_t* vec, quaternion_t* q, float time, int mask), 205, void(__thiscall*)(void*, studiohdr_t*, vec3_t*, quaternion_t*, float, int), hdr, vec, q, time, mask)
+	VFUNC(build_transformations(studiohdr_t* hdr, vec3_t* vec, quaternion_t* q, matrix3x4_t& transform, int mask, uint8_t* computed), 189, void(__thiscall*)(void*, studiohdr_t*, vec3_t*, quaternion_t*, matrix3x4_t const&, int, uint8_t*), hdr, vec, q, transform, mask, computed)
 	VFUNC(update_ik_locks(float time), 191, void(__thiscall*)(void*, float), time)
 	VFUNC(calculate_ik_locks(float time), 192, void(__thiscall*)(void*, float), time)
 	VFUNC(update_client_side_animation(), 223, void(__thiscall*)(void*))

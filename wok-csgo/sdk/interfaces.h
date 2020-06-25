@@ -8,12 +8,12 @@ namespace interfaces {
 	extern i_engine_client*			engine;
 	extern i_client_entity_list*	entity_list;
 	extern i_client_mode*			client_mode;
-	extern c_global_vars*			global_vars;
-	extern c_client_state*			client_state;
+	extern i_global_vars*			global_vars;
+	extern i_client_state*			client_state;
 	extern i_mem_alloc*				mem_alloc;
 	extern i_model_info*			model_info;
 	extern i_surface*				surface;
-	extern c_input*					input;
+	extern i_input*					input;
 	extern i_move_helper*			move_helper;
 	extern i_prediction*			prediction;
 	extern i_game_movement*			game_movement;
@@ -28,7 +28,7 @@ namespace interfaces {
 	extern i_mdl_cache*				model_cache;
 	extern i_model_render*			model_render;
 	extern i_material_system*		material_system;
-	extern c_glow_object_manager*	glow_manager;
+	extern i_glow_object_manager*	glow_manager;
 	extern i_view_render_beams*		beams;
 	extern i_weapon_system*			weapon_system;
 	extern c_cs_player_resource**	player_resource;

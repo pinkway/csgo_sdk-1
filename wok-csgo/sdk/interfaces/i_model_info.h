@@ -1,7 +1,7 @@
 #pragma once
 
-typedef float quaternion[4];
-typedef float radian_euler[3];
+typedef float quaternion_t[4];
+typedef float radian_euler_t[3];
 
 struct mstudiobbox_t {
 	int         m_bone;
@@ -49,14 +49,14 @@ struct mstudiobone_t {
 	int						m_parent;
 	int						m_bone_controller[6];
 	vec3_t					m_pos;
-	quaternion				m_quat;
-	radian_euler			m_rot;
+	quaternion_t			m_quat;
+	radian_euler_t			m_rot;
 
 	vec3_t					m_pos_scale;
 	vec3_t					m_rot_scale;
 
 	matrix3x4_t				m_pose_to_bone;
-	quaternion				m_alignment;
+	quaternion_t			m_alignment;
 	int						m_flags;
 	int						m_proc_type;
 	int						m_proc_index;

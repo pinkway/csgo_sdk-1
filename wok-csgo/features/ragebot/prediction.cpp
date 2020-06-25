@@ -14,14 +14,14 @@ void c_prediction::start(c_cs_player* player, c_user_cmd* cmd) {
 	if (!player)
 		return;
 
-	m_backup.m_curtime = interfaces::global_vars->m_curtime;
-	m_backup.m_frametime = interfaces::global_vars->m_frametime;
+	m_backup.m_cur_time = interfaces::global_vars->m_cur_time;
+	m_backup.m_frame_time = interfaces::global_vars->m_frame_time;
 
 	m_backup.m_in_prediction = interfaces::prediction->m_in_prediction;
 	m_backup.m_first_time_predicted = interfaces::prediction->m_first_time_predicted;
 
-	interfaces::global_vars->m_curtime = TICKS_TO_TIME(player->get_tickbase());
-	interfaces::global_vars->m_frametime = interfaces::prediction->m_engine_paused ? 0.f : interfaces::global_vars->m_interval_per_tick;
+	interfaces::global_vars->m_cur_time = TICKS_TO_TIME(player->get_tick_base());
+	interfaces::global_vars->m_frame_time = interfaces::prediction->m_engine_paused ? 0.f : interfaces::global_vars->m_interval_per_tick;
 
 	interfaces::prediction->m_in_prediction = true;
 	interfaces::prediction->m_first_time_predicted = false;
@@ -32,7 +32,7 @@ void c_prediction::start(c_cs_player* player, c_user_cmd* cmd) {
 	static const auto md5_pseudo_random_fn = SIG("client.dll", "55 8B EC 83 E4 F8 83 EC 70 6A").cast<uint32_t(__thiscall*)(uint32_t)>();
 
 	*m_prediction_player = reinterpret_cast<int>(player);
-	*m_prediction_random_seed = md5_pseudo_random_fn(cmd->m_commandnumber) & 0x7FFFFFFF;
+	*m_prediction_random_seed = md5_pseudo_random_fn(cmd->m_command_number) & 0x7FFFFFFF;
 
 	auto buttons_forced = *reinterpret_cast<int*>(reinterpret_cast<uintptr_t>(player) + 0x3334);
 	auto buttons_disabled = *reinterpret_cast<int*>(reinterpret_cast<uintptr_t>(player) + 0x3330);
@@ -43,11 +43,11 @@ void c_prediction::start(c_cs_player* player, c_user_cmd* cmd) {
 	interfaces::move_helper->set_host(player);
 	interfaces::game_movement->start_track_prediction_errors(player);
 
-	if (cmd->m_weaponselect) {
-		auto weapon = reinterpret_cast<c_base_combat_weapon*>(interfaces::entity_list->get_client_entity(cmd->m_weaponselect));
+	if (cmd->m_weapon_select) {
+		auto weapon = reinterpret_cast<c_base_combat_weapon*>(interfaces::entity_list->get_client_entity(cmd->m_weapon_select));
 		if (weapon) {
 			auto weapon_data = weapon->get_cs_weapon_data();
-			weapon_data ? player->select_item(weapon_data->m_weapon_name, cmd->m_weaponsubtype) : 0;
+			weapon_data ? player->select_item(weapon_data->m_weapon_name, cmd->m_weapon_sub_type) : 0;
 		}
 	}
 
@@ -66,15 +66,15 @@ void c_prediction::start(c_cs_player* player, c_user_cmd* cmd) {
 	player->get_buttons_pressed() = buttons_changed & buttons;
 	player->get_buttons_released() = buttons_changed & ~buttons;
 
-	interfaces::prediction->check_moving_on_ground(player, interfaces::global_vars->m_frametime);
+	interfaces::prediction->check_moving_on_ground(player, interfaces::global_vars->m_frame_time);
 
-	player->set_local_view_angles(cmd->m_viewangles);
+	player->set_local_view_angles(cmd->m_view_angles);
 
 	player->physics_run_think(0) ? player->pre_think() : 0;
 
 	if (player->get_next_think_tick()
 		&& player->get_next_think_tick() != -1
-		&& player->get_next_think_tick() <= player->get_tickbase()) {
+		&& player->get_next_think_tick() <= player->get_tick_base()) {
 		player->get_next_think_tick() = -1;
 		player->unknown_think(0);
 		player->think();
@@ -108,8 +108,8 @@ void c_prediction::end(c_cs_player* player, c_user_cmd* cmd) {
 	*m_prediction_random_seed = -1;
 	*m_prediction_player = 0;
 
-	!interfaces::prediction->m_engine_paused && interfaces::global_vars->m_frametime ? player->get_tickbase()++ : 0;
+	!interfaces::prediction->m_engine_paused && interfaces::global_vars->m_frame_time ? player->get_tick_base()++ : 0;
 
-	interfaces::global_vars->m_curtime = m_backup.m_curtime;
-	interfaces::global_vars->m_frametime = m_backup.m_frametime;
+	interfaces::global_vars->m_cur_time = m_backup.m_cur_time;
+	interfaces::global_vars->m_frame_time = m_backup.m_frame_time;
 }
