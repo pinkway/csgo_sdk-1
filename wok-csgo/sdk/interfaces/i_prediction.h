@@ -38,13 +38,14 @@ public:
 	VFUNC(setup_move(c_base_player* player, c_user_cmd* cmd, i_move_helper* move_helper, c_move_data* move_data), 20, void(__thiscall*)(void*, c_base_player*, c_user_cmd*, i_move_helper*, c_move_data*), player, cmd, move_helper, move_data)
 	VFUNC(finish_move(c_base_player* player, c_user_cmd* cmd, c_move_data* move_data), 21, void(__thiscall*)(void*, c_base_player*, c_user_cmd*, c_move_data*), player, cmd, move_data)
 
-	char pad0[8];
-	bool m_in_prediction;
-	char pad1[1];
-	bool m_engine_paused;
-	char pad2[13];
-	bool m_first_time_predicted;
-	char pad3[7];
-	int	 m_server_commands_acknowledged;
-	bool m_had_prediction_errors;
+	char	pad0[8];
+	bool	m_in_prediction;
+	char	pad1[1];
+	bool	m_engine_paused;
+	char	pad2[13];
+	bool	m_first_time_predicted;
+	char	pad3[3];
+	int		m_unk0;
+	int		m_server_commands_acknowledged;
+	bool	m_had_prediction_errors;
 };
