@@ -203,12 +203,12 @@ struct vec3_t {
 	bool empty() const { return x == 0.f && y == 0.f && z == 0.f; }
 };
 
-struct ALIGN16 vector_aligned : public vec3_t {
-	vector_aligned() = default;
-	vector_aligned(float ix, float iy, float iz) { x = ix; y = iy; z = iz; }
-	vector_aligned(const vec3_t& in) { x = in.x; y = in.y; z = in.z; }
+struct ALIGN16 vector_aligned_t : public vec3_t {
+	vector_aligned_t() = default;
+	vector_aligned_t(float ix, float iy, float iz) { x = ix; y = iy; z = iz; }
+	vector_aligned_t(const vec3_t& in) { x = in.x; y = in.y; z = in.z; }
 
-	vector_aligned& operator=(const vec3_t& in) {
+	vector_aligned_t& operator=(const vec3_t& in) {
 		x = in.x;
 		y = in.y;
 		z = in.z;
@@ -216,7 +216,7 @@ struct ALIGN16 vector_aligned : public vec3_t {
 		return *this;
 	}
 
-	vector_aligned& operator=(const vector_aligned& in) {
+	vector_aligned_t& operator=(const vector_aligned_t& in) {
 		x = in.x;
 		y = in.y;
 		z = in.z;
