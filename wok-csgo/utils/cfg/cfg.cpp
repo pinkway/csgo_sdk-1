@@ -1,10 +1,10 @@
 #include "../utils.h"
 
-#define ADD_ITEM(type, name, def) m_items[fnv1a(#name)] = { fnv1a(#type), std::make_any<type>(def) };
+#define ADD_ITEM(type, name, def) m_items[fnv1a(name)] = { fnv1a(#type), std::make_any<type>(def) };
 
 namespace cfg {
 	void init() {
-		ADD_ITEM(bool, m_test_bool, false)
+		ADD_ITEM(bool, "m_example_bool", false)
 	}
 
 	void save() {
@@ -41,8 +41,9 @@ namespace cfg {
 
 				nlohmann::json sub;
 
-				for (auto& value : vec)
+				for (auto& value : vec) {
 					sub.push_back(value);
+				}
 
 				cur[_("inner")] = sub.dump();
 			} break;
@@ -61,8 +62,9 @@ namespace cfg {
 
 				nlohmann::json sub;
 
-				for (auto& value : vec)
+				for (auto& value : vec) {
 					sub.push_back(static_cast<int>(value));
+				}
 
 				cur[_("inner")] = sub.dump();
 			} break;
@@ -88,16 +90,17 @@ namespace cfg {
 		std::ifstream file(path, std::ios::in);
 
 		file >> in;
+
 		file.close();
 
 		for (auto& item : in) {
 			auto hash = item[_("identifier")].get<uint32_t>();
-			if (!item_exist(hash))
+			if (m_items.find(hash) == m_items.end())
 				continue;
 
 			auto& cur_item = m_items[hash];
 
-			switch (item[_("type")].get<uint32_t>()) {
+			switch (item["type"].get<uint32_t>()) {
 			case fnv1a("bool"): cur_item.set<bool>(item[_("inner")].get<bool>()); break;
 			case fnv1a("float"): cur_item.set<float>(item[_("inner")].get<float>()); break;
 			case fnv1a("int"): cur_item.set<int>(item[_("inner")].get<int>()); break;
@@ -144,17 +147,6 @@ namespace cfg {
 			} break;
 			}
 		}
-	}
-
-	bool item_exist(uint32_t hash) {
-		for (auto& item : m_items) {
-			if (item.first != hash)
-				continue;
-
-			return true;
-		}
-
-		return false;
 	}
 
 	std::string m_name = _("default.cfg");

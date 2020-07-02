@@ -20,8 +20,6 @@ namespace cfg {
 
 	void load();
 
-	bool item_exist(uint32_t hash);
-
 	template<typename T>
 	T& get(uint32_t hash) { return m_items[hash].get<T>(); }
 

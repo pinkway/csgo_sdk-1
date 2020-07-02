@@ -19,24 +19,27 @@ namespace netvars {
 				|| !strcmp(prop->m_var_name, _("baseclass")))
 				continue;
 
-			if (prop->m_recv_type == DPT_DATATABLE
-				&& prop->m_data_table
-				&& prop->m_data_table->m_net_table_name[0] == 'D')
+			if (prop->m_data_table
+				&& prop->m_recv_type == DPT_DATATABLE
+				&& prop->m_data_table->m_net_table_name[0] == 'D') {
 				dump_recursive(base_class, prop->m_data_table, offset + prop->m_offset);
+			}
 
 			char hash_name[256];
+
 			strcpy_s(hash_name, base_class);
 			strcat_s(hash_name, _("->"));
 			strcat_s(hash_name, prop->m_var_name);
+
 			auto hash = fnv1a_rt(static_cast<const char*>(hash_name));
 
-			props[hash] = { prop, static_cast<uint32_t>(offset + prop->m_offset) };
+			m_props[hash] = { prop, static_cast<uint32_t>(offset + prop->m_offset) };
 		}
 	}
 
-	std::unordered_map<uint32_t, data> props;
+	uint32_t get_offset(uint32_t hash) { return m_props.at(hash).m_offset; }
 
-	uint32_t get_offset(uint32_t hash) { return props[hash].offset; }
+	recv_prop* get_prop(uint32_t hash) { return m_props.at(hash).m_prop; }
 
-	recv_prop* get_prop(uint32_t hash) { return props[hash].prop; }
+	std::unordered_map<uint32_t, data_t> m_props;
 }

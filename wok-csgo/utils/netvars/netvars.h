@@ -2,22 +2,22 @@
 #include "../../sdk/datatypes/recv_prop.h"
 
 namespace netvars {
-	struct data {
-		recv_prop* prop;
-		uint32_t offset;
+	struct data_t {
+		recv_prop* m_prop;
+		uint32_t m_offset;
 	};
 
 	void init();
 
 	void dump_recursive(const char* base_class, recv_table* table, uint32_t offset);
 
-	extern std::unordered_map<uint32_t, data> props;
-
 	uint32_t get_offset(uint32_t hash);
 
 	recv_prop* get_prop(uint32_t hash);
 
 	__declspec(noinline) static uint32_t get_offset_by_hash(uint32_t hash) { return get_offset(hash); }
+
+	extern std::unordered_map<uint32_t, data_t> m_props;
 };
 
 #define NETVAR(func, type, name) \
@@ -33,7 +33,7 @@ namespace netvars {
 		static const auto offset = netvars::get_offset_by_hash(hash); \
 		return *reinterpret_cast<std::array<type, size>*>(reinterpret_cast<uintptr_t>(this) + offset); \
 	}
-	
+
 #define PNETVAR(func, type, name) \
 	type* func { \
 		static const auto hash = fnv1a_rt(name); \

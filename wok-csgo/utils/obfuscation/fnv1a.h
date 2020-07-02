@@ -1,19 +1,19 @@
 #pragma once
 #include <array>
 
-template<typename t, t v>
-struct constant_holder {
-	enum class val_holder : t {
-		val = v
+template<typename T, T value>
+struct constant_holder_t {
+	enum class value_holder : T {
+		m_value = value
 	};
 };
 
-#define constant(value) ((decltype(value))constant_holder<decltype(value), value>::val_holder::val)
+#define constant(value) ((decltype(value))constant_holder_t<decltype(value), value>::value_holder::m_value)
 
 constexpr uint32_t seed = 0x45C3370D;
 constexpr uint32_t prime = 0x1000193;
 
-inline uint32_t fnv1a_rt(const char* key) {
+__forceinline uint32_t fnv1a_rt(const char* key) {
 	auto hash = seed;
 
 #ifdef RELEASE
@@ -30,7 +30,7 @@ inline uint32_t fnv1a_rt(const char* key) {
 	return hash;
 }
 
-inline uint32_t fnv1a_fl_rt(const char* key, uint32_t length) {
+__forceinline uint32_t fnv1a_fl_rt(const char* key, uint32_t length) {
 	auto hash = seed;
 
 #ifdef RELEASE
