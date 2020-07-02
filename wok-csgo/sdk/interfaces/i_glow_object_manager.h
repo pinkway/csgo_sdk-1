@@ -2,19 +2,26 @@
 
 class i_glow_object_manager {
 public:
-	class glow_object_t {
-	public:
+	struct glow_object_t {
 		void set(const col_t& clr, int style) {
-			m_glow_color = vec3_t(clr.r() / 255.f, clr.g() / 255.f, clr.b() / 255.f);
+			m_red = clr.r() / 255.f;
+			m_green = clr.g() / 255.f;
+			m_blue = clr.b() / 255.f;
 			m_alpha = clr.a() / 255.f;
+
 			m_render_when_occluded = true;
 			m_render_when_unoccluded = false;
+
 			m_glow_style = style;
 			m_bloom_amount = 0.8f;
 		}
-	public:
+
+		bool				is_unused() const { return m_next_free_slot != -2; }
+
 		c_base_entity*		m_entity;
-		vec3_t				m_glow_color;
+		float				m_red;
+		float				m_green;
+		float				m_blue;
 		float				m_alpha;
 
 		char				pad0[8];
@@ -28,11 +35,6 @@ public:
 		int					m_glow_style;
 		int					m_split_screen_slot;
 		int					m_next_free_slot;
-
-		bool				is_unused() const { return m_next_free_slot != ENTRY_IN_USE; }
-
-		static const int	END_OF_FREE_LIST = -1;
-		static const int	ENTRY_IN_USE = -2;
 	};
 
 	c_utl_vector<glow_object_t> m_glow_object_definitions;
