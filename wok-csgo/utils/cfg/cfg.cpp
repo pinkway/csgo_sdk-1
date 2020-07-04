@@ -25,19 +25,19 @@ namespace cfg {
 			case fnv1a("float"): cur[_("inner")] = item.second.get<float>(); break;
 			case fnv1a("int"): cur[_("inner")] = item.second.get<int>(); break;
 			case fnv1a("col_t"): {
-				auto col = item.second.get<col_t>();
+				const auto clr = item.second.get<col_t>();
 
 				nlohmann::json sub;
 
-				sub.push_back(col.r());
-				sub.push_back(col.g());
-				sub.push_back(col.b());
-				sub.push_back(col.a());
+				sub.push_back(clr.r());
+				sub.push_back(clr.g());
+				sub.push_back(clr.b());
+				sub.push_back(clr.a());
 
 				cur[_("inner")] = sub.dump();
 			} break;
 			case fnv1a("std::vector<int>"): {
-				auto vec = item.second.get<std::vector<int>>();
+				const auto vec = item.second.get<std::vector<int>>();
 
 				nlohmann::json sub;
 
@@ -48,21 +48,22 @@ namespace cfg {
 				cur[_("inner")] = sub.dump();
 			} break;
 			case fnv1a("std::vector<float>"): {
-				auto vec = item.second.get<std::vector<float>>();
-
-				nlohmann::json sub;
-
-				for (auto& value : vec)
-					sub.push_back(value);
-
-				cur[_("inner")] = sub.dump();
-			} break;
-			case fnv1a("std::vector<bool>"): {
-				auto vec = item.second.get<std::vector<bool>>();
+				const auto vec = item.second.get<std::vector<float>>();
 
 				nlohmann::json sub;
 
 				for (auto& value : vec) {
+					sub.push_back(value);
+				}
+
+				cur[_("inner")] = sub.dump();
+			} break;
+			case fnv1a("std::vector<bool>"): {
+				const auto vec = item.second.get<std::vector<bool>>();
+
+				nlohmann::json sub;
+
+				for (const auto& value : vec) {
 					sub.push_back(static_cast<int>(value));
 				}
 
@@ -105,7 +106,7 @@ namespace cfg {
 			case fnv1a("float"): cur_item.set<float>(item[_("inner")].get<float>()); break;
 			case fnv1a("int"): cur_item.set<int>(item[_("inner")].get<int>()); break;
 			case fnv1a("col_t"): {
-				auto vec = nlohmann::json::parse(item[_("inner")].get<std::string>());
+				const auto vec = nlohmann::json::parse(item[_("inner")].get<std::string>());
 
 				cur_item.set<col_t>(col_t(vec.at(0).get<uint8_t>(), vec.at(1).get<uint8_t>(), vec.at(2).get<uint8_t>(), vec.at(3).get<uint8_t>()));
 			} break;
