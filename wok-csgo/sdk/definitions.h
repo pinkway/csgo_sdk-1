@@ -329,7 +329,9 @@ typedef std::array<float, 24> pose_params;
 typedef std::array<c_animation_layer, 15> anim_layers;
 
 double inline __declspec (naked) __fastcall fast_sqrt(double n) {
-	_asm fld qword ptr[esp + 4]
-	_asm fsqrt
-	_asm ret 8
+	_asm {
+		fld qword ptr[esp + 4]
+		fsqrt
+		ret 8
+	}
 }
