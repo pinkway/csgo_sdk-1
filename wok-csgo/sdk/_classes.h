@@ -42,6 +42,9 @@ class c_bone_merge_cache {
 
 class c_base_entity : public i_client_entity {
 public:
+	template<typename T>
+	__forceinline T& get(int offset) { return *reinterpret_cast<T*>(reinterpret_cast<uintptr_t>(this) + offset); }
+
 	VFUNC(get_pred_desc_map(), 17, datamap_t*(__thiscall*)(void*))
 
 	NETVAR(get_last_made_noise_time(), float, "CBaseEntity->m_flLastMadeNoiseTime")
@@ -107,11 +110,11 @@ public:
 			|| get_index() == 0)
 			return false;
 
-		auto backup_take_damage = get_take_damage();
+		const auto backup_take_damage = get_take_damage();
 
 		static const auto is_breakable_fn = SIG("client.dll", "55 8B EC 51 56 8B F1 85 F6 74 68").cast<bool(__thiscall*)(void*)>();
 
-		auto class_id = get_client_class()->m_class_id;
+		const auto class_id = get_client_class()->m_class_id;
 
 		if (class_id == CBaseDoor
 			|| class_id == CBreakableSurface || class_id == CFuncBrush
@@ -119,7 +122,7 @@ public:
 			get_take_damage() = DAMAGE_YES;
 		}
 
-		auto ret = is_breakable_fn(this);
+		const auto ret = is_breakable_fn(this);
 
 		get_take_damage() = backup_take_damage;
 
@@ -249,7 +252,8 @@ public:
 		vec3_t out;
 		memory::get_vfunc<void(__thiscall*)(void*, vec3_t&)>(this, 284)(this, out);
 
-		auto view_offset = get_view_offset();
+		const auto view_offset = get_view_offset();
+
 		out.z -= view_offset.z - floor(view_offset.z);
 
 		return out;
@@ -350,12 +354,12 @@ public:
 class c_local_player {
 	friend bool operator==(const c_local_player& lhs, void* rhs) { return *lhs.m_loc == rhs; }
 public:
-	c_local_player() : m_loc(nullptr) {}
+	c_local_player() = default;
 
 	operator bool() const { return *m_loc != nullptr; }
 	operator c_cs_player*() const { return *m_loc; }
 
 	c_cs_player* operator->() const { return *m_loc; }
 private:
-	c_cs_player** m_loc;
+	c_cs_player** m_loc = nullptr;
 };

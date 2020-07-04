@@ -4,14 +4,14 @@ std::string c_base_combat_weapon::get_name() {
 	if (!this)
 		return "";
 
-	auto weapon_data = get_cs_weapon_data();
+	const auto weapon_data = get_cs_weapon_data();
 	if (!weapon_data)
 		return "";
 
-	auto localized_name = interfaces::localize->find(weapon_data->m_hud_name);
+	const auto w = std::wstring(interfaces::localize->find_safe(weapon_data->m_hud_name));
 
-	std::wstring w(localized_name);
-	std::string ret(w.begin(), w.end());
+	auto ret = std::string(w.begin(), w.end());
+
 	std::transform(ret.begin(), ret.end(), ret.begin(), ::tolower);
 
 	return ret;
@@ -31,11 +31,11 @@ player_info_t c_cs_player::get_info() {
 }
 
 int c_base_animating::get_sequence_activity(int sequence) {
-	auto model = get_model();
+	const auto model = get_model();
 	if (!model)
 		return -1;
 
-	auto hdr = interfaces::model_info->get_studio_model(model);
+	const auto hdr = interfaces::model_info->get_studio_model(model);
 	if (!hdr)
 		return -1;
 
@@ -45,7 +45,7 @@ int c_base_animating::get_sequence_activity(int sequence) {
 }
 
 c_base_combat_weapon* c_base_combat_character::get_active_weapon() {
-	auto handle = get_active_weapon_handle();
+	const auto handle = get_active_weapon_handle();
 	if (!handle.is_valid())
 		return nullptr;
 
@@ -53,9 +53,12 @@ c_base_combat_weapon* c_base_combat_character::get_active_weapon() {
 }
 
 bool c_base_entity::is_enemy() {
+	if (this == g::local)
+		return false;
+
 	static const auto mp_teammates_are_enemies = interfaces::cvar->find_var(_("mp_teammates_are_enemies"));
 	if (mp_teammates_are_enemies->get_bool())
-		return this != g::local;
+		return true;
 
 	return get_team() != g::local->get_team();
 }

@@ -27,39 +27,39 @@ void c_prediction::start(c_cs_player* player, c_user_cmd* cmd) {
 	interfaces::prediction->m_first_time_predicted = false;
 
 	player->get_cur_cmd() = cmd;
-	*reinterpret_cast<c_user_cmd**>(reinterpret_cast<uintptr_t>(player) + 0x3288) = cmd;
+	player->get<c_user_cmd*>(0x3288) = cmd;
 
 	static const auto md5_pseudo_random_fn = SIG("client.dll", "55 8B EC 83 E4 F8 83 EC 70 6A").cast<uint32_t(__thiscall*)(uint32_t)>();
 
-	*m_prediction_player = reinterpret_cast<int>(player);
-	*m_prediction_random_seed = md5_pseudo_random_fn(cmd->m_command_number) & 0x7FFFFFFF;
+	cmd->m_random_seed = md5_pseudo_random_fn(cmd->m_command_number) & 0x7FFFFFFF;
 
-	auto buttons_forced = *reinterpret_cast<int*>(reinterpret_cast<uintptr_t>(player) + 0x3334);
-	auto buttons_disabled = *reinterpret_cast<int*>(reinterpret_cast<uintptr_t>(player) + 0x3330);
+	*m_player = reinterpret_cast<int>(player);
+	*m_random_seed = cmd->m_random_seed;
 
-	cmd->m_buttons |= buttons_forced;
-	cmd->m_buttons &= ~buttons_disabled;
+	cmd->m_buttons |= player->get<int>(0x3334);
+	cmd->m_buttons &= ~player->get<int>(0x3330);
 
 	interfaces::move_helper->set_host(player);
 	interfaces::game_movement->start_track_prediction_errors(player);
 
 	if (cmd->m_weapon_select) {
-		auto weapon = reinterpret_cast<c_base_combat_weapon*>(interfaces::entity_list->get_client_entity(cmd->m_weapon_select));
+		const auto weapon = reinterpret_cast<c_base_combat_weapon*>(interfaces::entity_list->get_client_entity(cmd->m_weapon_select));
 		if (weapon) {
-			auto weapon_data = weapon->get_cs_weapon_data();
-			weapon_data ? player->select_item(weapon_data->m_weapon_name, cmd->m_weapon_sub_type) : 0;
+			if (const auto weapon_data = weapon->get_cs_weapon_data()) {
+				player->select_item(weapon_data->m_weapon_name, cmd->m_weapon_sub_type);
+			}
 		}
 	}
 
-	auto vehicle_handle = player->get_vehicle();
-	auto vehicle = vehicle_handle.is_valid() ? reinterpret_cast<c_base_entity*>(vehicle_handle.get()) : nullptr;
-	
-	if (cmd->m_impulse 
-		&& (!vehicle || player->using_standard_weapons_in_vehicle()))
-		player->get_impulse() = cmd->m_impulse;
+	const auto vehicle = reinterpret_cast<c_base_entity*>(player->get_vehicle().get());
 
-	auto buttons = cmd->m_buttons;
-	auto buttons_changed = buttons ^ player->get_buttons();
+	if (cmd->m_impulse
+		&& (!vehicle || player->using_standard_weapons_in_vehicle())) {
+		player->get_impulse() = cmd->m_impulse;
+	}
+
+	const auto buttons = cmd->m_buttons;
+	const auto buttons_changed = buttons ^ player->get_buttons();
 
 	player->get_buttons_last() = player->get_buttons();
 	player->get_buttons() = buttons;
@@ -70,7 +70,9 @@ void c_prediction::start(c_cs_player* player, c_user_cmd* cmd) {
 
 	player->set_local_view_angles(cmd->m_view_angles);
 
-	player->physics_run_think(0) ? player->pre_think() : 0;
+	if (player->physics_run_think(0)) {
+		player->pre_think();
+	}
 
 	if (player->get_next_think_tick()
 		&& player->get_next_think_tick() != -1
@@ -105,10 +107,14 @@ void c_prediction::end(c_cs_player* player, c_user_cmd* cmd) {
 	interfaces::game_movement->reset();
 
 	player->get_cur_cmd() = nullptr;
-	*m_prediction_random_seed = -1;
-	*m_prediction_player = 0;
 
-	!interfaces::prediction->m_engine_paused && interfaces::global_vars->m_frame_time ? player->get_tick_base()++ : 0;
+	*m_random_seed = -1;
+	*m_player = 0;
+
+	if (!interfaces::prediction->m_engine_paused 
+		&& interfaces::global_vars->m_frame_time > 0.f) {
+		player->get_tick_base()++;
+	}
 
 	interfaces::global_vars->m_cur_time = m_backup.m_cur_time;
 	interfaces::global_vars->m_frame_time = m_backup.m_frame_time;

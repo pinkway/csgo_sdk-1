@@ -13,7 +13,7 @@ namespace netvars {
 
 	void dump_recursive(const char* base_class, recv_table* table, uint32_t offset) {
 		for (int i = 0; i < table->m_num_props; i++) {
-			auto prop = &table->m_props[i];
+			const auto prop = &table->m_props[i];
 			if (!prop
 				|| isdigit(prop->m_var_name[0])
 				|| !strcmp(prop->m_var_name, _("baseclass")))
@@ -31,7 +31,7 @@ namespace netvars {
 			strcat_s(hash_name, _("->"));
 			strcat_s(hash_name, prop->m_var_name);
 
-			auto hash = fnv1a_rt(static_cast<const char*>(hash_name));
+			const auto hash = fnv1a_rt(static_cast<const char*>(hash_name));
 
 			m_props[hash] = { prop, static_cast<uint32_t>(offset + prop->m_offset) };
 		}

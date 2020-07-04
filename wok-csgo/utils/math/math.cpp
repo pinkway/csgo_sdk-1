@@ -33,11 +33,11 @@ namespace math {
 	}
 
 	qangle_t calc_angle(const vec3_t& src, const vec3_t& dst) {
-		auto delta = src - dst;
+		const auto delta = src - dst;
 		if (delta.empty())
 			return qangle_t();
 
-		auto length = delta.length();
+		const auto length = delta.length();
 
 		if (delta.z == 0.f && length == 0.f
 			|| delta.y == 0.f && delta.x == 0.f)

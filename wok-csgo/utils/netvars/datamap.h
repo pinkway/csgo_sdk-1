@@ -88,8 +88,7 @@ __declspec(noinline) static uint32_t find_in_data_map(datamap_t* map, uint32_t h
 
 			if (map->m_data_description[i].m_field_type == FIELD_EMBEDDED) {
 				if (map->m_data_description[i].m_datamap) {
-					auto offset = find_in_data_map(map->m_data_description[i].m_datamap, hash);
-					if (offset)
+					if (const auto offset = find_in_data_map(map->m_data_description[i].m_datamap, hash))
 						return offset;
 				}
 			}

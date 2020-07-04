@@ -4,7 +4,7 @@ void c_menu::on_paint() {
 	if (!(input::m_blocked = input::get_key(VK_INSERT, TOGGLE)))
 		return;
 
-	auto screen_size = ImGui::GetIO().DisplaySize;
+	const auto screen_size = ImGui::GetIO().DisplaySize;
 	
 	ImGui::SetNextWindowPos(ImVec2(screen_size.x * 0.5f, screen_size.y * 0.5f), ImGuiCond_Once, ImVec2(0.5f, 0.5f));
 

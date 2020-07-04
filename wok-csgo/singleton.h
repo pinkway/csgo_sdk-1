@@ -13,7 +13,8 @@ protected:
 	c_singleton& operator=(c_singleton&&) = delete;
 public:
 	static T* instance() {
-		static T instance{};
+		static auto instance = T();
+
 		return &instance;
 	}
 };

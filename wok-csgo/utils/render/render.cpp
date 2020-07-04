@@ -30,15 +30,21 @@ namespace render {
 		if (!font->ContainerAtlas)
 			return vec2_t();
 
-		auto text_size = font->CalcTextSizeA(size, FLT_MAX, 0.f, txt.c_str());
+		const auto text_size = font->CalcTextSizeA(size, FLT_MAX, 0.f, txt.c_str());
 
-		flags & FONT_CENTERED_X ? pos.x -= text_size.x * 0.5f : 0;
+		if (flags & FONT_CENTERED_X) {
+			pos.x -= text_size.x / 2.f;
+		}
 
-		flags & FONT_CENTERED_Y ? pos.y -= text_size.y * 0.5f : 0;
+		if (flags & FONT_CENTERED_Y) {
+			pos.y -= text_size.y / 2.f;
+		}
 
 		m_draw_list->PushTextureID(font->ContainerAtlas->TexID);
 
-		flags & FONT_DROP_SHADOW ? m_draw_list->AddText(font, size, ImVec2(pos.x + 1, pos.y + 1), col_t(clr.a()).direct(), txt.c_str()) : 0;
+		if (flags & FONT_DROP_SHADOW) {
+			m_draw_list->AddText(font, size, ImVec2(pos.x + 1, pos.y + 1), col_t(clr.a()).direct(), txt.c_str());
+		}
 
 		if (flags & FONT_OUTLINE) {
 			m_draw_list->AddText(font, size, ImVec2(pos.x + 1, pos.y + 1), col_t(clr.a()).direct(), txt.c_str());
@@ -67,7 +73,7 @@ namespace render {
 	}
 
 	void add_to_draw_list() {
-		std::unique_lock<std::mutex> lock(mutex, std::try_to_lock);
+		const std::unique_lock<std::mutex> lock(mutex, std::try_to_lock);
 		if (!lock.owns_lock())
 			return;
 
@@ -78,13 +84,14 @@ namespace render {
 		m_draw_list->Clear();
 		m_draw_list->PushClipRectFullScreen();
 
-		auto screen_size = ImGui::GetIO().DisplaySize;
+		const auto screen_size = ImGui::GetIO().DisplaySize;
 		render::m_screen_size = vec2_t(screen_size.x, screen_size.y);
 
 		// call ur visuals etc... here
 
 		{
-			std::unique_lock<std::mutex> lock(mutex);
+			const std::unique_lock<std::mutex> lock(mutex);
+
 			*m_temp_draw_list = *m_draw_list;
 		}
 	}
@@ -116,7 +123,7 @@ namespace render {
 			out.x = matrix[0][0] * in.x + matrix[0][1] * in.y + matrix[0][2] * in.z + matrix[0][3];
 			out.y = matrix[1][0] * in.x + matrix[1][1] * in.y + matrix[1][2] * in.z + matrix[1][3];
 
-			auto w = matrix[3][0] * in.x + matrix[3][1] * in.y + matrix[3][2] * in.z + matrix[3][3];
+			const auto w = matrix[3][0] * in.x + matrix[3][1] * in.y + matrix[3][2] * in.z + matrix[3][3];
 
 			if (w < 0.001f) {
 				out.x *= 100000.f;

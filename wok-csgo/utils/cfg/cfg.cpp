@@ -8,7 +8,7 @@ namespace cfg {
 	}
 
 	void save() {
-		auto path = std::filesystem::path(m_folder) /= m_name;
+		const auto path = std::filesystem::path(m_folder) /= m_name;
 
 		std::filesystem::create_directory(path.parent_path());
 
@@ -81,7 +81,7 @@ namespace cfg {
 	}
 
 	void load() {
-		auto path = std::filesystem::path(m_folder) /= m_name;
+		const auto path = std::filesystem::path(m_folder) /= m_name;
 
 		std::filesystem::create_directory(path.parent_path());
 
@@ -94,11 +94,11 @@ namespace cfg {
 		file.close();
 
 		for (auto& item : in) {
-			auto hash = item[_("identifier")].get<uint32_t>();
+			const auto hash = item[_("identifier")].get<uint32_t>();
 			if (m_items.find(hash) == m_items.end())
 				continue;
 
-			auto& cur_item = m_items[hash];
+			auto& cur_item = m_items.at(hash);
 
 			switch (item["type"].get<uint32_t>()) {
 			case fnv1a("bool"): cur_item.set<bool>(item[_("inner")].get<bool>()); break;
@@ -110,7 +110,7 @@ namespace cfg {
 				cur_item.set<col_t>(col_t(vec.at(0).get<uint8_t>(), vec.at(1).get<uint8_t>(), vec.at(2).get<uint8_t>(), vec.at(3).get<uint8_t>()));
 			} break;
 			case fnv1a("std::vector<int>"): {
-				auto vec = nlohmann::json::parse(item[_("inner")].get<std::string>());
+				const auto vec = nlohmann::json::parse(item[_("inner")].get<std::string>());
 
 				auto& item_vec = cur_item.get<std::vector<int>>();
 
@@ -122,7 +122,7 @@ namespace cfg {
 				}
 			} break;
 			case fnv1a("std::vector<float>"): {
-				auto vec = nlohmann::json::parse(item[_("inner")].get<std::string>());
+				const auto vec = nlohmann::json::parse(item[_("inner")].get<std::string>());
 
 				auto& item_vec = cur_item.get<std::vector<float>>();
 
@@ -134,7 +134,7 @@ namespace cfg {
 				}
 			} break;
 			case fnv1a("std::vector<bool>"): {
-				auto vec = nlohmann::json::parse(item[_("inner")].get<std::string>());
+				const auto vec = nlohmann::json::parse(item[_("inner")].get<std::string>());
 
 				auto& item_vec = cur_item.get<std::vector<bool>>();
 

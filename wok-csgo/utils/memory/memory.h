@@ -46,7 +46,7 @@ namespace memory {
 			if (!m_vtable)
 				return false;
 
-			auto protect = protect_t(m_vtable, sizeof(uintptr_t), PAGE_READWRITE);
+			const auto protect = protect_t(m_vtable, sizeof(uintptr_t), PAGE_READWRITE);
 
 			m_original = *m_vtable;
 
@@ -97,7 +97,7 @@ namespace memory {
 			if (!m_original)
 				return;
 
-			auto protect = protect_t(m_vtable, sizeof(uintptr_t), PAGE_READWRITE);
+			const auto protect = protect_t(m_vtable, sizeof(uintptr_t), PAGE_READWRITE);
 
 			*m_vtable = m_original;
 			m_original = nullptr;
@@ -146,7 +146,7 @@ namespace memory {
 		MODULEENTRY32 entry;
 		entry.dwSize = sizeof(MODULEENTRY32);
 
-		auto snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, process);
+		const auto snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, process);
 
 		if (Module32First(snapshot, &entry)) {
 			while (Module32Next(snapshot, &entry)) {
@@ -189,7 +189,7 @@ namespace memory {
 			return bytes;
 		};
 
-		auto sig_bytes = sig_to_bytes(sig);
+		const auto sig_bytes = sig_to_bytes(sig);
 		const auto size = sig_bytes.size();
 		const auto data = sig_bytes.data();
 
@@ -213,7 +213,7 @@ namespace memory {
 	}
 
 	__forceinline address_t find_module_sig(uint32_t hash, const char* sig) {
-		auto module = get_module_handle(hash);
+		const auto module = get_module_handle(hash);
 		if (!module)
 			return address_t();
 
@@ -225,11 +225,11 @@ namespace memory {
 
 	template<typename T>
 	__forceinline T capture_interface(const char* module_name, const char* interface_name) {
-		auto module_handle = GetModuleHandleA(module_name);
+		const auto module_handle = GetModuleHandleA(module_name);
 		if (!module_handle)
 			return nullptr;
 
-		auto create_interface_fn = reinterpret_cast<T(*)(const char*, int*)>(GetProcAddress(module_handle, _("CreateInterface")));
+		const auto create_interface_fn = reinterpret_cast<T(*)(const char*, int*)>(GetProcAddress(module_handle, _("CreateInterface")));
 		if (!create_interface_fn)
 			return nullptr;
 
