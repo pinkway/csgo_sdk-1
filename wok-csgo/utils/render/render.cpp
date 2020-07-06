@@ -43,17 +43,17 @@ namespace render {
 		m_draw_list->PushTextureID(font->ContainerAtlas->TexID);
 
 		if (flags & FONT_DROP_SHADOW) {
-			m_draw_list->AddText(font, size, ImVec2(pos.x + 1, pos.y + 1), col_t(clr.a()).direct(), txt.c_str());
+			m_draw_list->AddText(font, size, ImVec2(pos.x + 1, pos.y + 1), col_t(clr.a()).hex(), txt.c_str());
 		}
 
 		if (flags & FONT_OUTLINE) {
-			m_draw_list->AddText(font, size, ImVec2(pos.x + 1, pos.y + 1), col_t(clr.a()).direct(), txt.c_str());
-			m_draw_list->AddText(font, size, ImVec2(pos.x - 1, pos.y - 1), col_t(clr.a()).direct(), txt.c_str());
-			m_draw_list->AddText(font, size, ImVec2(pos.x + 1, pos.y - 1), col_t(clr.a()).direct(), txt.c_str());
-			m_draw_list->AddText(font, size, ImVec2(pos.x - 1, pos.y + 1), col_t(clr.a()).direct(), txt.c_str());
+			m_draw_list->AddText(font, size, ImVec2(pos.x + 1, pos.y + 1), col_t(clr.a()).hex(), txt.c_str());
+			m_draw_list->AddText(font, size, ImVec2(pos.x - 1, pos.y - 1), col_t(clr.a()).hex(), txt.c_str());
+			m_draw_list->AddText(font, size, ImVec2(pos.x + 1, pos.y - 1), col_t(clr.a()).hex(), txt.c_str());
+			m_draw_list->AddText(font, size, ImVec2(pos.x - 1, pos.y + 1), col_t(clr.a()).hex(), txt.c_str());
 		}
 
-		m_draw_list->AddText(font, size, ImVec2(pos.x, pos.y), clr.direct(), txt.c_str());
+		m_draw_list->AddText(font, size, ImVec2(pos.x, pos.y), clr.hex(), txt.c_str());
 
 		m_draw_list->PopTextureID();
 
@@ -61,19 +61,19 @@ namespace render {
 	}
 
 	void line(const vec2_t& from, const vec2_t& to, const col_t& clr) {
-		m_draw_list->AddLine(ImVec2(from.x, from.y), ImVec2(to.x, to.y), clr.direct());
+		m_draw_list->AddLine(ImVec2(from.x, from.y), ImVec2(to.x, to.y), clr.hex());
 	}
 
 	void rect(const vec2_t& pos, const vec2_t& size, const col_t& clr) {
-		m_draw_list->AddRect(ImVec2(pos.x, pos.y), ImVec2(pos.x + size.x, pos.y + size.y), clr.direct());
+		m_draw_list->AddRect(ImVec2(pos.x, pos.y), ImVec2(pos.x + size.x, pos.y + size.y), clr.hex());
 	}
 
 	void rect_filled(const vec2_t& pos, const vec2_t& size, const col_t& clr) {
-		m_draw_list->AddRectFilled(ImVec2(pos.x, pos.y), ImVec2(pos.x + size.x, pos.y + size.y), clr.direct());
+		m_draw_list->AddRectFilled(ImVec2(pos.x, pos.y), ImVec2(pos.x + size.x, pos.y + size.y), clr.hex());
 	}
 
 	void add_to_draw_list() {
-		const std::unique_lock<std::mutex> lock(mutex, std::try_to_lock);
+		const auto lock = std::unique_lock<std::mutex>(mutex, std::try_to_lock);
 		if (!lock.owns_lock())
 			return;
 
@@ -90,7 +90,7 @@ namespace render {
 		// call ur visuals etc... here
 
 		{
-			const std::unique_lock<std::mutex> lock(mutex);
+			const auto lock = std::unique_lock<std::mutex>(mutex);
 
 			*m_temp_draw_list = *m_draw_list;
 		}
@@ -99,20 +99,22 @@ namespace render {
 	void multi_rect(const std::vector<vec2_t> points, const col_t& clr) {
 		m_draw_list->_Path.reserve(m_draw_list->_Path.Size + points.size() + 1);
 
-		for (auto& point : points)
+		for (auto& point : points) {
 			m_draw_list->_Path.push_back(ImVec2(point.x, point.y));
-
-		m_draw_list->AddPolyline(m_draw_list->_Path.Data, m_draw_list->_Path.Size, clr.direct(), true, 1.f);
+		}
+		
+		m_draw_list->AddPolyline(m_draw_list->_Path.Data, m_draw_list->_Path.Size, clr.hex(), true, 1.f);
 		m_draw_list->_Path.Size = 0;
 	}
 
 	void multi_rect_filled(const std::vector<vec2_t> points, const col_t& clr) {
 		m_draw_list->_Path.reserve(m_draw_list->_Path.Size + points.size() + 1);
 
-		for (auto& point : points)
+		for (auto& point : points) {
 			m_draw_list->_Path.push_back(ImVec2(point.x, point.y));
+		}
 
-		m_draw_list->AddConvexPolyFilled(m_draw_list->_Path.Data, m_draw_list->_Path.Size, clr.direct());
+		m_draw_list->AddConvexPolyFilled(m_draw_list->_Path.Data, m_draw_list->_Path.Size, clr.hex());
 		m_draw_list->_Path.Size = 0;
 	}
 
@@ -131,7 +133,8 @@ namespace render {
 				return true;
 			}
 
-			auto inv_w = 1.f / w;
+			const auto inv_w = 1.f / w;
+
 			out.x *= inv_w;
 			out.y *= inv_w;
 

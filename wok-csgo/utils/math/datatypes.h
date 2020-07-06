@@ -19,7 +19,7 @@ struct vec2_t {
 	vec2_t operator*(float in) const { return vec2_t(x * in, y * in); }
 
 	vec2_t operator-() const { return vec2_t(-x, -y); }
-	
+
 	vec2_t& operator-=(const vec2_t& in) {
 		x -= in.x;
 		y -= in.y;
@@ -49,7 +49,7 @@ struct vec2_t {
 	}
 
 	void normalize() {
-		auto l = length();
+		const auto l = length();
 
 		x /= l;
 		y /= l;
@@ -92,7 +92,7 @@ struct vec3_t {
 
 	vec3_t operator-(const vec3_t& in) const { return vec3_t(x - in.x, y - in.y, z - in.z); }
 
-	vec3_t operator-(float in) const { return vec3_t(x - in, y - in, z - in); }
+	vec3_t operator-(float in) const{ return vec3_t(x - in, y - in, z - in); }
 
 	vec3_t operator+(float in) const { return vec3_t(x + in, y + in, z + in); }
 
@@ -151,7 +151,7 @@ struct vec3_t {
 	}
 
 	void normalize() {
-		auto l = length();
+		const auto l = length();
 
 		x /= l;
 		y /= l;
@@ -168,12 +168,6 @@ struct vec3_t {
 
 	bool operator!=(const vec3_t& in) const { return !(operator==(in)); }
 
-	void make_absolute() {
-		x = abs(x);
-		y = abs(y);
-		z = abs(z);
-	}
-
 	float length_sqr() const { return x * x + y * y + z * z; }
 
 	float length() const { return fast_sqrt(length_sqr()); }
@@ -186,13 +180,13 @@ struct vec3_t {
 
 	vec3_t cross_product(const vec3_t& in) const { return vec3_t(y * in.z - z * in.y, z * in.x - x * in.z, x * in.y - y * in.x); }
 
-	vec3_t transform(const matrix3x4_t& in2) const;
+	vec3_t transform(const matrix3x4_t& in) const;
 
-	vec3_t i_transform(const matrix3x4_t& in2) const;
+	vec3_t i_transform(const matrix3x4_t& in) const;
 
-	vec3_t rotate(const matrix3x4_t& in2) const;
+	vec3_t rotate(const matrix3x4_t& in) const;
 
-	vec3_t i_rotate(const matrix3x4_t& in2) const;
+	vec3_t i_rotate(const matrix3x4_t& in) const;
 
 	float dist_to(const vec3_t& in) const { return (*this - in).length(); }
 
@@ -209,14 +203,14 @@ struct ALIGN16 vector_aligned_t : public vec3_t {
 	vector_aligned_t(const vec3_t& in) { x = in.x; y = in.y; z = in.z; }
 
 	vector_aligned_t& operator=(const vec3_t& in) {
-		x = in.x;
-		y = in.y;
+		x = in.x; 
+		y = in.y; 
 		z = in.z;
 
 		return *this;
 	}
 
-	vector_aligned_t& operator=(const vector_aligned_t& in) {
+	vector_aligned_t& operator=(const vector_aligned_t& in)  {
 		x = in.x;
 		y = in.y;
 		z = in.z;
@@ -278,6 +272,10 @@ struct qangle_t {
 		return *this;
 	}
 
+	bool operator==(const qangle_t& in) const { return x == in.x && y == in.y && z == in.z; }
+
+	bool operator!=(const qangle_t& in) const { return !(operator==(in)); }
+
 	void normalize();
 
 	qangle_t& normalized() {
@@ -285,10 +283,6 @@ struct qangle_t {
 
 		return *this;
 	}
-
-	bool operator==(const qangle_t& in) const { return x == in.x && y == in.y && z == in.z; }
-
-	bool operator!=(const qangle_t& in) const { return !(operator==(in)); }
 
 	float length_sqr() const { return x * x + y * y + z * z; }
 
@@ -311,21 +305,25 @@ struct col_t {
 	std::array<uint8_t, 4> clr = {};
 
 	void set(int r, int g, int b, int a) {
-		clr[0] = static_cast<uint8_t>(r);
-		clr[1] = static_cast<uint8_t>(g);
-		clr[2] = static_cast<uint8_t>(b);
-		clr[3] = static_cast<uint8_t>(a);
+		clr.at(0) = static_cast<uint8_t>(r);
+		clr.at(1) = static_cast<uint8_t>(g);
+		clr.at(2) = static_cast<uint8_t>(b);
+		clr.at(3) = static_cast<uint8_t>(a);
 	}
 
-	inline int r() const { return clr[0]; }
+	__forceinline int r() const { return clr.at(0); }
 
-	inline int g() const { return clr[1]; }
+	__forceinline int g() const { return clr.at(1); }
 
-	inline int b() const { return clr[2]; }
+	__forceinline int b() const { return clr.at(2); }
 
-	inline int a() const { return clr[3]; }
+	__forceinline int a() const { return clr.at(3); }
 
-	unsigned int direct() const { return ((clr[3] & 0xFF) << 24) + ((clr[2] & 0xFF) << 16) + ((clr[1] & 0xFF) << 8) + (clr[0] & 0xFF); }
+	unsigned int hex(bool rgba = false) const { 
+		return rgba
+			? ((r() & 0xFF) << 24) + ((g() & 0xFF) << 16) + ((b() & 0xFF) << 8) + (a() & 0xFF)
+			: ((a() & 0xFF) << 24) + ((b() & 0xFF) << 16) + ((g() & 0xFF) << 8) + (r() & 0xFF);
+	}
 
 	col_t& operator=(const col_t& in) {
 		set(in.r(), in.g(), in.b(), in.a());
@@ -385,29 +383,29 @@ struct col_t {
 
 	bool operator!=(const col_t& in) const { return !(operator==(in)); }
 
-	float hue() const {
-		auto r = clr[0] / 255.f;
-		auto g = clr[1] / 255.f;
-		auto b = clr[2] / 255.f;
+		float hue() const {
+		const auto red = r() / 255.f;
+		const auto green = g() / 255.f;
+		const auto blue = b() / 255.f;
 
-		auto max = max(r, max(g, b));
-		auto min = min(r, min(g, b));
+		const auto max = max(red, max(green, blue));
+		const auto min = min(red, min(green, blue));
 
 		if (max == min)
 			return 0.f;
 
-		auto delta = max - min;
+		const auto delta = max - min;
 
 		auto hue = 0.f;
 
-		if (max == r) {
-			hue = (g - b) / delta;
+		if (max == red) {
+			hue = (green - blue) / delta;
 		}
-		else if (max == g) {
-			hue = 2.f + (b - r) / delta;
+		else if (max == green) {
+			hue = 2.f + (blue - red) / delta;
 		}
 		else {
-			hue = 4.f + (r - g) / delta;
+			hue = 4.f + (red - green) / delta;
 		}
 
 		hue *= 60.f;
@@ -420,14 +418,14 @@ struct col_t {
 	}
 
 	float saturation() const {
-		auto r = clr[0] / 255.f;
-		auto g = clr[1] / 255.f;
-		auto b = clr[2] / 255.f;
+		const auto red = r() / 255.f;
+		const auto green = g() / 255.f;
+		const auto blue = b() / 255.f;
 
-		auto max = max(r, max(g, b));
-		auto min = min(r, min(g, b));
+		const auto max = max(red, max(green, blue));
+		const auto min = min(red, min(green, blue));
 
-		auto delta = max - min;
+		const auto delta = max - min;
 
 		if (max == 0.f)
 			return delta;
@@ -435,11 +433,14 @@ struct col_t {
 		return delta / max;
 	}
 
-	float brightness() const { return max(clr[0] / 255.f, max(clr[1] / 255.f, clr[2] / 255.f)); }
+	float brightness() const { return max(r() / 255.f, max(g() / 255.f, b() / 255.f)); }
 
 	static col_t from_hsb(float hue, float saturation, float brightness) {
-		auto h = hue == 1.f ? 0 : hue * 6.f, f = h - static_cast<int>(h), p = brightness * (1.f - saturation), 
-			q = brightness * (1.f - saturation * f), t = brightness * (1.f - (saturation * (1.f - f)));
+		const auto h = hue == 1.f ? 0 : hue * 6.f;
+		const auto f = h - static_cast<int>(h);
+		const auto p = brightness * (1.f - saturation);
+		const auto q = brightness * (1.f - saturation * f);
+		const auto t = brightness * (1.f - (saturation * (1.f - f)));
 
 		if (h < 1.f) {
 			return col_t(
@@ -513,23 +514,7 @@ struct col_t {
 
 struct matrix3x4_t {
 	matrix3x4_t() = default;
-	matrix3x4_t(float m00, float m01, float m02, float m03, float m10, float m11, float m12, float m13, float m20, float m21, float m22, float m23) {
-		m_matrix[0][0] = m00;
-		m_matrix[0][1] = m01;
-		m_matrix[0][2] = m02;
-		m_matrix[0][3] = m03;
-		m_matrix[1][0] = m10;
-		m_matrix[1][1] = m11;
-		m_matrix[1][2] = m12;
-		m_matrix[1][3] = m13;
-		m_matrix[2][0] = m20;
-		m_matrix[2][1] = m21;
-		m_matrix[2][2] = m22;
-		m_matrix[2][3] = m23;
-	}
-	matrix3x4_t(const vec3_t& x_axis, const vec3_t& y_axis, const vec3_t& z_axis, const vec3_t& vec_origin) { init(x_axis, y_axis, z_axis, vec_origin); }
-
-	void init(const vec3_t& x_axis, const vec3_t& y_axis, const vec3_t& z_axis, const vec3_t& vec_origin) {
+	matrix3x4_t(const vec3_t& x_axis, const vec3_t& y_axis, const vec3_t& z_axis, const vec3_t& vec_origin) { 
 		m_matrix[0][0] = x_axis.x;
 		m_matrix[0][1] = y_axis.x;
 		m_matrix[0][2] = z_axis.x;
