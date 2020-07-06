@@ -8,13 +8,11 @@ std::string c_base_combat_weapon::get_name() {
 	if (!weapon_data)
 		return "";
 
-	const auto w = std::wstring(interfaces::localize->find_safe(weapon_data->m_hud_name));
+	auto name = utils::to_utf8(interfaces::localize->find_safe(weapon_data->m_hud_name));
 
-	auto ret = std::string(w.begin(), w.end());
+	std::transform(name.begin(), name.end(), name.begin(), ::tolower);
 
-	std::transform(ret.begin(), ret.end(), ret.begin(), ::tolower);
-
-	return ret;
+	return name;
 }
 
 c_cs_weapon_data* c_base_combat_weapon::get_cs_weapon_data() {

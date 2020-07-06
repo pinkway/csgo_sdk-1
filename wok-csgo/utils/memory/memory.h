@@ -144,25 +144,29 @@ namespace memory {
 
 	__forceinline uintptr_t get_module_handle(uint32_t module, uint32_t process = 0) {
 		MODULEENTRY32 entry;
+
 		entry.dwSize = sizeof(MODULEENTRY32);
 
 		const auto snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, process);
 
+		uintptr_t ret = 0;
+
 		if (Module32First(snapshot, &entry)) {
-			while (Module32Next(snapshot, &entry)) {
-				std::string name = entry.szModule;
+			do {
+				auto name = std::string(entry.szModule);
+
 				std::transform(name.begin(), name.end(), name.begin(), ::tolower);
 
-				if (fnv1a_rt(name.c_str()) == module) {
-					CloseHandle(snapshot);
-					return reinterpret_cast<uintptr_t>(entry.hModule);
-				}
-			}
+				if (fnv1a_rt(name.c_str()) != module)
+					continue;
+
+				ret = reinterpret_cast<uintptr_t>(entry.hModule);
+			} while (Module32Next(snapshot, &entry));
 		}
 
 		CloseHandle(snapshot);
 
-		return 0;
+		return ret;
 	}
 
 	__forceinline address_t find_sig(uint32_t offset, const char* sig, uint32_t range = 0) {
@@ -217,8 +221,8 @@ namespace memory {
 		if (!module)
 			return address_t();
 
-		const auto dos_header = PIMAGE_DOS_HEADER(module);
-		const auto nt_headers = PIMAGE_NT_HEADERS(reinterpret_cast<uint8_t*>(module) + dos_header->e_lfanew);
+		const auto dos_header = reinterpret_cast<PIMAGE_DOS_HEADER>(module);
+		const auto nt_headers = reinterpret_cast<PIMAGE_NT_HEADERS>(reinterpret_cast<uint8_t*>(module) + dos_header->e_lfanew);
 
 		return find_sig(module, sig, nt_headers->OptionalHeader.SizeOfImage);
 	}
