@@ -1,6 +1,6 @@
 #pragma once
 
-typedef struct player_info_s {
+struct player_info_t {
 	int64_t			pad0;
 	union {
 		int64_t		m_xuid;
@@ -18,7 +18,7 @@ typedef struct player_info_s {
 	bool			m_is_hltv;
 	unsigned int	m_custom_files[4];
 	unsigned char	m_files_downloaded;
-} player_info_t;
+};
 
 class c_bone_cache {
 public:
@@ -27,6 +27,7 @@ public:
 	unsigned int	m_cached_bones_count;
 };
 
+class c_base_entity;
 class c_base_animating;
 
 class c_bone_accessor {
@@ -55,7 +56,6 @@ public:
 	int				m_invalidate_physics_bits;
 };
 
-class c_base_entity;
 class c_base_combat_weapon;
 
 class c_anim_state {
