@@ -87,7 +87,7 @@ public:
 	c_base_combat_weapon*	m_active_weapon;
 	c_base_combat_weapon*	m_last_active_weapon;
 	float					m_last_client_side_animation_update_time;
-	int						m_last_client_side_animation_update_framecount;
+	int						m_last_client_side_animation_update_frame_count;
 	float					m_delta_time;
 	float					m_eye_yaw;
 	float					m_eye_pitch;
@@ -110,7 +110,7 @@ public:
 	float					m_speed_2d;
 	float					m_up_velocity;
 	float					m_speed_normalized;
-	float					m_feet_speed_forwards_or_sideWays;
+	float					m_feet_speed_forwards_or_sideways;
 	float					m_feet_speed_unknown_forward_or_sideways;
 	float					m_time_since_started_moving;
 	float					m_time_since_stopped_moving;
@@ -123,12 +123,18 @@ public:
 	float					m_stop_to_full_running_fraction;
 	char					pad7[4];
 	float					m_magic_fraction;
-	char					pad8[60];
-	float					m_world_force;
-	char					pad9[456];
+	char					pad8[48];
+	float					m_last_velocity_test_time;
+	vec3_t					m_last_velocity;
+	vec3_t					m_dst_acceleration;
+	vec3_t					m_acceleration;
+	float					m_acceleration_weight;
+	char					pad10[428];
 	float					m_min_body_yaw;
 	float					m_max_body_yaw;
-	char					pad10[36];
+	float					m_min_body_pitch;
+	float					m_max_body_pitch;
+	int						m_anim_set_version;
 };
 
 class c_cs_weapon_data {
