@@ -7,7 +7,7 @@ namespace interfaces {
 		_INTERFACE(entity_list, i_client_entity_list, "client.dll", "VClientEntityList003")
 
 		_INTERFACE_OFFSET(client_mode, i_client_mode, client_dll, 10, 0x5)
-		_INTERFACE_OFFSET(global_vars, i_global_vars, client_dll, 0, 0x1B)
+		_INTERFACE_OFFSET(global_vars, i_global_vars, client_dll, 11, 0xA)
 		_INTERFACE_OFFSET(client_state, i_client_state, engine, 12, 0x10)
 
 		mem_alloc = *reinterpret_cast<i_mem_alloc**>(GetProcAddress(reinterpret_cast<HMODULE>(memory::get_module_handle(fnv1a("tier0.dll"))), _("g_pMemAlloc")));
