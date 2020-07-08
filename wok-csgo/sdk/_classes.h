@@ -56,8 +56,8 @@ public:
 	NETVAR(get_model_index(), int, "CBaseEntity->m_nModelIndex")
 	NETVAR(is_spotted(), bool, "CBaseEntity->m_bSpotted")
 
-	NETVAR(get_simulation_time(), float, "CBaseEntity->m_flSimulationTime")
-	NETVAR_OFFSET(get_old_simulation_time(), float, "CBaseEntity->m_flSimulationTime", 0x4)
+	NETVAR(get_sim_time(), float, "CBaseEntity->m_flSimulationTime")
+	NETVAR_OFFSET(get_old_sim_time(), float, "CBaseEntity->m_flSimulationTime", 0x4)
 	NETVAR_OFFSET(get_rgfl_coordinate_frame(), matrix3x4_t, "CBaseEntity->m_CollisionGroup", -0x30)
 
 	VFUNC(get_abs_angles(), 11, qangle_t&(__thiscall*)(void*))
@@ -315,8 +315,8 @@ public:
 
 	OFFSET(get_anim_state(), c_anim_state*, 0x3914)
 
-	VFUNC(standard_blending_rules(studiohdr_t* hdr, vec3_t* vec, quaternion_t* q, float time, int mask), 205, void(__thiscall*)(void*, studiohdr_t*, vec3_t*, quaternion_t*, float, int), hdr, vec, q, time, mask)
-	VFUNC(build_transformations(studiohdr_t* hdr, vec3_t* vec, quaternion_t* q, matrix3x4_t& transform, int mask, uint8_t* computed), 189, void(__thiscall*)(void*, studiohdr_t*, vec3_t*, quaternion_t*, matrix3x4_t const&, int, uint8_t*), hdr, vec, q, transform, mask, computed)
+	VFUNC(standard_blending_rules(c_studio_hdr* hdr, vec3_t* vec, quaternion_t* q, float time, int mask), 205, void(__thiscall*)(void*, c_studio_hdr*, vec3_t*, quaternion_t*, float, int), hdr, vec, q, time, mask)
+	VFUNC(build_transformations(c_studio_hdr* hdr, vec3_t* vec, quaternion_t* q, matrix3x4_t& transform, int mask, uint8_t* computed), 189, void(__thiscall*)(void*, c_studio_hdr*, vec3_t*, quaternion_t*, matrix3x4_t const&, int, uint8_t*), hdr, vec, q, transform, mask, computed)
 	VFUNC(update_ik_locks(float time), 191, void(__thiscall*)(void*, float), time)
 	VFUNC(calculate_ik_locks(float time), 192, void(__thiscall*)(void*, float), time)
 	VFUNC(update_client_side_animation(), 223, void(__thiscall*)(void*))
