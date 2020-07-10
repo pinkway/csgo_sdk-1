@@ -16,8 +16,8 @@ struct cplane_t {
 	char		pad0[2];
 };
 
-enum trace_type_t {
-	TRACE_EVERYTHING = 0,
+enum e_trace_type {
+	TRACE_EVERYTHING,
 	TRACE_WORLD_ONLY,
 	TRACE_ENTITIES_ONLY,
 	TRACE_EVERYTHING_FILTER_PROPS
@@ -26,24 +26,24 @@ enum trace_type_t {
 class i_trace_filter {
 public:
 	virtual bool should_hit_entity(i_handle_entity* handle, int mask) = 0;
-	virtual trace_type_t get_trace_type() const = 0;
+	virtual e_trace_type get_trace_type() const = 0;
 };
 
 class c_trace_filter : public i_trace_filter {
 public:
 	c_trace_filter() = default;
-	c_trace_filter(i_handle_entity* skip, trace_type_t type = TRACE_EVERYTHING) {
+	c_trace_filter(i_handle_entity* skip, e_trace_type type = TRACE_EVERYTHING) {
 		m_skip = skip;
 		m_type = type;
 	}
 
 	bool should_hit_entity(i_handle_entity* handle, int mask) { return handle != m_skip; }
 
-	trace_type_t get_trace_type() const { return m_type; }
+	e_trace_type get_trace_type() const { return m_type; }
 
 	i_handle_entity* m_skip = nullptr;
 
-	trace_type_t m_type = TRACE_EVERYTHING;
+	e_trace_type m_type = TRACE_EVERYTHING;
 };
 
 class c_trace_filter_skip_two_entities : public i_trace_filter {
@@ -56,7 +56,7 @@ public:
 
 	bool should_hit_entity(i_handle_entity* handle, int mask) { return handle != m_skip0 && handle != m_skip1; }
 
-	trace_type_t get_trace_type() const { return TRACE_EVERYTHING; }
+	e_trace_type get_trace_type() const { return TRACE_EVERYTHING; }
 
 	i_handle_entity* m_skip0 = nullptr;
 	i_handle_entity* m_skip1 = nullptr;
@@ -66,14 +66,14 @@ class c_trace_filter_world_only : public i_trace_filter {
 public:
 	bool should_hit_entity(i_handle_entity* handle, int mask) { return false; }
 
-	trace_type_t get_trace_type() const { return TRACE_WORLD_ONLY; }
+	e_trace_type get_trace_type() const { return TRACE_WORLD_ONLY; }
 };
 
 class c_trace_filter_world_and_props_only : public i_trace_filter {
 public:
 	bool should_hit_entity(i_handle_entity* handle, int mask) { return false; }
 
-	trace_type_t get_trace_type() const { return TRACE_EVERYTHING; }
+	e_trace_type get_trace_type() const { return TRACE_EVERYTHING; }
 };
 
 class c_trace_filter_no_players : public c_trace_filter {
@@ -88,7 +88,7 @@ public:
 
 	bool should_hit_entity(i_handle_entity* handle, int mask) { return handle == m_hit; }
 
-	trace_type_t get_trace_type() const { return TRACE_ENTITIES_ONLY; }
+	e_trace_type get_trace_type() const { return TRACE_ENTITIES_ONLY; }
 
 	i_handle_entity* m_hit = nullptr;
 };

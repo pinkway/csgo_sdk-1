@@ -1,6 +1,6 @@
 #pragma once
 
-enum client_frame_stage_t {
+enum e_client_frame_stage {
 	FRAME_UNDEFINED = -1,
 	FRAME_START,
 
@@ -11,21 +11,6 @@ enum client_frame_stage_t {
 
 	FRAME_RENDER_START,
 	FRAME_RENDER_END
-};
-
-enum class clear_flags_t {
-	VIEW_CLEAR_COLOR = 0x1,
-	VIEW_CLEAR_DEPTH = 0x2,
-	VIEW_CLEAR_FULL_TARGET = 0x4,
-	VIEW_NO_DRAW = 0x8,
-	VIEW_CLEAR_OBEY_STENCIL = 0x10,
-	VIEW_CLEAR_STENCIL = 0x20
-};
-
-enum class motion_blur_mode_t {
-	MOTION_BLUR_DISABLE = 1,
-	MOTION_BLUR_GAME = 2,
-	MOTION_BLUR_SFM = 3
 };
 
 class c_view_setup {

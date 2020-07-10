@@ -1,13 +1,13 @@
 #pragma once
 
-enum solid_type_t {
-	SOLID_NONE = 0,
-	SOLID_BSP = 1,
-	SOLID_BBOX = 2,
-	SOLID_OBB = 3,
-	SOLID_OBB_YAW = 4,
-	SOLID_CUSTOM = 5,
-	SOLID_VPHYSICS = 6,
+enum e_solid_type {
+	SOLID_NONE,
+	SOLID_BSP,
+	SOLID_BBOX,
+	SOLID_OBB,
+	SOLID_OBB_YAW,
+	SOLID_CUSTOM,
+	SOLID_VPHYSICS,
 	SOLID_LAST
 };
 
@@ -32,7 +32,7 @@ public:
 	virtual const vec3_t&		get_collision_origin() const = 0;
 	virtual const qangle_t&     get_collision_angles() const = 0;
 	virtual const matrix3x4_t&	collision_to_world_transform() const = 0;
-	virtual solid_type_t		get_solid() const = 0;
+	virtual e_solid_type		get_solid() const = 0;
 	virtual int                 get_solid_flags() const = 0;
 	virtual i_client_unknown*   get_client_unknown() = 0;
 	virtual int                 get_collision_group() const = 0;

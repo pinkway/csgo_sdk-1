@@ -215,7 +215,7 @@ public:
 	float	m_recoil_magnitude_variance_alt;
 };
 
-enum c_cs_weapon_type {
+enum e_cs_weapon_type {
 	WEAPONTYPE_KNIFE,
 	WEAPONTYPE_PISTOL,
 	WEAPONTYPE_SUBMACHINEGUN,
@@ -228,16 +228,16 @@ enum c_cs_weapon_type {
 	WEAPONTYPE_GRENADE
 };
 
-enum invalidate_physics_bits {
-	POSITION_CHANGED = 0x1,
-	ANGLES_CHANGED = 0x2,
-	VELOCITY_CHANGED = 0x4,
-	ANIMATION_CHANGED = 0x8,
-	BOUNDS_CHANGED = 0x10,
-	SEQUENCE_CHANGED = 0x20
+enum e_invalidate_physics_bits {
+	POSITION_CHANGED = 1 << 0,
+	ANGLES_CHANGED = 1 << 1,
+	VELOCITY_CHANGED = 1 << 2,
+	ANIMATION_CHANGED = 1 << 3,
+	BOUNDS_CHANGED = 1 << 4,
+	SEQUENCE_CHANGED = 1 << 5
 };
 
-enum class_id {
+enum e_class_id {
 	CAI_BaseNPC,
 	CAK47,
 	CBaseAnimating,
@@ -523,7 +523,7 @@ enum class_id {
 	SporeTrail,
 };
 
-enum item_definition_index : short {
+enum e_item_definition_index : short {
 	WEAPON_NONE = 0,
 	WEAPON_DEAGLE,
 	WEAPON_ELITE,
@@ -608,7 +608,7 @@ enum item_definition_index : short {
 	WEAPON_KNIFE_SKELETON = 525
 };
 
-enum move_type {
+enum e_move_type {
 	MOVETYPE_NONE = 0,
 	MOVETYPE_ISOMETRIC,
 	MOVETYPE_WALK,
@@ -625,7 +625,7 @@ enum move_type {
 	MOVETYPE_MAX_BITS = 4
 };
 
-enum entity_flags {
+enum e_entity_flags {
 	FL_ONGROUND = (1 << 0),
 	FL_DUCKING = (1 << 1),
 	FL_WATERJUMP = (1 << 2),
@@ -637,7 +637,7 @@ enum entity_flags {
 	FL_FAKECLIENT = (1 << 8)
 };
 
-enum life_state {
+enum e_life_state {
 	LIFE_ALIVE,
 	LIFE_DYING,
 	LIFE_DEAD,
@@ -645,7 +645,7 @@ enum life_state {
 	LIFE_DISCARDBODY
 };
 
-enum observer_mode {
+enum e_observer_mode {
 	OBS_MODE_NONE,
 	OBS_MODE_DEATHCAM,
 	OBS_MODE_FREEZECAM,
@@ -656,14 +656,14 @@ enum observer_mode {
 	OBS_MODE_ROAMING
 };
 
-enum team_id {
+enum e_team_id {
 	TEAM_NONE,
 	TEAM_SPECTATOR,
 	TEAM_TERRORIST,
 	TEAM_COUNTER_TERRORIST
 };
 
-enum c_anim_state_poses {
+enum e_anim_state_poses {
 	ACT_RESET,
 	ACT_IDLE,
 	ACT_TRANSITION,
@@ -1658,7 +1658,7 @@ enum c_anim_state_poses {
 	ACT_CSGO_EXIT_LADDER_BOTTOM,
 };
 
-enum pose_param {
+enum e_pose_param {
 	POSE_PARAM_STRAFE_YAW,
 	POSE_PARAM_STAND,
 	POSE_PARAM_LEAN_YAW,
@@ -1680,7 +1680,7 @@ enum pose_param {
 	POSE_PARAM_DEATH_YAW
 };
 
-enum layer_t {
+enum e_anim_layer {
 	ANIMATION_LAYER_AIMMATRIX = 0,
 	ANIMATION_LAYER_WEAPON_ACTION,
 	ANIMATION_LAYER_WEAPON_ACTION_RECROUCH,
@@ -1697,7 +1697,7 @@ enum layer_t {
 	ANIMATION_LAYER_COUNT,
 };
 
-enum collision_group_t {
+enum e_collision_group {
 	COLLISION_GROUP_NONE = 0,
 	COLLISION_GROUP_DEBRIS,
 	COLLISION_GROUP_DEBRIS_TRIGGER,

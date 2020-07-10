@@ -1,11 +1,11 @@
 #pragma once
 
-enum offset_type_t {
+enum e_offset_type {
 	TD_OFFSET_NORMAL,
 	TD_OFFSET_PACKED
 };
 
-enum field_type_t {
+enum e_field_type {
 	FIELD_VOID,
 	FIELD_FLOAT,
 	FIELD_STRING,
@@ -37,7 +37,7 @@ enum field_type_t {
 	FIELD_VECTOR2D
 };
 
-struct datamap_t;
+struct data_map_t;
 
 struct type_description_t {
 	int			m_field_type;
@@ -46,22 +46,22 @@ struct type_description_t {
 	short		m_field_size;
 	short		m_flags;
 	char		pad0[12];
-	datamap_t*	m_datamap;
+	data_map_t*	m_datamap;
 	char		pad1[24];
 };
 
-struct datamap_t {
+struct data_map_t {
 	type_description_t*	m_data_description;
 	int                 m_data_num_fields;
 	char const*			m_data_class_name;
-	datamap_t*			m_base_map;
+	data_map_t*			m_base_map;
 
 	bool                m_chains_validated;
 	bool                m_packed_offsets_computed;
 	int                 m_packed_size;
 };
 
-__declspec(noinline) static uint32_t find_in_data_map(datamap_t* map, uint32_t hash) {
+__declspec(noinline) static uint32_t find_in_data_map(data_map_t* map, uint32_t hash) {
 	do {
 		for (int i = 0; i < map->m_data_num_fields; i++) {
 			if (!map->m_data_description[i].m_field_name)
@@ -86,7 +86,6 @@ __declspec(noinline) static uint32_t find_in_data_map(datamap_t* map, uint32_t h
 
 #define DATAMAP(func, type, name) \
 	type& func { \
-		static const auto hash = fnv1a_rt(name); \
-		static const auto offset = find_in_data_map(get_pred_desc_map(), hash); \
+		static const auto offset = find_in_data_map(get_pred_desc_map(), fnv1a(name)); \
 		return *reinterpret_cast<type*>(reinterpret_cast<uintptr_t>(this) + offset ); \
 	}

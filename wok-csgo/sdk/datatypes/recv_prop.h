@@ -24,7 +24,7 @@ struct recv_proxy_data_t {
 
 typedef void(__cdecl* recv_var_proxy_fn)(recv_proxy_data_t*, void*, void*);
 
-enum send_prop_type_t : int {
+enum e_send_prop_type : int {
 	DPT_INT = 0,
 	DPT_FLOAT,
 	DPT_VECTOR,
@@ -41,7 +41,7 @@ class c_recv_table;
 class c_recv_prop {
 public:
 	char*				m_var_name;
-	send_prop_type_t	m_recv_type;
+	e_send_prop_type	m_recv_type;
 	int					m_flags;
 	int					m_string_buffer_size;
 	bool				m_inside_array;

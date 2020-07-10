@@ -13,13 +13,6 @@ struct model_t {
 	char    pad[28];
 };
 
-enum mod_type_t {
-	MOD_BAD = 0,
-	MOD_BRUSH,
-	MOD_SPRITE,
-	MOD_STUDIO
-};
-
 typedef unsigned short model_instance_handle_t;
 
 struct model_render_info_t {

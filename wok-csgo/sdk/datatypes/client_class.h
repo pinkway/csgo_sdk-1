@@ -11,5 +11,5 @@ public:
 	const char*				m_network_name;
 	c_recv_table*			m_recv_table;
 	client_class*			m_next;
-	class_id				m_class_id;
+	e_class_id				m_class_id;
 };

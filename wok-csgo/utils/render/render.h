@@ -1,6 +1,6 @@
 #pragma once
 
-enum font_flags_t {
+enum e_font_flags {
 	FONT_NONE = 0,
 	FONT_CENTERED_X = (1 << 0),
 	FONT_CENTERED_Y = (1 << 1),

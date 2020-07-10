@@ -16,16 +16,11 @@ public:
 		void(__thiscall*)(void*, vec3_t*, void*, matrix3x4_t*, uint8_t*), pos, q, bones, computed)
 
 	void clear_targets() {
-		auto i = 0;
-		auto count = *reinterpret_cast<int*>(reinterpret_cast<uintptr_t>(this) + 4080);
+		auto target = reinterpret_cast<int*>(reinterpret_cast<uintptr_t>(this) + 0xD0);
 
-		if (count > 0) {
-			auto target = reinterpret_cast<int*>(reinterpret_cast<uintptr_t>(this) + 208);
-			do {
-				*target = -9999;
-				target += 85;
-				++i;
-			} while (i < count);
+		for (int i = 0; i < *reinterpret_cast<int*>(reinterpret_cast<uintptr_t>(this) + 0xFF0); i++) {
+			*target = -9999;
+			target += 85;
 		}
 	}
 };
@@ -45,11 +40,11 @@ public:
 	template<typename T>
 	__forceinline T& get(int offset) { return *reinterpret_cast<T*>(reinterpret_cast<uintptr_t>(this) + offset); }
 
-	VFUNC(get_pred_desc_map(), 17, datamap_t*(__thiscall*)(void*))
+	VFUNC(get_pred_desc_map(), 17, data_map_t*(__thiscall*)(void*))
 
 	NETVAR(get_last_made_noise_time(), float, "CBaseEntity->m_flLastMadeNoiseTime")
 	NETVAR(get_rotation(), qangle_t, "CBaseEntity->m_angRotation")
-	NETVAR(get_team(), team_id, "CBaseEntity->m_iTeamNum")
+	NETVAR(get_team(), e_team_id, "CBaseEntity->m_iTeamNum")
 	NETVAR(get_origin(), vec3_t, "CBaseEntity->m_vecOrigin")
 	NETVAR(get_owner_entity(), c_base_handle , "CBaseEntity->m_hOwnerEntity")
 	NETVAR(get_thrower_handle(), c_base_handle, "CBaseGrenade->m_hThrower");
@@ -76,11 +71,11 @@ public:
 	OFFSET(get_studio_hdr(), c_studio_hdr*, 0x294C)
 	POFFSET(get_bone_cache(), c_bone_cache, 0x290C + 0x4)
 	OFFSET(get_occlusion_mask(), int, 0xA24)
-	OFFSET(get_occlusion_framecount(), int, 0xA30)
+	OFFSET(get_occlusion_frame_count(), int, 0xA30)
 	OFFSET(get_unknown_occlusion_flags(), int, 0xA2C)
 	OFFSET(get_occlusion_flags(), int, 0xA28)
 	OFFSET(get_bone_array_for_write(), matrix3x4_t*, 0x26A8)
-	OFFSET(get_last_setup_bones_framecount(), int, 0xA64 + 0x4)
+	OFFSET(get_last_setup_bones_frame_count(), int, 0xA64 + 0x4)
 	OFFSET(get_predictable(), int, 0x2EA + 0x4)
 	OFFSET(get_accumulated_bone_mask(), int, 0x269C + 0x4)
 	OFFSET(get_prev_bone_mask(), int, 0x2698 + 0x4)
@@ -88,7 +83,7 @@ public:
 	OFFSET(get_last_setup_bones_time(), float, 0x2920 + 0x4)
 	OFFSET(get_ik_context(), c_ik_context*, 0x266C + 0x4)
 	OFFSET(get_setup_bones_pos(), vec3_t, 0xA68 + 0x4)
-	OFFSET(get_setup_bones_quaternion_t(), quaternion_t, 0x166C + 0x4)
+	OFFSET(get_setup_bones_quaternion(), quaternion_t, 0x166C + 0x4)
 	OFFSET(get_take_damage(), int, 0x280)
 
 	DATAMAP(get_effects(), int, "m_fEffects")
@@ -208,7 +203,7 @@ public:
 	OFFSET(get_spawn_time(), float, 0xA370)
 
 	NETVAR(get_fall_velocity(), float, "CBasePlayer->m_flFallVelocity")
-	NETVAR(get_observer_mode(), observer_mode, "CBasePlayer->m_iObserverMode")
+	NETVAR(get_observer_mode(), e_observer_mode, "CBasePlayer->m_iObserverMode")
 	NETVAR(get_observer_target(), c_base_handle, "CBasePlayer->m_hObserverTarget")
 	NETVAR(get_flags(), int, "CBasePlayer->m_fFlags")
 	NETVAR(get_velocity(), vec3_t, "CBasePlayer->m_vecVelocity[0]")
@@ -219,7 +214,7 @@ public:
 	NETVAR(get_duck_speed(), float, "CBasePlayer->m_flDuckSpeed")
 	NETVAR(get_view_offset(), vec3_t, "CBasePlayer->m_vecViewOffset[0]")
 	NETVAR(get_health(), int, "CBasePlayer->m_iHealth")
-	NETVAR(get_life_state(), life_state, "CBasePlayer->m_lifeState")
+	NETVAR(get_life_state(), e_life_state, "CBasePlayer->m_lifeState")
 	NETVAR(get_view_punch_angle(), qangle_t, "CBasePlayer->m_viewPunchAngle")
 	NETVAR(get_aim_punch_angle(), qangle_t, "CBasePlayer->m_aimPunchAngle")
 	NETVAR(get_aim_punch_angle_vel(), vec3_t, "CBasePlayer->m_aimPunchAngleVel")

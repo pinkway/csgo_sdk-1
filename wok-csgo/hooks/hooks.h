@@ -21,8 +21,8 @@ namespace hooks {
 
 	namespace frame_stage_notify {
 		constexpr auto index = 37;
-		typedef void(__stdcall* T)(client_frame_stage_t);
-		void __stdcall fn(client_frame_stage_t stage);
+		typedef void(__stdcall* T)(e_client_frame_stage);
+		void __stdcall fn(e_client_frame_stage stage);
 	}
 
 	namespace create_move {
