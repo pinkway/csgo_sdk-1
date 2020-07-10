@@ -26,12 +26,12 @@ void c_prediction::start(c_cs_player* player, c_user_cmd* cmd) {
 	interfaces::prediction->m_in_prediction = true;
 	interfaces::prediction->m_first_time_predicted = false;
 
-	player->get_cur_cmd() = cmd;
-	player->get<c_user_cmd*>(0x3288) = cmd;
-
 	static const auto md5_pseudo_random_fn = SIG("client.dll", "55 8B EC 83 E4 F8 83 EC 70 6A").cast<uint32_t(__thiscall*)(uint32_t)>();
 
 	cmd->m_random_seed = md5_pseudo_random_fn(cmd->m_command_number) & 0x7FFFFFFF;
+	
+	player->get_cur_cmd() = cmd;
+	player->get<c_user_cmd*>(0x3288) = cmd;
 
 	*m_player = reinterpret_cast<int>(player);
 	*m_random_seed = cmd->m_random_seed;
