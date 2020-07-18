@@ -55,10 +55,12 @@ struct vec2_t {
 		y /= l;
 	}
 
-	vec2_t& normalized() {
-		normalize();
+	vec2_t normalized() {
+		auto ret = *this;
 
-		return *this;
+		ret.normalize();
+
+		return ret;
 	}
 
 	bool operator==(const vec2_t& in) const { return x == in.x && y == in.y; }
@@ -158,10 +160,12 @@ struct vec3_t {
 		z /= l;
 	}
 
-	vec3_t& normalized() {
-		normalize();
+	vec3_t normalized() {
+		auto ret = *this;
 
-		return *this;
+		ret.normalize();
+
+		return ret;
 	}
 
 	bool operator==(const vec3_t& in) const { return x == in.x && y == in.y && z == in.z; }
@@ -278,10 +282,12 @@ struct qangle_t {
 
 	void normalize();
 
-	qangle_t& normalized() {
-		normalize();
+	qangle_t normalized() {
+		auto ret = *this;
 
-		return *this;
+		ret.normalize();
+
+		return ret;
 	}
 
 	float length_sqr() const { return x * x + y * y + z * z; }
@@ -540,6 +546,10 @@ struct matrix3x4_t {
 	const float* operator[](int i) const { return m_matrix[i]; }
 
 	float m_matrix[3][4] = {};
+};
+
+struct ALIGN16 matrix3x4a_t : public matrix3x4_t {
+
 };
 
 struct v_matrix {

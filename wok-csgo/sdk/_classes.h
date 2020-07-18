@@ -263,7 +263,7 @@ public:
 	NETVAR(get_client_side_animation(), bool, "CBaseAnimating->m_bClientSideAnimation")
 	NETVAR(get_sequence(), int, "CBaseAnimating->m_nSequence")
 
-	OFFSET(get_bone_accessor(), c_bone_accessor, 0x26A4)
+	POFFSET(get_bone_accessor(), c_bone_accessor, 0x26A4)
 	OFFSET(get_bone_merge_cache(), c_bone_merge_cache*, 0x290C)
 
 	void set_anim_layers(anim_layers layers) { std::copy(std::begin(layers), std::end(layers), std::begin(get_anim_layers())); }

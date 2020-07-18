@@ -33,7 +33,7 @@ class c_base_animating;
 class c_bone_accessor {
 public:
 	c_base_animating*	m_animating;
-	matrix3x4_t*		m_bones;
+	matrix3x4a_t*		m_bones;
 	int					m_readable_bones;
 	int					m_writable_bones;
 };
@@ -42,9 +42,9 @@ class c_animation_layer {
 public:
 	float			m_anim_time;
 	float			m_fade_out_time;
-	float			m_blend_in;
-	float			m_blend_out;
-	int				m_unknown;
+	int				m_flags;
+	int				m_activity;
+	int				m_priority;
 	int				m_order;
 	int				m_sequence;
 	float			m_prev_cycle;
