@@ -27,7 +27,7 @@
 namespace utils {
 	__forceinline std::string to_utf8(const std::wstring& txt) {
 		if (txt.empty())
-			return std::string();
+			return "";
 
 		const auto size = WideCharToMultiByte(CP_UTF8, 0, &txt[0], txt.size(), 0, 0, 0, 0);
 
@@ -40,7 +40,7 @@ namespace utils {
 
 	__forceinline std::wstring to_unicode(const std::string& txt) {
 		if (txt.empty())
-			return std::wstring();
+			return L"";
 
 		const auto size = MultiByteToWideChar(CP_UTF8, 0, &txt[0], txt.size(), 0, 0);
 
