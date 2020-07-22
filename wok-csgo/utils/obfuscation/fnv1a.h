@@ -3,12 +3,12 @@
 
 template<typename T, T value>
 struct constant_holder_t {
-	enum class c_value_holder : T {
+	enum class e_value_holder : T {
 		m_value = value
 	};
 };
 
-#define constant(value) ((decltype(value))constant_holder_t<decltype(value), value>::c_value_holder::m_value)
+#define constant(value) ((decltype(value))constant_holder_t<decltype(value), value>::e_value_holder::m_value)
 
 constexpr auto seed = 0x45C3370D;
 constexpr auto prime = 0x1000193;
