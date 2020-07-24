@@ -38,16 +38,26 @@ enum e_field_type {
 };
 
 struct data_map_t;
+struct input_data_t;
+
+typedef void(* input_fn_t)(input_data_t&);
 
 struct type_description_t {
-	int			m_field_type;
-	char*		m_field_name;
-	int			m_field_offset[2];
-	short		m_field_size;
-	short		m_flags;
-	char		pad0[12];
-	data_map_t*	m_datamap;
-	char		pad1[24];
+	e_field_type		m_field_type;
+	const char*			m_field_name;
+	int					m_field_offset;
+	uint16_t			m_field_size;
+	short				m_flags;
+	const char*			m_external_name;
+	uintptr_t*			m_save_restore_ops;
+	input_fn_t			m_input_fn;
+	data_map_t*			m_data_map;
+	int					m_field_size_in_bytes;
+	type_description_t*	m_override_field;
+	int					m_override_count;
+	float				m_field_tolerance;
+	int					m_flat_offset[2];
+	uint16_t			m_flat_group;
 };
 
 struct data_map_t {
@@ -68,11 +78,11 @@ __declspec(noinline) static uint32_t find_in_data_map(data_map_t* map, uint32_t 
 				continue;
 
 			if (hash == fnv1a_rt(map->m_data_description[i].m_field_name))
-				return map->m_data_description[i].m_field_offset[TD_OFFSET_NORMAL];
+				return map->m_data_description[i].m_field_offset;
 
 			if (map->m_data_description[i].m_field_type == FIELD_EMBEDDED) {
-				if (map->m_data_description[i].m_datamap) {
-					if (const auto offset = find_in_data_map(map->m_data_description[i].m_datamap, hash))
+				if (map->m_data_description[i].m_data_map) {
+					if (const auto offset = find_in_data_map(map->m_data_description[i].m_data_map, hash))
 						return offset;
 				}
 			}
