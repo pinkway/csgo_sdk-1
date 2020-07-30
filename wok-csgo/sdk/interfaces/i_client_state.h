@@ -5,7 +5,7 @@ public:
 	int				m_class_id;
 	float			m_delay;
 	char			pad1[4];
-	client_class*	m_client_class;
+	c_client_class*	m_client_class;
 	char			pad2[40];
 	c_event_info*	m_next;
 };

@@ -4,7 +4,7 @@ class c_base_handle;
 
 class i_handle_entity {
 public:
-	virtual							~i_handle_entity() {}
+	virtual							~i_handle_entity() = default;
 	virtual void					set_ref_handle(const c_base_handle& handle) = 0;
 	virtual const c_base_handle&	get_handle() const = 0;
 };
@@ -22,7 +22,7 @@ class i_client_networkable {
 public:
 	virtual i_client_unknown*	get_client_unknown() = 0;
 	virtual void				release() = 0;
-	virtual client_class*		get_client_class() = 0;
+	virtual c_client_class*		get_client_class() = 0;
 	virtual void				notify_should_transmit(int state) = 0;
 	virtual void				on_pre_data_changed(int update_type) = 0;
 	virtual void				on_data_changed(int update_type) = 0;
@@ -36,10 +36,6 @@ public:
 	virtual void				set_destroyed_on_recreate_entities() = 0;
 };
 
-typedef unsigned short model_instance_handle_t;
-typedef unsigned short client_shadow_handle_t;
-typedef unsigned short client_render_handle_t;
-
 class i_client_renderable {
 public:
 	virtual i_client_unknown*		get_client_unknown() = 0;
@@ -48,8 +44,8 @@ public:
 	virtual bool					should_draw() = 0;
 	virtual int						get_render_flags() = 0;
 	virtual void					unknown0() const = 0;
-	virtual client_shadow_handle_t	get_shadow_handle() const = 0;
-	virtual client_render_handle_t& render_handle() = 0;
+	virtual uint16_t				get_shadow_handle() const = 0;
+	virtual uint16_t&				get_render_handle() = 0;
 	virtual const model_t*			get_model() const = 0;
 	virtual int						draw_model(int flags, uint8_t alpha) = 0;
 	virtual int						get_body() = 0;
@@ -72,7 +68,7 @@ public:
 	virtual i_client_renderable*	next_shadow_peer() = 0;
 	virtual int						shadow_cast_type() = 0;
 	virtual void					create_model_instance() = 0;
-	virtual model_instance_handle_t get_model_instance() = 0;
+	virtual uint16_t				get_model_instance() = 0;
 	virtual const matrix3x4_t&		renderable_to_world_transform() = 0;
 	virtual int						lookup_attachment(const char* name) = 0;
 	virtual bool					get_attachment(int index, vec3_t& origin, vec3_t& angles) = 0;
@@ -104,5 +100,5 @@ public:
 
 class i_client_entity : public i_client_unknown, public i_client_renderable, public i_client_networkable, public i_client_thinkable {
 public:
-	virtual void             release() = 0;
+	virtual void release() = 0;
 };

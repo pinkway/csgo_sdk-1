@@ -15,20 +15,20 @@ enum e_client_frame_stage {
 
 class c_view_setup {
 public:
-	__int32   x;
-	__int32   x_old;
-	__int32   y;
-	__int32   y_old;
-	__int32   width;
-	__int32   width_old;
-	__int32   height;
-	__int32   height_old;
-	char      pad0[144];
-	float     fov;
-	float     viewmodel_fov;
-	vec3_t	  origin;
-	qangle_t  angles;
-	char      pad1[124];
+	int			m_x;
+	int			m_old_x;
+	int			m_y;
+	int			m_old_y;
+	int			m_width;
+	int			m_old_width;
+	int			m_height;
+	int			m_old_height;
+	char		pad0[144];
+	float		m_fov;
+	float		m_view_model_fov;
+	vec3_t		m_origin;
+	qangle_t	m_angles;
+	char		pad1[124];
 };
 
 class i_client_mode {

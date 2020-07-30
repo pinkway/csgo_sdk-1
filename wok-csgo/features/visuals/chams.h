@@ -66,6 +66,6 @@ public:
 })#"));
 	}
 
-	void on_dme(i_model_render* ecx, void* context, const draw_model_state_t& state, const model_render_info_t& info, matrix3x4_t* bones, bool& should_call_original);
+	bool on_draw_model(i_model_render* ecx, void* context, const draw_model_state_t& state, const model_render_info_t& info, matrix3x4_t* bones);
 };
 #define chams c_chams::instance()
