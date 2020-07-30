@@ -14,9 +14,9 @@ bool c_chams::override_material(int type, const col_t& clr, bool ignorez) {
 	i_material* material = nullptr;
 
 	switch (type) {
-	case material_regular: material = ignorez ? m_regular_z : m_regular; break;
-	case material_flat: material = ignorez ? m_flat_z : m_flat; break;
-	case dont_draw: return false; break;
+	case M_REGULAR: material = ignorez ? m_regular_z : m_regular; break;
+	case M_FLAT: material = ignorez ? m_flat_z : m_flat; break;
+	case M_DONT_DRAW: return false; break;
 	}
 
 	material->alpha_modulate(clr.a() / 255.f);
