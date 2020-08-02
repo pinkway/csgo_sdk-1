@@ -319,6 +319,12 @@ public:
 	VFUNC_SIG(invalidate_physics_recursive(int flags), "client.dll", "55 8B EC 83 E4 F8 83 EC 0C 53 8B 5D 08 8B C3 56", void(__thiscall*)(void*, int), flags)
 
 	player_info_t get_info();
+
+	static uintptr_t* get_vtable() {
+		static const auto vtable = SIG("client.dll", "55 8B EC 83 E4 F8 83 EC 18 56 57 8B F9 89 7C 24 0C").self_offset(0x47).cast<uintptr_t*>();
+
+		return vtable;
+	}
 };
 
 class c_base_combat_weapon : public c_base_attributable_item {

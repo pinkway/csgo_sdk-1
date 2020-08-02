@@ -6,54 +6,51 @@ namespace hooks {
 
 		m_d3d_device = std::make_unique<memory::hook_t>(interfaces::d3d_device);
 
-		m_d3d_device->hook(reset::index, reset::fn);
-		m_d3d_device->hook(present::index, present::fn);
+		m_d3d_device->hook(d3d_device::reset::index, d3d_device::reset::fn);
+		m_d3d_device->hook(d3d_device::present::index, d3d_device::present::fn);
 
 		// // // // // // // // // // // // // // // // // // // // // // //
 
 		m_client_dll = std::make_unique<memory::hook_t>(interfaces::client_dll);
 
-		m_client_dll->hook(frame_stage_notify::index, frame_stage_notify::fn);
+		m_client_dll->hook(client_dll::frame_stage_notify::index, client_dll::frame_stage_notify::fn);
 
 		// // // // // // // // // // // // // // // // // // // // // // //
 
 		m_client_mode = std::make_unique<memory::hook_t>(interfaces::client_mode);
 
-		m_client_mode->hook(create_move::index, create_move::fn);
-		m_client_mode->hook(override_view::index, override_view::fn);
+		m_client_mode->hook(client_mode::create_move::index, client_mode::create_move::fn);
+		m_client_mode->hook(client_mode::override_view::index, client_mode::override_view::fn);
 
 		// // // // // // // // // // // // // // // // // // // // // // //
 
 		m_model_render = std::make_unique<memory::hook_t>(interfaces::model_render);
 
-		m_model_render->hook(draw_model_execute::index, draw_model_execute::fn);
+		m_model_render->hook(model_render::draw_model_execute::index, model_render::draw_model_execute::fn);
 
 		// // // // // // // // // // // // // // // // // // // // // // //
 
 		m_panel = std::make_unique<memory::hook_t>(interfaces::panel);
 
-		m_panel->hook(paint_traverse::index, paint_traverse::fn);
+		m_panel->hook(panel::paint_traverse::index, panel::paint_traverse::fn);
 
 		// // // // // // // // // // // // // // // // // // // // // // //
 
 		m_surface = std::make_unique<memory::hook_t>(interfaces::surface);
 
-		m_surface->hook(lock_cursor::index, lock_cursor::fn);
+		m_surface->hook(surface::lock_cursor::index, surface::lock_cursor::fn);
 
 		// // // // // // // // // // // // // // // // // // // // // // //
 
-		static const auto temp_addr = SIG("client.dll", "55 8B EC 83 E4 F8 83 EC 18 56 57 8B F9 89 7C 24 0C");
+		m_player = std::make_unique<memory::hook_t>(c_cs_player::get_vtable());
 
-		static const auto c_cs_player_vtable = reinterpret_cast<uintptr_t*>(temp_addr.offset(0x47));
-		static const auto i_client_renderable_vtable = reinterpret_cast<uintptr_t*>(temp_addr.offset(0x4E));
-
-		m_player = std::make_unique<memory::hook_t>(c_cs_player_vtable);
-
-		m_player->hook(eye_angles::index, eye_angles::fn);
+		m_player->hook(player::eye_angles::index, player::eye_angles::fn);
 
 		// // // // // // // // // // // // // // // // // // // // // // //
 
-		m_renderable = std::make_unique<memory::hook_t>(i_client_renderable_vtable);
+		m_renderable = std::make_unique<memory::hook_t>(i_client_renderable::get_vtable());
+
+		m_renderable->hook(renderable::setup_bones::index, renderable::setup_bones::fn);
 
 		// // // // // // // // // // // // // // // // // // // // // // //
 	}

@@ -1,6 +1,6 @@
 #include "../hooks.h"
 
-void __fastcall hooks::draw_model_execute::fn(i_model_render* ecx, void* edx, void* context, const draw_model_state_t& state, const model_render_info_t& info, matrix3x4_t* bones) {
+void __fastcall hooks::model_render::draw_model_execute::fn(i_model_render* ecx, void* edx, void* context, const draw_model_state_t& state, const model_render_info_t& info, matrix3x4_t* bones) {
 	static const auto original = m_model_render->get_original<T>(index);
 
 	if (chams->on_draw_model(ecx, context, state, info, bones)) {

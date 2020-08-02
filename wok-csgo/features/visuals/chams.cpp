@@ -22,10 +22,6 @@ bool c_chams::override_material(int type, const col_t& clr, bool ignorez) {
 	material->alpha_modulate(clr.a() / 255.f);
 	material->color_modulate(clr.r() / 255.f, clr.g() / 255.f, clr.b() / 255.f);
 
-	if (const auto $alpha = material->find_var(_("$alpha"), nullptr, false)) {
-		$alpha->set_value(clr.a() / 255.f);
-	}
-
 	if (const auto $envmaptint = material->find_var(_("$envmaptint"), nullptr, false)) {
 		$envmaptint->set_value(vec3_t(clr.r() / 255.f, clr.g() / 255.f, clr.b() / 255.f));
 	}
@@ -36,7 +32,7 @@ bool c_chams::override_material(int type, const col_t& clr, bool ignorez) {
 }
 
 bool c_chams::on_draw_model(i_model_render* ecx, void* context, const draw_model_state_t& state, const model_render_info_t& info, matrix3x4_t* bones) {
-	static const auto original = hooks::m_model_render->get_original<hooks::draw_model_execute::T>(hooks::draw_model_execute::index);
+	static const auto original = hooks::m_model_render->get_original<hooks::model_render::draw_model_execute::T>(hooks::model_render::draw_model_execute::index);
 
 	const auto model_name = interfaces::model_info->get_model_name(info.m_model);
 	if (strlen(model_name) <= 19
@@ -51,11 +47,11 @@ bool c_chams::on_draw_model(i_model_render* ecx, void* context, const draw_model
 		|| !player->is_alive())
 		return true;
 
-	override_material(material_regular, col_t::palette_t::purple(), true);
+	override_material(M_REGULAR, col_t::palette_t::purple(), true);
 
 	original(ecx, context, state, info, bones);
 
-	should_call_original = override_material(material_regular, col_t::palette_t::purple(), false);
+	override_material(M_REGULAR, col_t::palette_t::purple(), false);
 
 	return true;
 }

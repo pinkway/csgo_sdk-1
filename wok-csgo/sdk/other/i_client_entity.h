@@ -81,6 +81,12 @@ public:
 	virtual bool					should_draw_for_split_screen_user(int slot) = 0;
 	virtual uint8_t					override_alpha_modulation(uint8_t alpha) = 0;
 	virtual uint8_t					override_shadow_alpha_modulation(uint8_t alpha) = 0;
+
+	static uintptr_t* get_vtable() {
+		static const auto vtable = SIG("client.dll", "55 8B EC 83 E4 F8 83 EC 18 56 57 8B F9 89 7C 24 0C").self_offset(0x4E).cast<uintptr_t*>();
+
+		return vtable;
+	}
 };
 
 class c_base_entity;
