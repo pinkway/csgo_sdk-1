@@ -367,7 +367,7 @@ public:
 	NETVAR(get_next_secondary_attack(), float, "CBaseCombatWeapon->m_flNextSecondaryAttack")
 	NETVAR(get_world_model(), c_base_handle, "CBaseCombatWeapon->m_hWeaponWorldModel")
 
-	std::string get_name();
+	std::wstring get_name();
 
 	c_cs_weapon_data* get_cs_weapon_data();
 };
