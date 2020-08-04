@@ -197,6 +197,8 @@ public:
 	DATAMAP(get_buttons_last(), int, "m_afButtonLast")
 	DATAMAP(get_buttons_pressed(), int, "m_afButtonPressed")
 	DATAMAP(get_buttons_released(), int, "m_afButtonReleased")
+	OFFSET(get_buttons_disabled(), int, 0x3330)
+	OFFSET(get_buttons_forced(), int, 0x3334)
 
 	DATAMAP(get_collision_state(), int, "m_vphysicsCollisionState")
 
@@ -220,6 +222,8 @@ public:
 	NETVAR(get_aim_punch_angle_vel(), vec3_t, "CBasePlayer->m_aimPunchAngleVel")
 	NETVAR(get_view_model(), c_base_handle, "CBasePlayer->m_hViewModel[0]")
 	NETVAR_OFFSET(get_cur_cmd(), c_user_cmd*, "CBasePlayer->m_hConstraintEntity", -0xC)
+		
+	OFFSET(get_last_cmd(), c_user_cmd*, 0x3288)
 
 	VFUNC(set_local_view_angles(const qangle_t& angle), 372, void(__thiscall*)(void*, const qangle_t&), angle)
 
