@@ -111,9 +111,9 @@ public:
 
 		const auto class_id = get_client_class()->m_class_id;
 
-		if (class_id == CBaseDoor
-			|| class_id == CBreakableSurface || class_id == CFuncBrush
-			|| class_id == CBaseEntity && get_collideable()->get_solid() == SOLID_BSP) {
+		if (class_id == C_BASE_DOOR
+			|| class_id == C_BREAKABLE_SURFACE || class_id == C_FUNC_BRUSH
+			|| class_id == C_BASE_ENTITY && get_collideable()->get_solid() == SOLID_BSP) {
 			get_take_damage() = DAMAGE_YES;
 		}
 
@@ -246,7 +246,8 @@ public:
 
 	vec3_t get_bone_position(int id) {
 		if (!this)
-			return vec3();
+			return vec3_t();
+		
 		static const auto get_bone_position_fn = SIG("client.dll", "55 8B EC 83 E4 F8 83 EC 30 8D").cast<void(__thiscall*)(void*, int, vec3_t*, vec3_t*)>();
 		
 		vec3_t position, rotation;
@@ -257,7 +258,8 @@ public:
 
 	vec3_t get_eye_position() {
 		if (!this)
-			return vec3();
+			return vec3_t();
+		
 		vec3_t out;
 		memory::get_vfunc<void(__thiscall*)(void*, vec3_t&)>(this, 284)(this, out);
 
