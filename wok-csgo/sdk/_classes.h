@@ -225,16 +225,18 @@ public:
 		
 	OFFSET(get_last_cmd(), c_user_cmd*, 0x3288)
 
-	VFUNC(set_local_view_angles(const qangle_t& angle), 372, void(__thiscall*)(void*, const qangle_t&), angle)
-
 	VFUNC(think(), 138, void(__thiscall*)(void*))
 	VFUNC(pre_think(), 317, void(__thiscall*)(void*))
 	VFUNC(post_think(), 318, void(__thiscall*)(void*))
 	VFUNC(select_item(const char* name, int sub_type), 329, void(__thiscall*)(void*, const char*, int), name, sub_type)
+	VFUNC(update_collistion_bounds(), 339, void(__thiscall*)(void*))
+	VFUNC(set_local_view_angles(const qangle_t& angle), 372, void(__thiscall*)(void*, const qangle_t&), angle)
 
 	VFUNC_SIG(unknown_think(int unk), "client.dll", "55 8B EC 56 57 8B F9 8B B7 ? ? ? ? 8B C6 C1 E8 16 24 01 74 18", void(__thiscall*)(void*, int), unk)
 	VFUNC_SIG(using_standard_weapons_in_vehicle(), "client.dll", "56 57 8B F9 8B 97 ? ? ? ? 83 FA FF 74 41", bool(__thiscall*)(void*))
 	VFUNC_SIG(physics_run_think(int index), "client.dll", "55 8B EC 83 EC 10 53 56 57 8B F9 8B 87", bool(__thiscall*)(void*, int), index)
+	VFUNC_SIG(post_think_v_physics(), "client.dll", "55 8B EC 83 E4 F8 81 EC ? ? ? ? 53 8B D9 56 57 83 BB", bool(__thiscall*)(void*))
+	VFUNC_SIG(simulate_player_simulated_entities(), "client.dll", "56 8B F1 57 8B BE ? ? ? ? 83 EF 01 78 72", bool(__thiscall*)(void*))
 
 	bool is_alive() {
 		if (!this)
@@ -274,7 +276,10 @@ public:
 	NETPROP(get_client_side_animation_prop(), "CBaseAnimating->m_bClientSideAnimation")
 	NETVAR(get_client_side_animation(), bool, "CBaseAnimating->m_bClientSideAnimation")
 	NETVAR(get_sequence(), int, "CBaseAnimating->m_nSequence")
-
+		
+	VFUNC(set_sequence(int sequence), 218, void(__thiscall*)(void*, int), sequence)
+	VFUNC(studio_frame_advance(), 219, void(__thiscall*)(void*))
+		
 	POFFSET(get_bone_accessor(), c_bone_accessor, 0x26A4)
 	OFFSET(get_bone_merge_cache(), c_bone_merge_cache*, 0x290C)
 
@@ -316,6 +321,7 @@ public:
 	NETVAR(get_eye_angles(), qangle_t, "CCSPlayer->m_angEyeAngles")
 	NETVAR(is_scoped(), bool, "CCSPlayer->m_bIsScoped")
 	NETVAR(is_immune(), bool, "CCSPlayer->m_bGunGameImmunity")
+	NETVAR(is_ghost(), bool, "CCSPlayer->m_bIsPlayerGhost")
 	NETVAR(get_health_boost_time(), float, "CCSPlayer->m_flHealthShotBoostExpirationTime")
 	NETVAR(get_lby(), float, "CCSPlayer->m_flLowerBodyYawTarget")
 	NETVAR_OFFSET(get_flash_alpha(), float, "CCSPlayer->m_flFlashMaxAlpha", -0x8)
