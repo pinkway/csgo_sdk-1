@@ -72,7 +72,7 @@ struct mstudiobone_t {
 
 	mstudiobone_t() {}
 private:
-	mstudiobone_t(const mstudiobone_t& vOther);
+	mstudiobone_t(const mstudiobone_t& other);
 };
 
 struct mstudioseqdesc_t {
