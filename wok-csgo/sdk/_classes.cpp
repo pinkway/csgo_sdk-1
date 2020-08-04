@@ -19,8 +19,6 @@ c_cs_weapon_data* c_base_combat_weapon::get_cs_weapon_data() {
 }
 
 player_info_t c_cs_player::get_info() {
-	if (!this)
-		return nullptr;
 	player_info_t info;
 	interfaces::engine->get_player_info(get_index(), &info);
 	return info;
