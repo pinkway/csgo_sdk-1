@@ -1,16 +1,5 @@
 #pragma once
 
-enum e_solid_type {
-	SOLID_NONE,
-	SOLID_BSP,
-	SOLID_BBOX,
-	SOLID_OBB,
-	SOLID_OBB_YAW,
-	SOLID_CUSTOM,
-	SOLID_VPHYSICS,
-	SOLID_LAST
-};
-
 struct ray_t;
 struct model_t;
 
