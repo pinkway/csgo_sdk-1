@@ -6,7 +6,7 @@ std::wstring c_base_combat_weapon::get_name() {
 
 	const auto weapon_data = get_cs_weapon_data();
 	if (!weapon_data)
-		return "";
+		return L"";
 
 	return interfaces::localize->find_safe(weapon_data->m_hud_name);
 }
