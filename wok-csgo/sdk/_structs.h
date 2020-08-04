@@ -823,7 +823,7 @@ enum e_move_type : int {
 	MOVETYPE_MAX_BITS = 4
 };
 
-enum e_entity_flags {
+enum e_entity_flags : unsigned {
 	FL_ONGROUND		= (1 << 0),
 	FL_DUCKING		= (1 << 1),
 	FL_DUCKING_ANIM		= (1 << 2),
@@ -1084,4 +1084,15 @@ enum e_hitboxes : int {
 	HITBOX_UPPER_ARM_LEFT,
 	HITBOX_FOREARM_LEFT,
 	HITBOX_MAX
+};
+
+enum e_solid_type : int{
+	SOLID_NONE = 0,
+	SOLID_BSP,
+	SOLID_BBOX,
+	SOLID_OBB,
+	SOLID_OBB_YAW,
+	SOLID_CUSTOM,
+	SOLID_VPHYSICS,
+	SOLID_LAST
 };
