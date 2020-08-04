@@ -232,9 +232,15 @@ public:
 	VFUNC_SIG(using_standard_weapons_in_vehicle(), "client.dll", "56 57 8B F9 8B 97 ? ? ? ? 83 FA FF 74 41", bool(__thiscall*)(void*))
 	VFUNC_SIG(physics_run_think(int index), "client.dll", "55 8B EC 83 EC 10 53 56 57 8B F9 8B 87", bool(__thiscall*)(void*, int), index)
 
-	bool is_alive() { return get_life_state() == LIFE_ALIVE; }
+	bool is_alive() {
+		if (!this)
+			return false;
+		return get_health() > 0;
+	}
 
 	vec3_t get_bone_position(int id) {
+		if (!this)
+			return vec3();
 		static const auto get_bone_position_fn = SIG("client.dll", "55 8B EC 83 E4 F8 83 EC 30 8D").cast<void(__thiscall*)(void*, int, vec3_t*, vec3_t*)>();
 		
 		vec3_t position, rotation;
@@ -244,6 +250,8 @@ public:
 	}
 
 	vec3_t get_eye_position() {
+		if (!this)
+			return vec3();
 		vec3_t out;
 		memory::get_vfunc<void(__thiscall*)(void*, vec3_t&)>(this, 284)(this, out);
 
