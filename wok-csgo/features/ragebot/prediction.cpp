@@ -31,13 +31,13 @@ void c_prediction::start(c_cs_player* player, c_user_cmd* cmd) {
 	cmd->m_random_seed = md5_pseudo_random_fn(cmd->m_command_number) & 0x7FFFFFFF;
 	
 	player->get_cur_cmd() = cmd;
-	player->get<c_user_cmd*>(0x3288) = cmd;
+	player->get_last_cmd() = cmd;
 
 	*m_player = reinterpret_cast<int>(player);
 	*m_random_seed = cmd->m_random_seed;
 
-	cmd->m_buttons |= player->get<int>(0x3334);
-	cmd->m_buttons &= ~player->get<int>(0x3330);
+	cmd->m_buttons |= player->get_buttons_forced();
+	cmd->m_buttons &= ~player->get_buttons_disabled();
 
 	interfaces::move_helper->set_host(player);
 	interfaces::game_movement->start_track_prediction_errors(player);
