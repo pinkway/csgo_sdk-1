@@ -34,18 +34,14 @@ bool c_chams::override_material(int type, const col_t& clr, bool ignorez) {
 bool c_chams::on_draw_model(i_model_render* ecx, void* context, const draw_model_state_t& state, const model_render_info_t& info, matrix3x4_t* bones) {
 	static const auto original = hooks::m_model_render->get_original<hooks::model_render::draw_model_execute::T>(hooks::model_render::draw_model_execute::index);
 
-	const auto model_name = interfaces::model_info->get_model_name(info.m_model);
-	if (strlen(model_name) <= 19
-		|| model_name[13] != '/'
-		|| model_name[7] != 'p'
-		|| model_name[0] != 'm')
-		return true;
-
 	const auto player = reinterpret_cast<c_cs_player*>(interfaces::entity_list->get_client_entity(info.m_index));
-	if (!player
-		|| !player->is_enemy()
-		|| !player->is_alive())
+	if (!player->is_alive() ||
+	    !player->is_enemy())
 		return true;
+	
+	auto renderable = reinterpret_cast<c_base_entity*>(reinterpret_cast<DWORD>(info.m_renderable) - 4);
+	if (!renderable)
+		return;
 
 	override_material(M_REGULAR, col_t::palette_t::purple(), true);
 
