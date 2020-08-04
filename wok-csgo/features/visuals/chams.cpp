@@ -37,11 +37,11 @@ bool c_chams::on_draw_model(i_model_render* ecx, void* context, const draw_model
 	const auto player = reinterpret_cast<c_cs_player*>(interfaces::entity_list->get_client_entity(info.m_index));
 	if (!player->is_alive() ||
 	    !player->is_enemy())
-		return true;
+		return false;
 	
 	auto renderable = reinterpret_cast<c_base_entity*>(reinterpret_cast<DWORD>(info.m_renderable) - 4);
 	if (!renderable)
-		return;
+		return false;
 
 	override_material(M_REGULAR, col_t::palette_t::purple(), true);
 
