@@ -235,7 +235,7 @@ enum e_cs_weapon_type : int {
 	WEAPONTYPE_MELEE
 };
 
-enum e_invalidate_physics_bits : unsigned {
+enum e_invalidate_physics_bits : unsigned int {
 	POSITION_CHANGED 	= (1 << 0),
 	ANGLES_CHANGED 		= (1 << 1),
 	VELOCITY_CHANGED 	= (1 << 2),
@@ -823,7 +823,7 @@ enum e_move_type : int {
 	MOVETYPE_MAX_BITS = 4
 };
 
-enum e_entity_flags : unsigned {
+enum e_entity_flags : unsigned int {
 	FL_ONGROUND		= (1 << 0),
 	FL_DUCKING		= (1 << 1),
 	FL_DUCKING_ANIM		= (1 << 2),
@@ -988,7 +988,7 @@ enum e_effects_type : unsigned {
 	EF_NO_CSM		= (1 << 14)
 };
 
-enum e_eflags_type : unsigned {
+enum e_eflags_type : unsigned int {
 	EFL_KILLME 				= (1 << 0),
 	EFL_DORMANT 				= (1 << 1),
 	EFL_NOCLIP_ACTIVE 			= (1 << 2),
@@ -1023,7 +1023,7 @@ enum e_eflags_type : unsigned {
 	EFL_NO_DAMAGE_FORCES 			= (1 << 31)
 };
 
-enum e_bone_flags : unsigned {
+enum e_bone_flags : unsigned int {
 	BF_PHYSICALLY_SIMULATED		= (1 << 0),
 	BF_PHYSICS_PROCEDURAL		= (1 << 1),
 	BF_ALWAYS_PROCEDURAL		= (1 << 2),
@@ -1086,7 +1086,7 @@ enum e_hitboxes : int {
 	HITBOX_MAX
 };
 
-enum e_solid_type : int{
+enum e_solid_type : int {
 	SOLID_NONE = 0,
 	SOLID_BSP,
 	SOLID_BBOX,
