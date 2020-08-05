@@ -16,7 +16,7 @@ namespace render {
 
 	void begin();
 
-	vec2_t text(const std::string& txt, vec2_t pos, float size, const col_t& clr, ImFont* font, int flags = FONT_NONE);
+	void text(const std::string& txt, vec2_t pos, float size, const col_t& clr, ImFont* font, int flags = FONT_NONE);
 
 	void line(const vec2_t& from, const vec2_t& to, const col_t& clr);
 
@@ -29,6 +29,8 @@ namespace render {
 	void multi_rect_filled(const std::vector<vec2_t> points, const col_t& clr);
 	
 	bool world_to_screen(const vec3_t& in, vec2_t& out);
+
+	extern std::mutex m_mutex;
 
 	extern vec2_t m_screen_size;
 

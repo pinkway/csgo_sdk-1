@@ -2,8 +2,6 @@
 #include "../../sdk/interfaces.h"
 #include "../../features/features.h"
 
-std::mutex mutex;
-
 namespace render {
 	void init() {
 		ImGui::CreateContext();
@@ -26,11 +24,12 @@ namespace render {
 		ImGuiFreeType::BuildFontAtlas(io.Fonts);
 	}
 
-	vec2_t text(const std::string& txt, vec2_t pos, float size, const col_t& clr, ImFont* font, int flags) {
-		if (!font->ContainerAtlas)
-			return vec2_t();
+	void text(const std::string& txt, vec2_t pos, float size, const col_t& clr, ImFont* font, int flags) {
+		m_draw_list->PushTextureID(font->ContainerAtlas->TexID);
 
-		const auto text_size = font->CalcTextSizeA(size, FLT_MAX, 0.f, txt.c_str());
+		auto text_size = font->CalcTextSizeA(size, FLT_MAX, 0.f, txt.c_str());
+
+		text_size.x = IM_FLOOR(text_size.x + 0.95f);
 
 		if (flags & FONT_CENTERED_X) {
 			pos.x -= text_size.x / 2.f;
@@ -39,8 +38,6 @@ namespace render {
 		if (flags & FONT_CENTERED_Y) {
 			pos.y -= text_size.y / 2.f;
 		}
-
-		m_draw_list->PushTextureID(font->ContainerAtlas->TexID);
 
 		if (flags & FONT_DROP_SHADOW) {
 			m_draw_list->AddText(font, size, ImVec2(pos.x + 1, pos.y + 1), col_t(clr.a()).hex(), txt.c_str());
@@ -56,8 +53,6 @@ namespace render {
 		m_draw_list->AddText(font, size, ImVec2(pos.x, pos.y), clr.hex(), txt.c_str());
 
 		m_draw_list->PopTextureID();
-
-		return vec2_t(text_size.x, text_size.y);
 	}
 
 	void line(const vec2_t& from, const vec2_t& to, const col_t& clr) {
@@ -73,7 +68,7 @@ namespace render {
 	}
 
 	void add_to_draw_list() {
-		const auto lock = std::unique_lock<std::mutex>(mutex, std::try_to_lock);
+		const auto lock = std::unique_lock<std::mutex>(m_mutex, std::try_to_lock);
 		if (!lock.owns_lock())
 			return;
 
@@ -85,12 +80,12 @@ namespace render {
 		m_draw_list->PushClipRectFullScreen();
 
 		const auto screen_size = ImGui::GetIO().DisplaySize;
-		render::m_screen_size = vec2_t(screen_size.x, screen_size.y);
+		m_screen_size = vec2_t(screen_size.x, screen_size.y);
 
 		// call ur visuals etc... here
 
 		{
-			const auto lock = std::unique_lock<std::mutex>(mutex);
+			const auto lock = std::unique_lock<std::mutex>(m_mutex);
 
 			*m_temp_draw_list = *m_draw_list;
 		}
@@ -141,14 +136,16 @@ namespace render {
 			return false;
 		};
 
-		if (!screen_transform(in, out)) {
-			out.x = (m_screen_size.x * 0.5f) + (out.x * m_screen_size.x) * 0.5f;
-			out.y = (m_screen_size.y * 0.5f) - (out.y * m_screen_size.y) * 0.5f;
-			return true;
-		}
+		if (screen_transform(in, out))
+			return false;
 
-		return false;
+		out.x = (m_screen_size.x * 0.5f) + (out.x * m_screen_size.x) * 0.5f;
+		out.y = (m_screen_size.y * 0.5f) - (out.y * m_screen_size.y) * 0.5f;
+
+		return true;
 	}
+
+	std::mutex m_mutex;
 
 	vec2_t m_screen_size;
 

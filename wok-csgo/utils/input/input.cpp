@@ -10,9 +10,7 @@ namespace input {
 		m_original_wnd_proc = reinterpret_cast<WNDPROC>(SetWindowLongA(m_hwnd, GWL_WNDPROC, reinterpret_cast<long>(wnd_proc)));
 	}
 
-	void undo() {
-		SetWindowLongPtrA(FindWindowA(_("Valve001"), 0), GWL_WNDPROC, reinterpret_cast<long>(m_original_wnd_proc));
-	}
+	void undo() { SetWindowLongPtrA(FindWindowA(_("Valve001"), 0), GWL_WNDPROC, reinterpret_cast<long>(m_original_wnd_proc)); }
 
 	long __stdcall wnd_proc(HWND hwnd, uint32_t msg, uint32_t w_param, uint32_t l_param) {
 		if (m_blocked) {
@@ -21,22 +19,6 @@ namespace input {
 		}
 
 		return CallWindowProcA(m_original_wnd_proc, hwnd, msg, w_param, l_param);
-	}
-
-	bool get_key(uint32_t key, int mode) {
-		switch (mode) {
-		case ON_KEY:
-			return HIWORD(GetKeyState(key));
-			break;
-		case TOGGLE:
-			return LOWORD(GetKeyState(key));
-			break;
-		case AWAY_KEY:
-			return !HIWORD(GetKeyState(key));
-			break;
-		}
-
-		return false;
 	}
 
 	bool m_blocked;
