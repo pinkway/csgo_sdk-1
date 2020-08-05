@@ -1,18 +1,14 @@
 #include "../globals.h"
 
-std::string c_base_combat_weapon::get_name() {
+std::wstring c_base_combat_weapon::get_name() {
 	if (!this)
-		return "";
+		return L"";
 
 	const auto weapon_data = get_cs_weapon_data();
 	if (!weapon_data)
-		return "";
+		return L"";
 
-	auto name = utils::to_utf8(interfaces::localize->find_safe(weapon_data->m_hud_name));
-
-	std::transform(name.begin(), name.end(), name.begin(), ::tolower);
-
-	return name;
+	return interfaces::localize->find_safe(weapon_data->m_hud_name);
 }
 
 c_cs_weapon_data* c_base_combat_weapon::get_cs_weapon_data() {
@@ -51,6 +47,9 @@ c_base_combat_weapon* c_base_combat_character::get_active_weapon() {
 }
 
 bool c_base_entity::is_enemy() {
+	if (!this)
+		return false;
+	
 	if (this == g::local)
 		return false;
 
