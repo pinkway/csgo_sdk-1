@@ -1259,12 +1259,12 @@ void ImDrawList::AddTextSoftShadow(const ImFont* font, float font_size, const Im
 
 void ImDrawList::AddTextOutline(const ImFont* font, float font_size, const ImVec2& pos, ImU32 col, const char* text_begin, const char* text_end)
 {
-	const auto col_bg = ImColor(0, 0, 0, ((col >> IM_COL32_A_SHIFT) & 0xFF) - 15);
+	const auto col_bg = ImColor(0, 0, 0, ((col >> IM_COL32_A_SHIFT) & 0xFF));
 
-	AddText(font, font_size, pos - ImVec2(1, 1), col, text_begin, text_end);
-	AddText(font, font_size, pos + ImVec2(1, 0), col, text_begin, text_end);
-	AddText(font, font_size, pos + ImVec2(0, 1), col, text_begin, text_end);
-	AddText(font, font_size, pos - ImVec2(1, 0), col, text_begin, text_end);
+	AddText(font, font_size, pos + ImVec2(1, 1), col_bg, text_begin, text_end);
+	AddText(font, font_size, pos - ImVec2(1, 1), col_bg, text_begin, text_end);
+	AddText(font, font_size, pos + ImVec2(1, -1), col_bg, text_begin, text_end);
+	AddText(font, font_size, pos - ImVec2(1, -1), col_bg, text_begin, text_end);
 
 	AddText(font, font_size, pos, col, text_begin, text_end);
 }
