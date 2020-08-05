@@ -43,8 +43,7 @@ void c_prediction::start(c_cs_player* player, c_user_cmd* cmd) {
 	interfaces::game_movement->start_track_prediction_errors(player);
 
 	if (cmd->m_weapon_select) {
-		const auto weapon = reinterpret_cast<c_base_combat_weapon*>(interfaces::entity_list->get_client_entity(cmd->m_weapon_select));
-		if (weapon) {
+		if (const auto weapon = reinterpret_cast<c_base_combat_weapon*>(interfaces::entity_list->get_client_entity(cmd->m_weapon_select))) {
 			if (const auto weapon_data = weapon->get_cs_weapon_data()) {
 				player->select_item(weapon_data->m_weapon_name, cmd->m_weapon_sub_type);
 			}
@@ -78,17 +77,19 @@ void c_prediction::start(c_cs_player* player, c_user_cmd* cmd) {
 		&& player->get_next_think_tick() != -1
 		&& player->get_next_think_tick() <= player->get_tick_base()) {
 		player->get_next_think_tick() = -1;
+
 		player->unknown_think(0);
+
 		player->think();
 	}
 
-	interfaces::prediction->setup_move(player, cmd, interfaces::move_helper, reinterpret_cast<c_move_data*>(m_move_data));
+	interfaces::prediction->setup_move(player, cmd, interfaces::move_helper, m_move_data);
 
 	vehicle
-		? memory::get_vfunc<void(__thiscall*)(c_base_entity*, c_cs_player*, c_move_data*)>(vehicle, 5)(vehicle, player, reinterpret_cast<c_move_data*>(m_move_data))
-		: interfaces::game_movement->process_movement(player, reinterpret_cast<c_move_data*>(m_move_data));
+		? memory::get_vfunc<void(__thiscall*)(c_base_entity*, c_cs_player*, c_move_data*)>(vehicle, 5)(vehicle, player, m_move_data)
+		: interfaces::game_movement->process_movement(player, m_move_data);
 
-	interfaces::prediction->finish_move(player, cmd, reinterpret_cast<c_move_data*>(m_move_data));
+	interfaces::prediction->finish_move(player, cmd, m_move_data);
 
 	interfaces::move_helper->process_impacts();
 

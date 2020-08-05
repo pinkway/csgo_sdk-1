@@ -102,7 +102,7 @@ public:
 
 	bool is_breakable() {
 		if (!this
-			|| get_index() == 0)
+			|| !get_index())
 			return false;
 
 		const auto backup_take_damage = get_take_damage();
@@ -238,16 +238,9 @@ public:
 	VFUNC_SIG(post_think_v_physics(), "client.dll", "55 8B EC 83 E4 F8 81 EC ? ? ? ? 53 8B D9 56 57 83 BB", bool(__thiscall*)(void*))
 	VFUNC_SIG(simulate_player_simulated_entities(), "client.dll", "56 8B F1 57 8B BE ? ? ? ? 83 EF 01 78 72", bool(__thiscall*)(void*))
 
-	bool is_alive() {
-		if (!this)
-			return false;
-		return get_health() > 0;
-	}
+	bool is_alive() { return get_life_state() == LIFE_ALIVE; }
 
 	vec3_t get_bone_position(int id) {
-		if (!this)
-			return vec3_t();
-		
 		static const auto get_bone_position_fn = SIG("client.dll", "55 8B EC 83 E4 F8 83 EC 30 8D").cast<void(__thiscall*)(void*, int, vec3_t*, vec3_t*)>();
 		
 		vec3_t position, rotation;
@@ -257,17 +250,14 @@ public:
 	}
 
 	vec3_t get_eye_position() {
-		if (!this)
-			return vec3_t();
-		
-		vec3_t out;
-		memory::get_vfunc<void(__thiscall*)(void*, vec3_t&)>(this, 284)(this, out);
+		vec3_t ret;
+		memory::get_vfunc<void(__thiscall*)(void*, vec3_t&)>(this, 284)(this, ret);
 
 		const auto view_offset = get_view_offset();
 
-		out.z -= view_offset.z - floor(view_offset.z);
+		ret.z -= view_offset.z - floor(view_offset.z);
 
-		return out;
+		return ret;
 	}
 };
 

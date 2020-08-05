@@ -1,9 +1,6 @@
 #include "../globals.h"
 
 std::wstring c_base_combat_weapon::get_name() {
-	if (!this)
-		return L"";
-
 	const auto weapon_data = get_cs_weapon_data();
 	if (!weapon_data)
 		return L"";
@@ -11,12 +8,7 @@ std::wstring c_base_combat_weapon::get_name() {
 	return interfaces::localize->find_safe(weapon_data->m_hud_name);
 }
 
-c_cs_weapon_data* c_base_combat_weapon::get_cs_weapon_data() {
-	if (!this)
-		return nullptr;
-
-	return interfaces::weapon_system->get_cs_weapon_data(get_item_definition_index());
-}
+c_cs_weapon_data* c_base_combat_weapon::get_cs_weapon_data() { return interfaces::weapon_system->get_cs_weapon_data(get_item_definition_index()); }
 
 player_info_t c_cs_player::get_info() {
 	player_info_t info;
@@ -47,9 +39,6 @@ c_base_combat_weapon* c_base_combat_character::get_active_weapon() {
 }
 
 bool c_base_entity::is_enemy() {
-	if (!this)
-		return false;
-	
 	if (this == g::local)
 		return false;
 
