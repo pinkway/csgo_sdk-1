@@ -24,10 +24,14 @@ namespace render {
 		ImGuiFreeType::BuildFontAtlas(io.Fonts);
 	}
 
-	void text(const std::string& txt, vec2_t pos, float size, const col_t& clr, ImFont* font, int flags) {
+	void text(const std::string& txt, vec2_t pos, const col_t& clr, ImFont* font, int flags) {
+		if (!font
+			|| !font->IsLoaded())
+			return;
+
 		m_draw_list->PushTextureID(font->ContainerAtlas->TexID);
 
-		auto text_size = font->CalcTextSizeA(size, FLT_MAX, 0.f, txt.c_str());
+		auto text_size = font->CalcTextSizeA(font->FontSize, FLT_MAX, 0.f, txt.c_str());
 
 		text_size.x = IM_FLOOR(text_size.x + 0.95f);
 
@@ -40,17 +44,17 @@ namespace render {
 		}
 
 		if (flags & FONT_DROP_SHADOW) {
-			m_draw_list->AddText(font, size, ImVec2(pos.x + 1, pos.y + 1), col_t(clr.a()).hex(), txt.c_str());
+			m_draw_list->AddTextShadow(font, font->FontSize, ImVec2(pos.x, pos.y), clr.hex(), txt.c_str());
 		}
-
-		if (flags & FONT_OUTLINE) {
-			m_draw_list->AddText(font, size, ImVec2(pos.x + 1, pos.y + 1), col_t(clr.a()).hex(), txt.c_str());
-			m_draw_list->AddText(font, size, ImVec2(pos.x - 1, pos.y - 1), col_t(clr.a()).hex(), txt.c_str());
-			m_draw_list->AddText(font, size, ImVec2(pos.x + 1, pos.y - 1), col_t(clr.a()).hex(), txt.c_str());
-			m_draw_list->AddText(font, size, ImVec2(pos.x - 1, pos.y + 1), col_t(clr.a()).hex(), txt.c_str());
+		else if (flags & FONT_DROP_SOFT_SHADOW) {
+			m_draw_list->AddTextSoftShadow(font, font->FontSize, ImVec2(pos.x, pos.y), clr.hex(), txt.c_str());
 		}
-
-		m_draw_list->AddText(font, size, ImVec2(pos.x, pos.y), clr.hex(), txt.c_str());
+		else if (flags & FONT_OUTLINE) {
+			m_draw_list->AddTextOutline(font, font->FontSize, ImVec2(pos.x, pos.y), clr.hex(), txt.c_str());
+		}
+		else {
+			m_draw_list->AddText(font, font->FontSize, ImVec2(pos.x, pos.y), clr.hex(), txt.c_str());
+		}
 
 		m_draw_list->PopTextureID();
 	}
