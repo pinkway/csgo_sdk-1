@@ -251,7 +251,7 @@ public:
 
 	vec3_t get_eye_position() {
 		vec3_t ret;
-		memory::get_vfunc<vec3_t&(__thiscall*)(void*, vec3_t&)>(this, 284)(this, ret);
+		memory::get_vfunc<void(__thiscall*)(void*, vec3_t&)>(this, 284)(this, ret);
 
 		const auto view_offset = get_view_offset();
 
