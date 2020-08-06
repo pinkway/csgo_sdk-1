@@ -36,7 +36,8 @@ namespace render {
 	extern vec2_t m_screen_size;
 
 	extern std::shared_ptr<ImDrawList> m_draw_list;
-	extern std::shared_ptr<ImDrawList> m_temp_draw_list;
+	extern std::shared_ptr<ImDrawList> m_data_draw_list;
+	extern std::shared_ptr<ImDrawList> m_replace_draw_list;
 }
 
 namespace fonts {
