@@ -27,6 +27,8 @@ namespace render {
 
 	void text(const std::string& txt, vec2_t pos, const col_t& clr, ImFont* font, int flags) {
 		if (!font
+			|| txt.empty()
+			|| clr.a() <= 0
 			|| !font->IsLoaded())
 			return;
 
@@ -45,9 +47,6 @@ namespace render {
 		}
 
 		if (flags & FONT_DROP_SHADOW) {
-			m_draw_list->AddTextShadow(font, font->FontSize, ImVec2(pos.x, pos.y), clr.hex(), txt.c_str());
-		}
-		else if (flags & FONT_DROP_SOFT_SHADOW) {
 			m_draw_list->AddTextSoftShadow(font, font->FontSize, ImVec2(pos.x, pos.y), clr.hex(), txt.c_str());
 		}
 		else if (flags & FONT_OUTLINE) {
@@ -98,6 +97,9 @@ namespace render {
 	}
 
 	void multi_rect(const std::vector<vec2_t> points, const col_t& clr) {
+		if (clr.a() <= 0)
+			return;
+
 		m_draw_list->_Path.reserve(m_draw_list->_Path.Size + points.size() + 1);
 
 		for (auto& point : points) {
@@ -109,6 +111,9 @@ namespace render {
 	}
 
 	void multi_rect_filled(const std::vector<vec2_t> points, const col_t& clr) {
+		if (clr.a() <= 0)
+			return;
+
 		m_draw_list->_Path.reserve(m_draw_list->_Path.Size + points.size() + 1);
 
 		for (auto& point : points) {
