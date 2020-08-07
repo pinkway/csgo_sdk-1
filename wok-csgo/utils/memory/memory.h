@@ -152,7 +152,7 @@ namespace memory {
 		uintptr_t ret = 0;
 
 		if (Module32First(snapshot, &entry)) {
-			do {
+			while (Module32Next(snapshot, &entry)) {
 				auto name = std::string(entry.szModule);
 
 				std::transform(name.begin(), name.end(), name.begin(), ::tolower);
@@ -161,7 +161,7 @@ namespace memory {
 					continue;
 
 				ret = reinterpret_cast<uintptr_t>(entry.hModule);
-			} while (Module32Next(snapshot, &entry));
+			}
 		}
 
 		CloseHandle(snapshot);

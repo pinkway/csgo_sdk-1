@@ -72,7 +72,7 @@ struct data_map_t {
 };
 
 __declspec(noinline) static uint32_t find_in_data_map(data_map_t* map, uint32_t hash) {
-	do {
+	while (map) {
 		for (int i = 0; i < map->m_data_num_fields; i++) {
 			if (!map->m_data_description[i].m_field_name)
 				continue;
@@ -89,7 +89,7 @@ __declspec(noinline) static uint32_t find_in_data_map(data_map_t* map, uint32_t 
 		}
 
 		map = map->m_base_map;
-	} while (map);
+	}
 
 	return 0;
 }
