@@ -1,55 +1,18 @@
 #pragma once
 
-namespace random {
-	constexpr auto m_time = __TIME__;
-	constexpr auto m_seed = static_cast<unsigned>(m_time[7]) + static_cast<unsigned>(m_time[6]) * 10 + static_cast<unsigned>(m_time[4]) * 60 + static_cast<unsigned>(m_time[3]) * 600 + static_cast<unsigned>(m_time[1]) * 3600 + static_cast<unsigned>(m_time[0]) * 36000;
-
-	template <int N>
-	struct gen_t {
-	private:
-		static constexpr unsigned m_a = 16807;
-		static constexpr unsigned m_b = 2147483647;
-
-		static constexpr unsigned m_s = gen_t<N - 1>::m_value;
-		static constexpr unsigned m_lo0 = m_a * (m_s & 0xFFFFu);
-		static constexpr unsigned m_hi0 = m_a * (m_s >> 16u);
-		static constexpr unsigned m_lo1 = m_lo0 + ((m_hi0 & 0x7FFFu) << 16u);
-		static constexpr unsigned m_hi1 = m_hi0 >> 15u;
-		static constexpr unsigned m_lo2 = m_lo1 + m_hi0;
-	public:
-		static constexpr unsigned m_max = m_b;
-		static constexpr unsigned m_value = m_lo2 > m_b ? m_lo2 - m_b : m_lo2;
-	};
-
-	template <>
-	struct gen_t<0> {
-		static constexpr unsigned m_value = m_seed;
-	};
-
-	template <int N, int M>
-	struct int_t {
-		static constexpr auto m_value = gen_t<N + 1>::m_value % M;
-	};
-
-	template <int N>
-	struct char_t {
-		static const char m_value = static_cast<char>(1 + int_t<N, 0x7F - 1>::m_value);
-	};
-}
-
-template <int N, char K>
+template<int L, uint8_t K>
 struct xor_str_t {
 private:
-	__forceinline char dec(char c) const { return c ^ K; }
-	constexpr __forceinline char enc(char c) const { return c ^ K; }
+	__forceinline uint8_t dec(uint8_t value) const { return value ^ K; }
+	constexpr __forceinline uint8_t enc(uint8_t value) const { return value ^ K; }
 public:
 	template <int... S>
-	constexpr __forceinline xor_str_t(const char* str, std::index_sequence<S...>) { m_encrypted = { enc(str[S])... }; }
+	constexpr __forceinline xor_str_t(const char* txt, std::index_sequence<S...>) { m_encrypted = { enc(txt[S])... }; }
 
 	__forceinline std::string dec() const {
-		auto ret = std::string(N, 0);
+		auto ret = std::string(L, 0);
 
-		for (int i = 0; i < N; i++) {
+		for (int i = 0; i < L; i++) {
 			ret.at(i) = dec(m_encrypted.at(i));
 		}
 
@@ -57,9 +20,9 @@ public:
 	}
 
 	__forceinline std::string ot(bool decrypt = true) {
-		auto ret = std::string(N, 0);
+		auto ret = std::string(L, 0);
 
-		for (int i = 0; i < N; i++) {
+		for (int i = 0; i < L; i++) {
 			ret.at(i) = decrypt ? dec(m_encrypted.at(i)) : m_encrypted.at(i);
 
 			m_encrypted.at(i) = 0;
@@ -68,16 +31,20 @@ public:
 		return ret;
 	}
 
-	std::array<char, N> m_encrypted = {};
+	std::array<uint8_t, L> m_encrypted = {};
 };
 
-#define _(s) xor_str_t<sizeof(s), random::char_t<__COUNTER__>::m_value>(s, std::make_index_sequence<sizeof(s)>()).dec().c_str()
-#define _ot(s) xor_str_t<sizeof(s), random::char_t<__COUNTER__>::m_value>(s, std::make_index_sequence<sizeof(s)>()).ot().c_str()
-#define __(s) []() -> std::pair<std::string, char> { \
-	constexpr auto key = random::char_t<__COUNTER__>::m_value; \
-	return std::make_pair(xor_str_t<sizeof(s), key>(s, std::make_index_sequence<sizeof(s)>()).ot(false), key); \
+#define XOR_KEY ((FNV1A(__FILE__ __TIME__) + __LINE__) % (std::numeric_limits<uint8_t>::max)())
+
+#define _(txt) xor_str_t<sizeof(txt), XOR_KEY>(txt, std::make_index_sequence<sizeof(txt)>()).dec().c_str()
+#define _OT(txt) xor_str_t<sizeof(txt), XOR_KEY>(txt, std::make_index_sequence<sizeof(txt)>()).ot().c_str()
+
+#define __(txt) []() -> std::pair<std::string, char> { \
+	constexpr auto key = XOR_KEY; \
+	return std::make_pair(xor_str_t<sizeof(txt), key>(txt, std::make_index_sequence<sizeof(txt)>()).ot(false), key); \
 }()
-#define _rt(n, s) auto (n) = reinterpret_cast<char*>(alloca(((s).first.size() + 1) * sizeof(char))); \
-	for (int i = 0; i < (s).first.size(); i++) \
-        (n)[i] = (s).first[i] ^ (s).second; \
-    (n)[(s).first.size()] = 0
+
+#define _RT(n, txt) auto (n) = reinterpret_cast<char*>(alloca(((txt).first.size() + 1) * sizeof(char))); \
+	for (int i = 0; i < (txt).first.size(); i++) \
+        (n)[i] = (txt).first[i] ^ (txt).second; \
+    (n)[(txt).first.size()] = 0

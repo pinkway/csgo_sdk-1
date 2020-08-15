@@ -14,37 +14,37 @@ namespace netvars {
 
 #define NETVAR(func, type, name) \
 	type& func { \
-		static const auto offset = netvars::get<uint32_t>(fnv1a(name)); \
+		static const auto offset = netvars::get<uint32_t>(FNV1A(name)); \
 		return *reinterpret_cast<type*>(reinterpret_cast<uintptr_t>(this) + offset); \
 	}
 
 #define ANETVAR(func, type, size, name) \
 	std::array<type, size>& func { \
-		static const auto offset = netvars::get<uint32_t>(fnv1a(name)); \
+		static const auto offset = netvars::get<uint32_t>(FNV1A(name)); \
 		return *reinterpret_cast<std::array<type, size>*>(reinterpret_cast<uintptr_t>(this) + offset); \
 	}
 
 #define PNETVAR(func, type, name) \
 	type* func { \
-		static const auto offset = netvars::get<uint32_t>(fnv1a(name)); \
+		static const auto offset = netvars::get<uint32_t>(FNV1A(name)); \
 		return reinterpret_cast<type*>(reinterpret_cast<uintptr_t>(this) + offset); \
 	}
 
 #define NETVAR_OFFSET(func, type, name, add) \
 	type& func { \
-		static const auto offset = netvars::get<uint32_t>(fnv1a(name)); \
+		static const auto offset = netvars::get<uint32_t>(FNV1A(name)); \
 		return *reinterpret_cast<type*>(reinterpret_cast<uintptr_t>(this) + offset + add); \
 	}
 
 #define MNETVAR(func, type, name, modifier) \
 	type& func { \
-		static const auto offset = netvars::get<uint32_t>(fnv1a(name)); \
+		static const auto offset = netvars::get<uint32_t>(FNV1A(name)); \
 		return **reinterpret_cast<type**>(reinterpret_cast<uintptr_t>(this) + offset * modifier); \
 	}
 
 #define NETPROP(func, name) \
 	static c_recv_prop* func { \
-		static const auto prop = netvars::get<c_recv_prop*>(fnv1a(name)); \
+		static const auto prop = netvars::get<c_recv_prop*>(FNV1A(name)); \
 		return prop; \
 	}
 

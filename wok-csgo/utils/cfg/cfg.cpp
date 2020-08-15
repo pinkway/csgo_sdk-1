@@ -1,6 +1,6 @@
 #include "../utils.h"
 
-#define ADD_ITEM(type, name, def) m_items[fnv1a(name)] = { fnv1a(#type), std::make_any<type>(def) };
+#define ADD_ITEM(type, name, def) m_items[FNV1A(name)] = { FNV1A(#type), std::make_any<type>(def) };
 
 namespace cfg {
 	void init() {
@@ -21,10 +21,10 @@ namespace cfg {
 			cur[_("type")] = item.second.m_type;
 
 			switch (item.second.m_type) {
-			case fnv1a("bool"): cur[_("inner")] = item.second.get<bool>(); break;
-			case fnv1a("float"): cur[_("inner")] = item.second.get<float>(); break;
-			case fnv1a("int"): cur[_("inner")] = item.second.get<int>(); break;
-			case fnv1a("col_t"): {
+			case FNV1A("bool"): cur[_("inner")] = item.second.get<bool>(); break;
+			case FNV1A("float"): cur[_("inner")] = item.second.get<float>(); break;
+			case FNV1A("int"): cur[_("inner")] = item.second.get<int>(); break;
+			case FNV1A("col_t"): {
 				const auto clr = item.second.get<col_t>();
 
 				nlohmann::json sub;
@@ -36,7 +36,7 @@ namespace cfg {
 
 				cur[_("inner")] = sub.dump();
 			} break;
-			case fnv1a("std::vector<int>"): {
+			case FNV1A("std::vector<int>"): {
 				const auto vec = item.second.get<std::vector<int>>();
 
 				nlohmann::json sub;
@@ -47,7 +47,7 @@ namespace cfg {
 
 				cur[_("inner")] = sub.dump();
 			} break;
-			case fnv1a("std::vector<float>"): {
+			case FNV1A("std::vector<float>"): {
 				const auto vec = item.second.get<std::vector<float>>();
 
 				nlohmann::json sub;
@@ -58,7 +58,7 @@ namespace cfg {
 
 				cur[_("inner")] = sub.dump();
 			} break;
-			case fnv1a("std::vector<bool>"): {
+			case FNV1A("std::vector<bool>"): {
 				const auto vec = item.second.get<std::vector<bool>>();
 
 				nlohmann::json sub;
@@ -102,15 +102,15 @@ namespace cfg {
 			auto& cur_item = m_items.at(hash);
 
 			switch (item["type"].get<uint32_t>()) {
-			case fnv1a("bool"): cur_item.set<bool>(item[_("inner")].get<bool>()); break;
-			case fnv1a("float"): cur_item.set<float>(item[_("inner")].get<float>()); break;
-			case fnv1a("int"): cur_item.set<int>(item[_("inner")].get<int>()); break;
-			case fnv1a("col_t"): {
+			case FNV1A("bool"): cur_item.set<bool>(item[_("inner")].get<bool>()); break;
+			case FNV1A("float"): cur_item.set<float>(item[_("inner")].get<float>()); break;
+			case FNV1A("int"): cur_item.set<int>(item[_("inner")].get<int>()); break;
+			case FNV1A("col_t"): {
 				const auto vec = nlohmann::json::parse(item[_("inner")].get<std::string>());
 
 				cur_item.set<col_t>(col_t(vec.at(0).get<uint8_t>(), vec.at(1).get<uint8_t>(), vec.at(2).get<uint8_t>(), vec.at(3).get<uint8_t>()));
 			} break;
-			case fnv1a("std::vector<int>"): {
+			case FNV1A("std::vector<int>"): {
 				const auto vec = nlohmann::json::parse(item[_("inner")].get<std::string>());
 
 				auto& item_vec = cur_item.get<std::vector<int>>();
@@ -122,7 +122,7 @@ namespace cfg {
 					item_vec.at(i) = vec.at(i).get<int>();
 				}
 			} break;
-			case fnv1a("std::vector<float>"): {
+			case FNV1A("std::vector<float>"): {
 				const auto vec = nlohmann::json::parse(item[_("inner")].get<std::string>());
 
 				auto& item_vec = cur_item.get<std::vector<float>>();
@@ -134,7 +134,7 @@ namespace cfg {
 					item_vec.at(i) = vec.at(i).get<float>();
 				}
 			} break;
-			case fnv1a("std::vector<bool>"): {
+			case FNV1A("std::vector<bool>"): {
 				const auto vec = nlohmann::json::parse(item[_("inner")].get<std::string>());
 
 				auto& item_vec = cur_item.get<std::vector<bool>>();

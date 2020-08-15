@@ -4,7 +4,7 @@
 
 namespace wok {
 	void init() {
-		while (!memory::get_module_handle(fnv1a("serverbrowser.dll"))) {
+		while (!memory::get_module_handle(FNV1A("serverbrowser.dll"))) {
 			std::this_thread::sleep_for(std::chrono::milliseconds(200));
 		}
 

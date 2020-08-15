@@ -96,6 +96,6 @@ __declspec(noinline) static uint32_t find_in_data_map(data_map_t* map, uint32_t 
 
 #define DATAMAP(func, type, name) \
 	type& func { \
-		static const auto offset = find_in_data_map(get_pred_desc_map(), fnv1a(name)); \
+		static const auto offset = find_in_data_map(get_pred_desc_map(), FNV1A(name)); \
 		return *reinterpret_cast<type*>(reinterpret_cast<uintptr_t>(this) + offset ); \
 	}

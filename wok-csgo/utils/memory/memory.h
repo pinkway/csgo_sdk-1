@@ -244,7 +244,7 @@ namespace memory {
 	__forceinline T get_vfunc(void* base, int index) { return (*static_cast<T**>(base))[index]; }
 }
 
-#define SIG(module_name, sig) memory::find_module_sig(fnv1a(module_name), _ot(sig))
+#define SIG(module_name, sig) memory::find_module_sig(FNV1A(module_name), _OT(sig))
 
 #define _INTERFACE(value, type, module_name, interface_name) value = memory::capture_interface<type*>(_(module_name), _(interface_name));
 #define _INTERFACE_OFFSET(value, type, ptr, index, add) value = **reinterpret_cast<type***>((*reinterpret_cast<uintptr_t**>(ptr))[index] + add);

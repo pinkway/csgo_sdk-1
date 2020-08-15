@@ -8,7 +8,7 @@ struct constant_holder_t {
 	};
 };
 
-#define constant(value) ((decltype(value))constant_holder_t<decltype(value), value>::e_value_holder::m_value)
+#define CONSTANT(value) ((decltype(value))constant_holder_t<decltype(value), value>::e_value_holder::m_value)
 
 constexpr auto seed = 0x45C3370D;
 constexpr auto prime = 0x1000193;
@@ -28,4 +28,4 @@ __forceinline uint32_t fnv1a_rt(const char* txt) { return fnv1a_fl_rt(txt, strle
 
 constexpr uint32_t fnv1a_ct(const char* txt, uint32_t value = seed) noexcept { return !*txt ? value : fnv1a_ct(txt + 1, static_cast<unsigned>(1ull * (value ^ static_cast<uint8_t>(*txt)) * prime)); }
 
-#define fnv1a(txt) constant(fnv1a_ct(txt))
+#define FNV1A(txt) CONSTANT(fnv1a_ct(txt))
