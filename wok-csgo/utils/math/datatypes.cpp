@@ -25,7 +25,7 @@ vec3_t vec3_t::i_rotate(const matrix3x4_t& in) const {
 }
 
 void qangle_t::normalize() {
-	x = math::clamp(remainderf(x, 178.f), -89.f, 89.f);
+	x = math::clamp(remainderf(x, 360.f), -89.f, 89.f);
 	y = math::clamp(remainderf(y, 360.f), -180.f, 180.f);
-	z = math::clamp(remainderf(z, 90.f), -45.f, 45.f);
+	z = math::clamp(remainderf(z, 360.f), -45.f, 45.f);
 }
