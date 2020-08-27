@@ -280,7 +280,18 @@ struct qangle_t {
 
 	bool operator!=(const qangle_t& in) const { return !(operator==(in)); }
 
-	void normalize();
+	void clamp();
+
+	void normalize() {
+		x = remainderf(x, 360.f);
+		y = remainderf(y, 360.f);
+		z = remainderf(z, 360.f);
+	}
+
+	void sanitize() {
+		normalize();
+		clamp();
+	}
 
 	qangle_t normalized() {
 		auto ret = *this;
