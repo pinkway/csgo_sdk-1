@@ -49,9 +49,7 @@ namespace math {
 			angles.y += 180.f;
 		}
 
-		angles.normalize();
-
-		return angles;
+		return angles.normalize();
 	}
 
 	void vector_angles(const vec3_t& forward, qangle_t& angles) {
