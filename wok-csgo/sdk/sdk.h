@@ -9,7 +9,7 @@
 #include "datatypes/recv_prop.h"
 #include "datatypes/client_class.h"
 #include "datatypes/c_utl_vector.h"
-#include "datatypes/convar.h"
+#include "datatypes/c_cvar.h"
 #include "datatypes/i_material_var.h"
 #include "datatypes/i_material.h"
 
@@ -31,7 +31,7 @@
 #include "interfaces/i_prediction.h"
 #include "interfaces/i_game_movement.h"
 #include "interfaces/i_debug_overlay.h"
-#include "interfaces/i_cvar.h"
+#include "interfaces/i_cvar_system.h"
 #include "interfaces/i_game_event_manager.h"
 
 #include "datatypes/i_trace_filter.h"

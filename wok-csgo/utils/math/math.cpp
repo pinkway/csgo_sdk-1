@@ -1,9 +1,9 @@
 #include "../utils.h"
 
 namespace math {
-	void sin_cos(float radian, float& sin, float& cos) {
-		sin = std::sin(radian);
-		cos = std::cos(radian);
+	void sin_cos(float rad, float& sin, float& cos) {
+		sin = fast_sin(rad);
+		cos = fast_cos(rad);
 	}
 
 	void angle_vectors(const qangle_t& angles, vec3_t* forward, vec3_t* right, vec3_t* up) {
@@ -50,33 +50,6 @@ namespace math {
 		}
 
 		return angles.normalize();
-	}
-
-	void vector_angles(const vec3_t& forward, qangle_t& angles) {
-		auto yaw = 0.f, pitch = 0.f;
-
-		if (forward.z == 0.f
-			&& forward.x == 0.f) {
-			yaw = 0.f;
-			pitch = forward.z > 0.f ? 90.f : 270.f;
-		}
-		else {
-			yaw = fast_atan2(forward.y, forward.x) * 180.f / M_PI;
-
-			if (yaw < 0.f) {
-				yaw += 360.f;
-			}
-
-			pitch = fast_atan2(-forward.z, forward.length_2d()) * 180.f / M_PI;
-
-			if (pitch < 0.f) {
-				pitch += 360.f;
-			}
-		}
-
-		angles.x = clamp(remainderf(pitch, 360.f), -89.f, 89.f);
-		angles.y = clamp(remainderf(yaw, 360.f), -180.f, 180.f);
-		angles.z = 0.f;
 	}
 
 	float clamp(float value, float min, float max) {

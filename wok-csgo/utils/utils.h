@@ -20,7 +20,7 @@
 
 #include "render/render.h"
 
-#include "netvars/datamap.h"
+#include "netvars/data_map.h"
 #include "netvars/netvars.h"
 
 #include "input/input.h"
@@ -28,6 +28,16 @@
 #include "cfg/cfg.h"
 
 namespace utils {
+	template<typename O, typename I>
+	__forceinline O force_cast(I in) {
+		union {
+			I m_in;
+			O m_out;
+		} u = { in };
+
+		return u.m_out;
+	};
+
 	__forceinline std::string to_utf8(const std::wstring& txt) {
 		if (txt.empty())
 			return "";

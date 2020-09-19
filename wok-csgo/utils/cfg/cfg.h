@@ -21,7 +21,7 @@ namespace cfg {
 	void load();
 
 	template<typename T>
-	T& get(uint32_t hash) { return m_items[hash].get<T>(); }
+	__declspec(noinline) static T& get(uint32_t hash) { return m_items.at(hash).get<T>(); }
 
 	extern std::string m_name;
 	extern std::string m_folder;

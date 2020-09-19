@@ -9,7 +9,7 @@ public:
 	qangle_t	m_view_angles;
 	vec3_t		m_aim_direction;
 	vec3_t		m_move;
-	int			m_buttons;
+	bit_flag_t	m_buttons;
 	char		m_impulse;
 	int			m_weapon_select;
 	int			m_weapon_sub_type;

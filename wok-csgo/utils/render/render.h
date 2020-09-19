@@ -16,17 +16,19 @@ namespace render {
 
 	void begin();
 
-	void text(const std::string& txt, vec2_t pos, const col_t& clr, ImFont* font, int flags = FONT_NONE);
+	vec2_t get_text_size(const std::string& txt, ImFont* font);
+
+	void text(const std::string& txt, vec2_t pos, const col_t& clr, ImFont* font, bit_flag_t flags = FONT_NONE);
 
 	void line(const vec2_t& from, const vec2_t& to, const col_t& clr);
 
-	void rect(const vec2_t& pos, const vec2_t& size, const col_t& clr);
+	void rect(const vec2_t& pos, const vec2_t& size, const col_t& clr, float rounding = 0.f);
 
-	void rect_filled(const vec2_t& pos, const vec2_t& size, const col_t& clr);
+	void rect_filled(const vec2_t& pos, const vec2_t& size, const col_t& clr, float rounding = 0.f);
 
-	void multi_rect(const std::vector<vec2_t> points, const col_t& clr);
+	void multi_rect(const std::vector<vec2_t>& points, const col_t& clr);
 
-	void multi_rect_filled(const std::vector<vec2_t> points, const col_t& clr);
+	void multi_rect_filled(const std::vector<vec2_t>& points, const col_t& clr);
 	
 	bool world_to_screen(const vec3_t& in, vec2_t& out);
 

@@ -101,8 +101,8 @@ struct ray_t {
 	void init(const vec3_t& start, const vec3_t& end) {
 		m_start = start;
 		m_delta = end - start;
-		m_start_offset = vector_aligned_t(0.f, 0.f, 0.f);
-		m_extents = vector_aligned_t(0.f, 0.f, 0.f);
+		m_start_offset = vec4a_t(0.f, 0.f, 0.f);
+		m_extents = vec4a_t(0.f, 0.f, 0.f);
 
 		m_world_axis_transform = nullptr;
 
@@ -126,13 +126,13 @@ struct ray_t {
 		m_start_offset *= -1.0f;
 	}
 
-	vector_aligned_t		m_start;
-	vector_aligned_t		m_delta;
-	vector_aligned_t		m_start_offset;
-	vector_aligned_t		m_extents;
-	const matrix3x4_t*		m_world_axis_transform;
-	bool					m_is_ray;
-	bool					m_is_swept;
+	vec4a_t				m_start;
+	vec4a_t				m_delta;
+	vec4a_t				m_start_offset;
+	vec4a_t				m_extents;
+	const matrix3x4_t*	m_world_axis_transform;
+	bool				m_is_ray;
+	bool				m_is_swept;
 };
 
 class c_base_trace {

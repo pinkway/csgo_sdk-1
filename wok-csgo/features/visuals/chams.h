@@ -4,9 +4,9 @@
 class c_chams : public c_singleton<c_chams> {
 private:
 	enum e_material_type {
-		M_REGULAR,
-		M_FLAT,
-		M_DONT_DRAW
+		MATERIAL_TYPE_REGULAR,
+		MATERIAL_TYPE_FLAT,
+		MATERIAL_TYPE_DONT_DRAW
 	};
 
 	bool override_material(int type, const col_t& clr, bool ignorez);

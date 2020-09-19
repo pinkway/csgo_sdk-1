@@ -12,8 +12,8 @@ namespace netvars {
 	}
 
 	void dump_recursive(const char* base_class, c_recv_table* table, uint32_t offset) {
-		for (int i = 0; i < table->m_num_props; i++) {
-			auto prop = &table->m_props[i];
+		for (auto i = 0; i < table->m_num_props; i++) {
+			const auto prop = &table->m_props[i];
 			if (!prop
 				|| isdigit(prop->m_var_name[0])
 				|| !strcmp(prop->m_var_name, _("baseclass")))
@@ -31,7 +31,7 @@ namespace netvars {
 			strcat_s(name, _("->"));
 			strcat_s(name, prop->m_var_name);
 
-			m_list[fnv1a_rt(static_cast<const char*>(name))] = std::make_pair(prop, static_cast<uint32_t>(offset + prop->m_offset));
+			m_list[FNV1A_RT(name)] = std::make_pair(prop, static_cast<uint32_t>(offset + prop->m_offset));
 		}
 	}
 

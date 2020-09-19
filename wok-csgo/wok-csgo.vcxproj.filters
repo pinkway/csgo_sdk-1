@@ -146,8 +146,6 @@
     <ClInclude Include="sdk\interfaces\i_move_helper.h" />
     <ClInclude Include="sdk\interfaces\i_game_movement.h" />
     <ClInclude Include="sdk\interfaces\i_debug_overlay.h" />
-    <ClInclude Include="sdk\interfaces\i_cvar.h" />
-    <ClInclude Include="sdk\datatypes\convar.h" />
     <ClInclude Include="sdk\interfaces\i_game_event_manager.h" />
     <ClInclude Include="sdk\interfaces\i_engine_trace.h" />
     <ClInclude Include="sdk\interfaces\i_surface_data.h" />
@@ -158,7 +156,6 @@
     <ClInclude Include="sdk\interfaces\i_model_render.h" />
     <ClInclude Include="sdk\datatypes\i_material.h" />
     <ClInclude Include="sdk\interfaces\i_material_system.h" />
-    <ClInclude Include="utils\netvars\datamap.h" />
     <ClInclude Include="utils\netvars\netvars.h" />
     <ClInclude Include="sdk\datatypes\i_material_var.h" />
     <ClInclude Include="sdk\interfaces\i_view_render_beams.h" />
@@ -220,5 +217,8 @@
     <ClInclude Include="sdk\interfaces\i_glow_object_manager.h" />
     <ClInclude Include="sdk\interfaces\i_global_vars.h" />
     <ClInclude Include="sdk\interfaces\i_client_state.h" />
+    <ClInclude Include="utils\netvars\data_map.h" />
+    <ClInclude Include="sdk\interfaces\i_cvar_system.h" />
+    <ClInclude Include="sdk\datatypes\c_cvar.h" />
   </ItemGroup>
 </Project>

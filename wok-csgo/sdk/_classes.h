@@ -9,16 +9,16 @@ public:
 		"55 8B EC 81 EC ? ? ? ? 53 56 57 8B F9 0F 28 CB F3 0F 11 4D ? 8B 8F ? ? ? ? 8B 01",
 		void(__thiscall*)(void*, mstudioseqdesc_t&, int, float, float*, float), seqdesc, sequence, cycle, pose_params, weight)
 
-	VFUNC_SIG(update_targets(vec3_t* pos, quaternion_t* q, matrix3x4_t* bones, uint8_t* computed), "client.dll", "55 8B EC 83 E4 ? 81 EC ? ? ? ? 33 D2",
+	VFUNC_SIG(update_targets(vec3_t* pos, vec4_t* q, matrix3x4_t* bones, uint8_t* computed), "client.dll", "55 8B EC 83 E4 ? 81 EC ? ? ? ? 33 D2",
 		void(__thiscall*)(void*, vec3_t*, void*, matrix3x4_t*, uint8_t*), pos, q, bones, computed)
 
-	VFUNC_SIG(solve_dependencies(vec3_t* pos, quaternion_t* q, matrix3x4_t* bones, uint8_t* computed), "client.dll", "55 8B EC 83 E4 ? 81 EC ? ? ? ? 8B 81 ? ? ? ? 56",
+	VFUNC_SIG(solve_dependencies(vec3_t* pos, vec4_t* q, matrix3x4_t* bones, uint8_t* computed), "client.dll", "55 8B EC 83 E4 ? 81 EC ? ? ? ? 8B 81 ? ? ? ? 56",
 		void(__thiscall*)(void*, vec3_t*, void*, matrix3x4_t*, uint8_t*), pos, q, bones, computed)
 
 	void clear_targets() {
 		auto target = reinterpret_cast<int*>(reinterpret_cast<uintptr_t>(this) + 0xD0);
 
-		for (int i = 0; i < *reinterpret_cast<int*>(reinterpret_cast<uintptr_t>(this) + 0xFF0); i++) {
+		for (auto i = 0; i < *reinterpret_cast<int*>(reinterpret_cast<uintptr_t>(this) + 0xFF0); i++) {
 			*target = -9999;
 			target += 85;
 		}
@@ -27,8 +27,8 @@ public:
 
 class c_bone_setup {
 public:
-	VFUNC_SIG(accumulate_pose(vec3_t* pos, quaternion_t* q, int sequence, float cycle, float weight, float time, c_ik_context* ik),
-		"client.dll", "55 8B EC 83 E4 F0 B8 ? ? ? ? E8 ? ? ? ? A1", void(__thiscall*)(void*, vec3_t*, quaternion_t*, int, float, float, float, c_ik_context*), pos, q, sequence, cycle, weight, time, ik)
+	VFUNC_SIG(accumulate_pose(vec3_t* pos, vec4_t* q, int sequence, float cycle, float weight, float time, c_ik_context* ik),
+		"client.dll", "55 8B EC 83 E4 F0 B8 ? ? ? ? E8 ? ? ? ? A1", void(__thiscall*)(void*, vec3_t*, vec4_t*, int, float, float, float, c_ik_context*), pos, q, sequence, cycle, weight, time, ik)
 };
 
 class c_bone_merge_cache {
@@ -70,26 +70,26 @@ public:
 
 	OFFSET(get_studio_hdr(), c_studio_hdr*, 0x294C)
 	POFFSET(get_bone_cache(), c_bone_cache, 0x290C + 0x4)
-	OFFSET(get_occlusion_mask(), int, 0xA24)
+	OFFSET(get_occlusion_mask(), bit_flag_t, 0xA24)
 	OFFSET(get_occlusion_frame_count(), int, 0xA30)
-	OFFSET(get_unknown_occlusion_flags(), int, 0xA2C)
-	OFFSET(get_occlusion_flags(), int, 0xA28)
+	OFFSET(get_unknown_occlusion_flags(), bit_flag_t, 0xA2C)
+	OFFSET(get_occlusion_flags(), bit_flag_t, 0xA28)
 	OFFSET(get_bone_array_for_write(), matrix3x4_t*, 0x26A8)
 	OFFSET(get_last_setup_bones_frame_count(), int, 0xA64 + 0x4)
 	OFFSET(get_predictable(), int, 0x2EA + 0x4)
-	OFFSET(get_accumulated_bone_mask(), int, 0x269C + 0x4)
-	OFFSET(get_prev_bone_mask(), int, 0x2698 + 0x4)
+	OFFSET(get_accumulated_bone_mask(), bit_flag_t, 0x269C + 0x4)
+	OFFSET(get_prev_bone_mask(), bit_flag_t, 0x2698 + 0x4)
 	OFFSET(get_most_recent_model_bone_counter(), unsigned long, 0x268C + 0x4)
 	OFFSET(get_last_setup_bones_time(), float, 0x2920 + 0x4)
 	OFFSET(get_ik_context(), c_ik_context*, 0x266C + 0x4)
 	OFFSET(get_setup_bones_pos(), vec3_t, 0xA68 + 0x4)
-	OFFSET(get_setup_bones_quaternion(), quaternion_t, 0x166C + 0x4)
+	OFFSET(get_setup_bones_quaternion(), vec4_t, 0x166C + 0x4)
 	OFFSET(get_take_damage(), int, 0x280)
 
-	DATAMAP(get_effects(), int, "m_fEffects")
-	DATAMAP(get_eflags(), int, "m_iEFlags")
-	DATAMAP(get_abs_velocity(), vec3_t, "m_vecAbsVelocity")
-	DATAMAP(get_abs_rotation(), qangle_t, "m_angAbsRotation")
+	DATA_MAP(get_effects(), bit_flag_t, "m_fEffects")
+	DATA_MAP(get_eflags(), bit_flag_t, "m_iEFlags")
+	DATA_MAP(get_abs_velocity(), vec3_t, "m_vecAbsVelocity")
+	DATA_MAP(get_abs_rotation(), qangle_t, "m_angAbsRotation")
 
 	void invalidate_bone_cache() {
 		static const auto most_recent_model_bone_counter = **SIG("client.dll", "80 3D ? ? ? ? ? 74 16 A1 ? ? ? ? 48 C7 81").self_offset(0xA).cast<unsigned long**>();
@@ -187,27 +187,27 @@ public:
 
 class c_base_player : public c_base_combat_character {
 public:
-	DATAMAP(get_duck_amount(), float, "m_flDuckAmount")
-	DATAMAP(get_ground_entity(), c_base_handle, "m_hGroundEntity")
-	DATAMAP(get_move_type(), int, "m_MoveType")
-	DATAMAP(get_next_attack(), float, "m_flNextAttack")
+	DATA_MAP(get_duck_amount(), float, "m_flDuckAmount")
+	DATA_MAP(get_ground_entity(), c_base_handle, "m_hGroundEntity")
+	DATA_MAP(get_move_type(), int, "m_MoveType")
+	DATA_MAP(get_next_attack(), float, "m_flNextAttack")
 
-	DATAMAP(get_impulse(), int, "m_nImpulse")
-	DATAMAP(get_buttons(), int, "m_nButtons")
-	DATAMAP(get_buttons_last(), int, "m_afButtonLast")
-	DATAMAP(get_buttons_pressed(), int, "m_afButtonPressed")
-	DATAMAP(get_buttons_released(), int, "m_afButtonReleased")
-	OFFSET(get_buttons_disabled(), int, 0x3330)
-	OFFSET(get_buttons_forced(), int, 0x3334)
+	DATA_MAP(get_impulse(), int, "m_nImpulse")
+	DATA_MAP(get_buttons(), bit_flag_t, "m_nButtons")
+	DATA_MAP(get_buttons_last(), bit_flag_t, "m_afButtonLast")
+	DATA_MAP(get_buttons_pressed(), bit_flag_t, "m_afButtonPressed")
+	DATA_MAP(get_buttons_released(), bit_flag_t, "m_afButtonReleased")
+	OFFSET(get_buttons_disabled(), bit_flag_t, 0x3330)
+	OFFSET(get_buttons_forced(), bit_flag_t, 0x3334)
 
-	DATAMAP(get_collision_state(), int, "m_vphysicsCollisionState")
+	DATA_MAP(get_collision_state(), int, "m_vphysicsCollisionState")
 
 	OFFSET(get_spawn_time(), float, 0xA370)
 
 	NETVAR(get_fall_velocity(), float, "CBasePlayer->m_flFallVelocity")
 	NETVAR(get_observer_mode(), e_observer_mode, "CBasePlayer->m_iObserverMode")
 	NETVAR(get_observer_target(), c_base_handle, "CBasePlayer->m_hObserverTarget")
-	NETVAR(get_flags(), int, "CBasePlayer->m_fFlags")
+	NETVAR(get_flags(), bit_flag_t, "CBasePlayer->m_fFlags")
 	NETVAR(get_velocity(), vec3_t, "CBasePlayer->m_vecVelocity[0]")
 	NETVAR(get_vehicle(), c_base_handle, "CBasePlayer->m_hVehicle")
 	NETVAR(get_water_level(), int, "CBasePlayer->m_nWaterLevel")
@@ -263,8 +263,8 @@ public:
 
 class c_base_animating : public c_base_player {
 public:
-	PPOFFSET(get_anim_layers(), anim_layers, 0x2980)
-	NETVAR(get_pose_params(), pose_params, "CBaseAnimating->m_flPoseParameter")
+	PPOFFSET(get_anim_layers(), anim_layers_t, 0x2980)
+	NETVAR(get_pose_params(), pose_params_t, "CBaseAnimating->m_flPoseParameter")
 	NETPROP(get_client_side_animation_prop(), "CBaseAnimating->m_bClientSideAnimation")
 	NETVAR(get_client_side_animation(), bool, "CBaseAnimating->m_bClientSideAnimation")
 	NETVAR(get_sequence(), int, "CBaseAnimating->m_nSequence")
@@ -274,10 +274,6 @@ public:
 		
 	POFFSET(get_bone_accessor(), c_bone_accessor, 0x26A4)
 	OFFSET(get_bone_merge_cache(), c_bone_merge_cache*, 0x290C)
-
-	void set_anim_layers(anim_layers layers) { std::copy(std::begin(layers), std::end(layers), std::begin(get_anim_layers())); }
-
-	void set_pose_params(pose_params params) { std::copy(std::begin(params), std::end(params), std::begin(get_pose_params())); }
 
 	void set_pose_parameter(int param, float value) {
 		static const auto studio_set_pose_parameter_fn = SIG("client.dll", "55 8B EC 83 E4 F8 83 EC 08 F3 0F 11 54 24 ? 85 D2").get();
@@ -320,8 +316,8 @@ public:
 
 	OFFSET(get_anim_state(), c_anim_state*, 0x3914)
 
-	VFUNC(standard_blending_rules(c_studio_hdr* hdr, vec3_t* vec, quaternion_t* q, float time, int mask), 205, void(__thiscall*)(void*, c_studio_hdr*, vec3_t*, quaternion_t*, float, int), hdr, vec, q, time, mask)
-	VFUNC(build_transformations(c_studio_hdr* hdr, vec3_t* vec, quaternion_t* q, matrix3x4_t& transform, int mask, uint8_t* computed), 189, void(__thiscall*)(void*, c_studio_hdr*, vec3_t*, quaternion_t*, matrix3x4_t const&, int, uint8_t*), hdr, vec, q, transform, mask, computed)
+	VFUNC(standard_blending_rules(c_studio_hdr* hdr, vec3_t* vec, vec4_t* q, float time, int mask), 205, void(__thiscall*)(void*, c_studio_hdr*, vec3_t*, vec4_t*, float, int), hdr, vec, q, time, mask)
+	VFUNC(build_transformations(c_studio_hdr* hdr, vec3_t* vec, vec4_t* q, matrix3x4_t& transform, int mask, uint8_t* computed), 189, void(__thiscall*)(void*, c_studio_hdr*, vec3_t*, vec4_t*, matrix3x4_t const&, int, uint8_t*), hdr, vec, q, transform, mask, computed)
 	VFUNC(update_ik_locks(float time), 191, void(__thiscall*)(void*, float), time)
 	VFUNC(calculate_ik_locks(float time), 192, void(__thiscall*)(void*, float), time)
 	VFUNC(update_client_side_animation(), 223, void(__thiscall*)(void*))

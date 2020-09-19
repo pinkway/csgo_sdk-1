@@ -1,5 +1,38 @@
 #pragma once
 
+class i_net_channel_info {
+public:
+	virtual const char* get_name() const = 0;
+	virtual const char* get_address() const = 0;
+	virtual float		get_time() const = 0;
+	virtual float		get_time_connected() const = 0;
+	virtual int			get_buffer_size() const = 0;
+	virtual int			get_data_rate() const = 0;
+
+	virtual bool		is_loopback() const = 0;
+	virtual bool		is_timing_out() const = 0;
+	virtual bool		is_playback() const = 0;
+
+	virtual float		get_latency(int flow) const = 0;
+	virtual float		get_avg_latency(int flow) const = 0;
+	virtual float		get_avg_loss(int flow) const = 0;
+	virtual float		get_avg_choke(int flow) const = 0;
+	virtual float		get_avg_data(int flow) const = 0;
+	virtual float		get_avg_packets(int flow) const = 0;
+	virtual int			get_total_data(int flow) const = 0;
+	virtual int			get_sequence_number(int flow) const = 0;
+	virtual bool		is_valid_packet(int flow, int frame_number) const = 0;
+	virtual float		get_packet_time(int flow, int frame_number) const = 0;
+	virtual int			get_packet_bytes(int flow, int frame_number, int group) const = 0;
+	virtual bool		get_stream_progress(int flow, int* received, int* total) const = 0;
+	virtual float		get_time_since_last_received(void) const = 0;
+	virtual	float		get_command_interpolation_amount(int flow, int frame_number) const = 0;
+	virtual void		get_packet_response_latency(int flow, int frame_number, int* latency, int* choke) const = 0;
+	virtual void		get_remote_framerate(float* frame_time, float* frame_time_std_deviation) const = 0;
+
+	virtual float		get_timeout_seconds() const = 0;
+};
+
 class i_net_msg {
 public:
 	virtual					~i_net_msg() = default;
@@ -32,13 +65,19 @@ public:
 	bf_write		m_data_out;
 };
 
-typedef i_net_msg_pb<i_move_msg> i_move_msg_t;
+using i_move_msg_t = i_net_msg_pb<i_move_msg>;
 
 class i_net_channel {
 public:
-	VFUNC(get_latency(const int flow), 9, float(__thiscall*)(i_net_channel*, int), flow)
-	VFUNC(send_netmsg(i_net_msg* msg, bool reliable, bool voice), 40, bool(__thiscall*)(i_net_channel*, i_net_msg*, bool, bool), msg, reliable, voice)
-	VFUNC(send_datagram(), 46, int(__thiscall*)(i_net_channel*, void*), nullptr)
+	VFUNC(get_latency(int flow), 9, float(__thiscall*)(void*, int), flow)
+	VFUNC(send_netmsg(i_net_msg* msg, bool reliable, bool voice), 40, bool(__thiscall*)(void*, i_net_msg*, bool, bool), msg, reliable, voice)
+	VFUNC(send_datagram(), 46, int(__thiscall*)(void*, void*), nullptr)
+
+	__forceinline static uintptr_t* get_vtable() {
+		static const auto vtable = SIG("engine.dll", "C7 06 ? ? ? ? 8D BE ? ? ? ?").self_offset(0x2).cast<uintptr_t*>();
+
+		return vtable;
+	}
 
 	char pad0[20];
 	bool m_processing_messages;

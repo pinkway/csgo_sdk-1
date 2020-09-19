@@ -22,7 +22,7 @@ struct recv_proxy_data_t {
 	int					m_object_id;
 };
 
-typedef void(__cdecl* recv_var_proxy_fn)(recv_proxy_data_t*, void*, void*);
+using recv_var_proxy_fn = void(__cdecl*)(recv_proxy_data_t*, void*, void*);
 
 enum e_send_prop_type : int {
 	DPT_INT = 0,

@@ -7,8 +7,8 @@ public:
 	int			m_player_handle;
 	int			m_impulse_cmd;
 	qangle_t	m_view_angles;
-	qangle_t	m_abs_view_angles;
-	int			m_buttons;
+	qangle_t	m_abs_viewangles;
+	bit_flag_t	m_buttons;
 	int			m_old_buttons;
 	vec3_t		m_move;
 	float		m_max_speed;
@@ -31,21 +31,34 @@ class c_base_player;
 
 class i_prediction {
 public:
-	VFUNC(update(int startframe, bool validframe, int incoming_acknowledged, int outgoing_command), 3, void(__thiscall*)(void*, int, bool, int, int), startframe, validframe, incoming_acknowledged, outgoing_command)
-	VFUNC(in_prediction(), 14, bool(__thiscall*)(void*))
+	VFUNC(update(int start_frame, bool valid_frame, int incoming_acknowledged, int outgoing_command), 3, void(__thiscall*)(void*, int, bool, int, int), start_frame, valid_frame, incoming_acknowledged, outgoing_command)
+	VFUNC(post_entity_packet_received(), 5, void(__thiscall*)(void*))
+	VFUNC(post_network_data_received(int commands_acknowledged), 6, void(__thiscall*)(void*, int), commands_acknowledged)
+	VFUNC(set_local_view_angles(const qangle_t& view_angles), 13, void(__thiscall*)(void*, const qangle_t&), view_angles)
 	VFUNC(check_moving_on_ground(c_base_player* player, float frame_time), 18, void(__thiscall*)(void*, c_base_player*, double), player, frame_time)
 	VFUNC(run_command(c_base_player* player, c_user_cmd* cmd, i_move_helper* move_helper), 19, void(__thiscall*)(void*, c_base_player*, c_user_cmd *, i_move_helper*), player, cmd, move_helper)
 	VFUNC(setup_move(c_base_player* player, c_user_cmd* cmd, i_move_helper* move_helper, c_move_data* move_data), 20, void(__thiscall*)(void*, c_base_player*, c_user_cmd*, i_move_helper*, c_move_data*), player, cmd, move_helper, move_data)
 	VFUNC(finish_move(c_base_player* player, c_user_cmd* cmd, c_move_data* move_data), 21, void(__thiscall*)(void*, c_base_player*, c_user_cmd*, c_move_data*), player, cmd, move_data)
 
-	char	pad0[8];
-	bool	m_in_prediction;
-	char	pad1[1];
-	bool	m_engine_paused;
-	char	pad2[13];
-	bool	m_first_time_predicted;
-	char	pad3[3];
-	int		m_unk0;
-	int		m_server_commands_acknowledged;
-	bool	m_had_prediction_errors;
+	char						pad0[8];
+	bool						m_in_prediction;
+	char						pad1[1];
+	bool						m_engine_paused;
+	bool						m_old_cl_predict_value;
+	int							m_prev_start_frame;
+	int							m_incoming_packet_number;
+	float						m_last_server_world_time_stamp;
+	bool						m_first_time_predicted;
+	char						pad2[3];
+	int							m_commands_predicted;
+	int							m_server_commands_acknowledged;
+	bool						m_prev_ack_had_errors;
+	char						pad3[4];
+	int							m_incoming_acknowledged;
+	bool						m_unknown0;
+	char						pad4[3];
+	c_utl_vector<c_base_handle> m_prediction_handles;
+	bool						m_unknown1;
+	char						pad5[3];
+	i_global_vars				m_saved_globals;
 };

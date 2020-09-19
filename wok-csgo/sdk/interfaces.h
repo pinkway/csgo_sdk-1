@@ -18,9 +18,9 @@ namespace interfaces {
 	extern i_prediction*			prediction;
 	extern i_game_movement*			game_movement;
 	extern i_debug_overlay*			debug_overlay;
-	extern i_cvar*					cvar;
+	extern i_cvar_system*			cvar_system;
 	extern i_game_event_manager*	event_manager;
-	extern i_engine_trace*			trace;
+	extern i_engine_trace*			trace_system;
 	extern i_surface_data*			surface_data;
 	extern i_input_system*			input_system;
 	extern i_client_leaf_system*	leaf_system;

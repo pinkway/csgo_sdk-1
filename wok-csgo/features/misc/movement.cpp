@@ -1,7 +1,11 @@
 #include "../features.h"
 
 void c_movement::fix(const qangle_t& wish, const qangle_t& original) {
+	if (wish == original)
+		return;
+
 	vec3_t wish_forward, wish_right, wish_up;
+
 	math::angle_vectors(wish, &wish_forward, &wish_right, &wish_up);
 
 	wish_forward.z = wish_right.z = wish_up.x = wish_up.y = 0.f;
@@ -11,6 +15,7 @@ void c_movement::fix(const qangle_t& wish, const qangle_t& original) {
 	wish_up.normalize();
 
 	vec3_t original_forward, original_right, original_up;
+
 	math::angle_vectors(original, &original_forward, &original_right, &original_up);
 
 	original_forward.z = original_right.z = original_up.x = original_up.y = 0.f;

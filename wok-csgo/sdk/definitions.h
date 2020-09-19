@@ -231,8 +231,8 @@
 
 class c_animation_layer;
 
-typedef std::array<float, 24> pose_params;
-typedef std::array<c_animation_layer, 15> anim_layers;
+using pose_params_t = std::array<float, 24>;
+using anim_layers_t = std::array<c_animation_layer, 15>;
 
 double inline __declspec (naked) __fastcall fast_sqrt(double n) {
 	_asm {

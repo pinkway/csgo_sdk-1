@@ -11,14 +11,7 @@ void c_prediction::pre_start() {
 }
 
 void c_prediction::start(c_cs_player* player, c_user_cmd* cmd) {
-	if (!player)
-		return;
-
-	m_backup.m_cur_time = interfaces::global_vars->m_cur_time;
-	m_backup.m_frame_time = interfaces::global_vars->m_frame_time;
-
-	m_backup.m_in_prediction = interfaces::prediction->m_in_prediction;
-	m_backup.m_first_time_predicted = interfaces::prediction->m_first_time_predicted;
+	m_backup.store();
 
 	interfaces::global_vars->m_cur_time = TICKS_TO_TIME(player->get_tick_base());
 	interfaces::global_vars->m_frame_time = interfaces::prediction->m_engine_paused ? 0.f : interfaces::global_vars->m_interval_per_tick;
@@ -36,8 +29,8 @@ void c_prediction::start(c_cs_player* player, c_user_cmd* cmd) {
 	*m_player = reinterpret_cast<int>(player);
 	*m_random_seed = cmd->m_random_seed;
 
-	cmd->m_buttons |= player->get_buttons_forced();
-	cmd->m_buttons &= ~player->get_buttons_disabled();
+	cmd->m_buttons.add(player->get_buttons_forced());
+	cmd->m_buttons.remove(~player->get_buttons_disabled());
 
 	interfaces::move_helper->set_host(player);
 	interfaces::game_movement->start_track_prediction_errors(player);
@@ -93,16 +86,33 @@ void c_prediction::start(c_cs_player* player, c_user_cmd* cmd) {
 
 	interfaces::move_helper->process_impacts();
 
-	post_think(player);
+	{
+		interfaces::model_cache->lock();
 
-	interfaces::prediction->m_in_prediction = m_backup.m_in_prediction;
-	interfaces::prediction->m_first_time_predicted = m_backup.m_first_time_predicted;
+		if (player->is_alive()
+			|| player->is_ghost()) {
+			player->update_collistion_bounds();
+
+			if (player->get_flags().has(FL_ONGROUND)) {
+				player->get_fall_velocity() = 0.f;
+			}
+
+			if (player->get_sequence() == -1) {
+				player->set_sequence(0);
+			}
+
+			player->studio_frame_advance();
+
+			player->post_think_v_physics();
+		}
+
+		player->simulate_player_simulated_entities();
+
+		interfaces::model_cache->unlock();
+	}
 }
 
 void c_prediction::end(c_cs_player* player, c_user_cmd* cmd) {
-	if (!player)
-		return;
-
 	interfaces::game_movement->finish_track_prediction_errors(player);
 	interfaces::move_helper->set_host(nullptr);
 	interfaces::game_movement->reset();
@@ -117,6 +127,5 @@ void c_prediction::end(c_cs_player* player, c_user_cmd* cmd) {
 		player->get_tick_base()++;
 	}
 
-	interfaces::global_vars->m_cur_time = m_backup.m_cur_time;
-	interfaces::global_vars->m_frame_time = m_backup.m_frame_time;
+	m_backup.restore();
 }

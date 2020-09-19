@@ -1,27 +1,19 @@
 #pragma once
 
 struct model_t {
-	void*   table;
+	void*   m_table;
 	char    m_name[260];
-	__int32 m_load_flags;
-	__int32 m_server_count;
-	__int32 m_type;
-	__int32 m_flags;
+	int		m_load_flags;
+	int		m_server_count;
+	int		m_type;
+	int		m_flags;
 	vec3_t  m_mins;
 	vec3_t  m_maxs;
 	float   m_radius;
-	char    pad[28];
+	char    pad0[28];
 };
 
-typedef unsigned short model_instance_handle_t;
-
 struct model_render_info_t {
-	model_render_info_t() {
-		m_model_to_world = nullptr;
-		m_lighting_offset = nullptr;
-		m_lighting_origin = nullptr;
-	}
-
 	vec3_t					m_origin;
 	qangle_t				m_angles;
 	char					pad[4];
@@ -35,7 +27,7 @@ struct model_render_info_t {
 	int						m_skin;
 	int						m_body;
 	int						m_hitboxset;
-	model_instance_handle_t m_instance;
+	uint16_t				m_instance;
 };
 
 class studiohwdata_t;
@@ -47,8 +39,8 @@ struct draw_model_state_t {
 	const matrix3x4_t*		m_bones;
 };
 
-enum override_type_t {
-	OVERRIDE_NORMAL = 0,
+enum e_override_type {
+	OVERRIDE_NORMAL,
 	OVERRIDE_BUILD_SHADOWS,
 	OVERRIDE_DEPTH_WRITE,
 	OVERRIDE_SSAO_DEPTH_WRITE,
@@ -56,6 +48,7 @@ enum override_type_t {
 
 class i_model_render {
 public:
-	VFUNC(forced_material_override(i_material* material = nullptr, override_type_t type = OVERRIDE_NORMAL), 1, void(__thiscall*)(void*, i_material*, override_type_t, int), material, type, 0)
-	VFUNC(is_forced_material_override(), 2, bool(__thiscall*)(void*))
+	VFUNC(forced_material_override(i_material* material = nullptr, e_override_type type = OVERRIDE_NORMAL), 1, void(__thiscall*)(void*, i_material*, e_override_type, int), material, type, 0)
+		VFUNC(is_forced_material_override(), 2, bool(__thiscall*)(void*))
+		VFUNC(draw_model_execute(void* context, const draw_model_state_t& state, const model_render_info_t& info, matrix3x4_t* bones), 21, void(__thiscall*)(void*, void*, const draw_model_state_t&, const model_render_info_t&, matrix3x4_t*), context, state, info, bones)
 };

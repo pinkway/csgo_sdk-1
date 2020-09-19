@@ -4,8 +4,9 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg
 
 namespace input {
 	void init() {
-		while (!m_hwnd)
+		while (!m_hwnd) {
 			m_hwnd = FindWindowA(_("Valve001"), 0);
+		}
 
 		m_original_wnd_proc = reinterpret_cast<WNDPROC>(SetWindowLongA(m_hwnd, GWL_WNDPROC, reinterpret_cast<long>(wnd_proc)));
 	}

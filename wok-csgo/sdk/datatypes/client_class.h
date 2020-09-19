@@ -1,8 +1,8 @@
 #pragma once
 
 class i_client_networkable;
-typedef i_client_networkable*(*create_client_class_fn)(int, int);
-typedef i_client_networkable*(*create_event_fn)();
+using create_client_class_fn = i_client_networkable*(__cdecl*)(int, int);
+using create_event_fn = i_client_networkable*(__cdecl*)();
 
 class c_client_class {
 public:

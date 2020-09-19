@@ -36,8 +36,8 @@ bool __stdcall hooks::client_mode::create_move::fn(float input_sample_time, c_us
 	return false;
 }
 
-void __stdcall hooks::client_mode::override_view::fn(c_view_setup* setup) {
+void __stdcall hooks::client_mode::override_view::fn(c_view_setup* view) {
 	static const auto original = m_client_mode->get_original<T>(index);
 
-	original(setup);
+	original(view);
 }

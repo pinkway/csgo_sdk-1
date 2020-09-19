@@ -22,9 +22,9 @@ namespace interfaces {
 		_INTERFACE(prediction, i_prediction, "client.dll", "VClientPrediction001")
 		_INTERFACE(game_movement, i_game_movement, "client.dll", "GameMovement001")
 		_INTERFACE(debug_overlay, i_debug_overlay, "engine.dll", "VDebugOverlay004")
-		_INTERFACE(cvar, i_cvar, "vstdlib.dll", "VEngineCvar007")
+		_INTERFACE(cvar_system, i_cvar_system, "vstdlib.dll", "VEngineCvar007")
 		_INTERFACE(event_manager, i_game_event_manager, "engine.dll", "GAMEEVENTSMANAGER002")
-		_INTERFACE(trace, i_engine_trace, "engine.dll", "EngineTraceClient004")
+		_INTERFACE(trace_system, i_engine_trace, "engine.dll", "EngineTraceClient004")
 		_INTERFACE(surface_data, i_surface_data, "vphysics.dll", "VPhysicsSurfaceProps001")
 		_INTERFACE(input_system, i_input_system, "inputsystem.dll", "InputSystemVersion001")
 		_INTERFACE(leaf_system, i_client_leaf_system, "client.dll", "ClientLeafSystem002")
@@ -66,9 +66,9 @@ namespace interfaces {
 	i_prediction*			prediction = nullptr;
 	i_game_movement*		game_movement = nullptr;
 	i_debug_overlay*		debug_overlay = nullptr;
-	i_cvar*					cvar = nullptr;
+	i_cvar_system*			cvar_system = nullptr;
 	i_game_event_manager*	event_manager = nullptr;
-	i_engine_trace*			trace = nullptr;
+	i_engine_trace*			trace_system = nullptr;
 	i_surface_data*			surface_data = nullptr;
 	i_input_system*			input_system = nullptr;
 	i_client_leaf_system*	leaf_system = nullptr;

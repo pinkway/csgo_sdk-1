@@ -4,7 +4,7 @@
 
 namespace cfg {
 	void init() {
-		ADD_ITEM(bool, "m_example_bool", false)
+		ADD_ITEM(bool, "example::bool", false)
 	}
 
 	void save() {

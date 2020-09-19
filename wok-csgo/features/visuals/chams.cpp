@@ -14,9 +14,9 @@ bool c_chams::override_material(int type, const col_t& clr, bool ignorez) {
 	i_material* material = nullptr;
 
 	switch (type) {
-	case M_REGULAR: material = ignorez ? m_regular_z : m_regular; break;
-	case M_FLAT: material = ignorez ? m_flat_z : m_flat; break;
-	case M_DONT_DRAW: return false; break;
+	case MATERIAL_TYPE_REGULAR: material = ignorez ? m_regular_z : m_regular; break;
+	case MATERIAL_TYPE_FLAT: material = ignorez ? m_flat_z : m_flat; break;
+	case MATERIAL_TYPE_DONT_DRAW: return false; break;
 	}
 
 	material->alpha_modulate(clr.a() / 255.f);
@@ -44,11 +44,9 @@ bool c_chams::on_draw_model(i_model_render* ecx, void* context, const draw_model
 		|| !player->is_enemy())
 		return true;
 
-	override_material(M_REGULAR, col_t::palette_t::purple(), true);
+	override_material(MATERIAL_TYPE_REGULAR, col_t::palette_t::purple(), true);
 
 	original(ecx, context, state, info, bones);
 
-	override_material(M_REGULAR, col_t::palette_t::purple(), false);
-
-	return true;
+	return override_material(MATERIAL_TYPE_REGULAR, col_t::palette_t::purple(), false);
 }

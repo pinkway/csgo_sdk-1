@@ -34,7 +34,7 @@ long __stdcall hooks::d3d_device::reset::fn(IDirect3DDevice9* device, D3DPRESENT
 	static const auto original = m_d3d_device->get_original<T>(index);
 
 	ImGui_ImplDX9_InvalidateDeviceObjects();
-	auto ret = original(device, present_params);
+	const auto ret = original(device, present_params);
 	ImGui_ImplDX9_CreateDeviceObjects();
 
 	return ret;
