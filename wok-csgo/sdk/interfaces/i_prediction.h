@@ -7,7 +7,7 @@ public:
 	int			m_player_handle;
 	int			m_impulse_cmd;
 	qangle_t	m_view_angles;
-	qangle_t	m_abs_viewangles;
+	qangle_t	m_abs_view_angles;
 	bit_flag_t	m_buttons;
 	int			m_old_buttons;
 	vec3_t		m_move;
