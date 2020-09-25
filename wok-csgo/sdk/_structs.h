@@ -75,8 +75,8 @@ public:
 
 			mov ecx, this
 
-			movss xmm1, dword ptr[angle + 4]
-			movss xmm2, dword ptr[angle]
+			movss xmm1, dword ptr [angle + 4]
+			movss xmm2, dword ptr [angle]
 
 			call update_fn
 		}

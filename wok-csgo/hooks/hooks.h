@@ -27,6 +27,13 @@ namespace hooks {
 			using T = void(__stdcall*)(e_client_frame_stage);
 			void __stdcall fn(e_client_frame_stage stage);
 		}
+
+		namespace create_move {
+			constexpr auto index = 22u;
+			using T = void(__thiscall*)(void*, int, float, bool);
+			void __stdcall gate(int sequence_number, float input_sample_frame_time, bool active);
+			void __stdcall fn(int sequence_number, float input_sample_frame_time, bool active, bool& send_packet);
+		}
 	}
 
 	namespace client_mode {

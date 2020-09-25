@@ -14,12 +14,12 @@ namespace hooks {
 		m_client_dll = std::make_unique<memory::hook_t>(interfaces::client_dll);
 
 		m_client_dll->hook(client_dll::frame_stage_notify::index, client_dll::frame_stage_notify::fn);
+		m_client_dll->hook(client_dll::create_move::index, client_dll::create_move::gate);
 
 		// // // // // // // // // // // // // // // // // // // // // // //
 
 		m_client_mode = std::make_unique<memory::hook_t>(interfaces::client_mode);
 
-		m_client_mode->hook(client_mode::create_move::index, client_mode::create_move::fn);
 		m_client_mode->hook(client_mode::override_view::index, client_mode::override_view::fn);
 
 		// // // // // // // // // // // // // // // // // // // // // // //

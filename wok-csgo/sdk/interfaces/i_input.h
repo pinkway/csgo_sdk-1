@@ -2,6 +2,8 @@
 
 class c_user_cmd {
 public:
+	VFUNC_SIG(get_check_sum(), "client.dll", "53 8B D9 83 C8", uint32_t(__thiscall*)(void*));
+
 	virtual		~c_user_cmd() = default;
 
 	int			m_command_number;
