@@ -2,8 +2,8 @@
 
 namespace math {
 	void sin_cos(float rad, float& sin, float& cos) {
-		sin = fast_sin(rad);
-		cos = fast_cos(rad);
+		sin = math::sin(rad);
+		cos = math::cos(rad);
 	}
 
 	void angle_vectors(const qangle_t& angles, vec3_t* forward, vec3_t* right, vec3_t* up) {
@@ -43,7 +43,7 @@ namespace math {
 			|| delta.y == 0.f && delta.x == 0.f)
 			return qangle_t();
 
-		auto angles = qangle_t(fast_asin(delta.z / length) * M_RADPI, fast_atan(delta.y / delta.x) * M_RADPI, 0.f);
+		auto angles = qangle_t(asin(delta.z / length) * M_RADPI, atan(delta.y / delta.x) * M_RADPI, 0.f);
 
 		if (delta.x >= 0.f) {
 			angles.y += 180.f;
@@ -52,36 +52,39 @@ namespace math {
 		return angles.normalize();
 	}
 
-	float clamp(float value, float min, float max) {
-		_mm_store_ss(&value, _mm_min_ss(_mm_max_ss(_mm_set_ss(value), _mm_set_ss(min)), _mm_set_ss(max)));
-		return value;
-	}
+	float asin(float x) {
+		const auto negate = x < 0.f;
 
-	float fast_asin(float x) {
-		const auto negate = float(x < 0);
 		x = abs(x);
+
 		auto ret = -0.0187293;
+
 		ret *= x;
 		ret += 0.0742610;
 		ret *= x;
 		ret -= 0.2121144;
 		ret *= x;
 		ret += 1.5707288;
-		ret = 3.14159265358979 * 0.5 - sqrt(1.0 - x)*ret;
-		return float(ret - 2 * negate * ret);
+		ret = 3.14159265358979 * 0.5 - fast_sqrt(1.0 - x) * ret;
+
+		return ret - 2.f * negate * ret;
 	}
 
-	float fast_atan2(const float y, const float x) {
-		const auto xabs = fabs(x);
-		const auto yabs = fabs(y);
-		double t3 = xabs;
-		double t1 = yabs;
+	float atan2(float y, float x) {
+		const auto x_abs = fabs(x);
+		const auto y_abs = fabs(y);
+
+		auto t3 = static_cast<double>(x_abs);
+		auto t1 = static_cast<double>(y_abs);
+
 		auto t0 = max(t3, t1);
+
 		t1 = min(t3, t1);
 		t3 = 1 / t0;
 		t3 = t1 * t3;
 
 		const auto t4 = t3 * t3;
+
 		t0 = -0.013480470;
 		t0 = t0 * t4 + 0.057477314;
 		t0 = t0 * t4 - 0.121239071;
@@ -90,57 +93,54 @@ namespace math {
 		t0 = t0 * t4 + 0.999995630;
 		t3 = t0 * t3;
 
-		t3 = (yabs > xabs) ? 1.570796327 - t3 : t3;
-		t3 = (x < 0) ? 3.141592654 - t3 : t3;
-		t3 = (y < 0) ? -t3 : t3;
+		t3 = y_abs > x_abs ? 1.570796327 - t3 : t3;
+		t3 = x < 0.f ? 3.141592654 - t3 : t3;
+		t3 = y < 0.f ? -t3 : t3;
 
-		return float(t3);
+		return t3;
 	}
 
-	float fast_atan(const float x) {
-		return fast_atan2(x, float(1));
+	float atan(float x) {
+		return atan2(x, 1.f);
 	}
 
-	float fast_sin(float x) {
-		x *= float(0.159155);
+	float sin(float x) {
+		x *= 0.159155f;
 		x -= floor(x);
+
 		const auto xx = x * x;
+
 		auto y = -6.87897;
+
 		y = y * xx + 33.7755;
 		y = y * xx - 72.5257;
 		y = y * xx + 80.5874;
 		y = y * xx - 41.2408;
 		y = y * xx + 6.28077;
-		return float(x * y);
+
+		return x * y;
 	}
 
-	float fast_cos(const float x) {
-		return fast_sin(x + 1.5708f);
+	float cos(float x) {
+		return sin(x + 1.5708f);
 	}
 
-	float fast_acos(float x) {
-		const auto negate = float(x < 0);
+	float acos(float x) {
+		const auto negate = x < 0.f;
+
 		x = abs(x);
-		auto ret = float(-0.0187293);
-		ret = ret * x;
-		ret = ret + 0.0742610;
-		ret = ret * x;
-		ret = ret - 0.2121144;
-		ret = ret * x;
-		ret = ret + 1.5707288;
-		ret = ret * sqrt(1.0 - x);
-		ret = ret - 2 * negate * ret;
-		return negate * 3.14159265358979 + ret;
-	}
 
-	void fast_rsqrt(float a, float* out) {
-		const auto xx = _mm_load_ss(&a);
-		auto xr = _mm_rsqrt_ss(xx);
-		auto xt = _mm_mul_ss(xr, xr);
-		xt = _mm_mul_ss(xt, xx);
-		xt = _mm_sub_ss(_mm_set_ss(3.f), xt);
-		xt = _mm_mul_ss(xt, _mm_set_ss(0.5f));
-		xr = _mm_mul_ss(xr, xt);
-		_mm_store_ss(out, xr);
+		auto ret = -0.0187293f;
+
+		ret *= x;
+		ret += 0.0742610;
+		ret *= x;
+		ret -= 0.2121144;
+		ret *= x;
+		ret += 1.5707288;
+		ret *= fast_sqrt(1.0 - x);
+		ret -= 2 * negate * ret;
+
+		return negate * 3.14159265358979 + ret;
 	}
 }

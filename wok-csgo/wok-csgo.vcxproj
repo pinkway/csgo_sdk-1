@@ -172,7 +172,7 @@
     <ClCompile Include="hooks\hooks.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="menu\menu.cpp" />
-    <ClCompile Include="sdk\datatypes\misc.cpp" />
+    <ClCompile Include="sdk\misc.cpp" />
     <ClCompile Include="sdk\interfaces.cpp" />
     <ClCompile Include="sdk\_classes.cpp" />
     <ClCompile Include="utils\cfg\cfg.cpp" />
@@ -186,6 +186,7 @@
     <ClCompile Include="utils\input\input.cpp" />
     <ClCompile Include="utils\math\datatypes.cpp" />
     <ClCompile Include="utils\math\math.cpp" />
+    <ClCompile Include="utils\memory\memory.cpp" />
     <ClCompile Include="utils\netvars\netvars.cpp" />
     <ClCompile Include="utils\render\render.cpp" />
   </ItemGroup>

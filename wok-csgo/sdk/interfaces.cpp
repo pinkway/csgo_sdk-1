@@ -10,7 +10,7 @@ namespace interfaces {
 		_INTERFACE_OFFSET(global_vars, i_global_vars, client_dll, 11, 0xA)
 		_INTERFACE_OFFSET(client_state, i_client_state, engine, 12, 0x10)
 
-		mem_alloc = *reinterpret_cast<i_mem_alloc**>(GetProcAddress(reinterpret_cast<HMODULE>(memory::get_module_handle(FNV1A("tier0.dll"))), _("g_pMemAlloc")));
+		mem_alloc = *EXPORT("tier0.dll", "g_pMemAlloc").cast<i_mem_alloc**>();
 
 		_INTERFACE(model_info, i_model_info, "engine.dll", "VModelInfoClient004")
 		_INTERFACE(surface, i_surface, "vguimatsurface.dll", "VGUI_Surface031")

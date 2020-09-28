@@ -3,23 +3,24 @@
 namespace math {
 	void sin_cos(float rad, float& sin, float& cos);
 
+	__forceinline float clamp(float value, float min, float max) {
+		_mm_store_ss(&value, _mm_min_ss(_mm_max_ss(_mm_set_ss(value), _mm_set_ss(min)), _mm_set_ss(max)));
+		return value;
+	}
+
 	void angle_vectors(const qangle_t& angles, vec3_t* forward, vec3_t* right = nullptr, vec3_t* up = nullptr);
 
 	qangle_t calc_angle(const vec3_t& src, const vec3_t& dst);
 
-	float clamp(float value, float min, float max);
+	float asin(float x);
 
-	float fast_asin(float x);
+	float atan2(float y, float x);
 
-	float fast_atan2(const float y, const float x);
+	float atan(float x);
 
-	float fast_atan(const float x);
+	float sin(float x);
 
-	float fast_sin(float x);
+	float cos(float x);
 
-	float fast_cos(const float x);
-
-	float fast_acos(float x);
-
-	void fast_rsqrt(float a, float* out);
+	float acos(float x);
 }

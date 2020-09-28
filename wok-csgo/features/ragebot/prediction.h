@@ -29,14 +29,14 @@ private:
 	int* m_random_seed;
 	c_cs_player* m_player;
 
-	c_move_data* m_move_data;
+	move_data_t* m_move_data;
 	float m_spread, m_inaccuracy;
 public:
 	c_prediction() {
 		m_random_seed = *SIG("client.dll", "A3 ? ? ? ? 66 0F 6E 86").self_offset(0x1).cast<int**>();
 		m_player = *SIG("client.dll", "89 35 ? ? ? ? F3 0F 10 48").self_offset(0x2).cast<c_cs_player**>();
 
-		m_move_data = reinterpret_cast<c_move_data*>(interfaces::mem_alloc->alloc(sizeof(c_move_data)));
+		m_move_data = reinterpret_cast<move_data_t*>(interfaces::mem_alloc->alloc(sizeof(move_data_t)));
 	}
 
 	void update();

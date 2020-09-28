@@ -16,17 +16,6 @@ namespace memory {
 		LPVOID m_address = nullptr;
 	};
 
-	__forceinline uint32_t get_vtable_length(uintptr_t* table) {
-		auto i = 0u;
-
-		for (; table[i]; i++) {
-			if (IS_INTRESOURCE(table[i]))
-				break;
-		}
-
-		return i;
-	}
-
 	struct hook_t {
 		hook_t() = default;
 
@@ -50,7 +39,11 @@ namespace memory {
 
 			m_original = *m_vtable;
 
-			m_table_length = get_vtable_length(m_original);
+			for (m_table_length = 0u; m_original[m_table_length]; m_table_length++) {
+				if (IS_INTRESOURCE(m_original[m_table_length]))
+					break;
+			}
+
 			if (!m_table_length)
 				return false;
 
@@ -113,6 +106,7 @@ namespace memory {
 		address_t() = default;
 		address_t(uint8_t* ptr) { m_ptr = ptr; };
 		address_t(uintptr_t* ptr) { m_ptr = reinterpret_cast<uint8_t*>(ptr); };
+		address_t(void* ptr) { m_ptr = reinterpret_cast<uint8_t*>(ptr); };
 
 		__forceinline operator uint8_t*() { return m_ptr; }
 
@@ -120,20 +114,20 @@ namespace memory {
 
 		__forceinline uint8_t* get() { return m_ptr; }
 
-		template<typename T>
-		__forceinline T cast() { return reinterpret_cast<T>(m_ptr); }
+		template <typename T>
+		__forceinline T cast() const { return reinterpret_cast<T>(m_ptr); }
 
-		__forceinline uint8_t* offset(int offset) const { return m_ptr + offset; };
+		__forceinline uint8_t* offset(uint32_t offset) const { return m_ptr + offset; };
 
-		__forceinline address_t self_offset(int offset) {
+		__forceinline address_t self_offset(uint32_t offset) {
 			m_ptr += offset;
 
 			return *this;
 		}
 
-		__forceinline uint8_t* jmp(int offset = 0x1) const { return m_ptr + offset + sizeof(uintptr_t) + *reinterpret_cast<int*>(m_ptr + offset); }
+		__forceinline uint8_t* jmp(uint32_t offset = 0x1) const { return m_ptr + offset + sizeof(uintptr_t) + *reinterpret_cast<int*>(m_ptr + offset); }
 
-		__forceinline address_t self_jmp(int offset = 0x1) {
+		__forceinline address_t self_jmp(uint32_t offset = 0x1) {
 			m_ptr = jmp(offset);
 
 			return *this;
@@ -142,113 +136,73 @@ namespace memory {
 		uint8_t* m_ptr = nullptr;
 	};
 
-	__forceinline uintptr_t get_module_handle(uint32_t module, uint32_t process = 0) {
-		MODULEENTRY32 entry;
+	using headers_t = std::pair<IMAGE_DOS_HEADER*, IMAGE_NT_HEADERS*>;
 
-		entry.dwSize = sizeof(MODULEENTRY32);
+	struct module_t {
+		module_t() = default;
+		module_t(LDR_DATA_TABLE_ENTRY* ldr_entry, const headers_t& headers) {
+			m_ldr_entry = ldr_entry;
 
-		const auto snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, process);
-
-		uintptr_t ret = 0u;
-
-		if (Module32First(snapshot, &entry)) {
-			while (Module32Next(snapshot, &entry)) {
-				auto name = std::string(entry.szModule);
-
-				std::transform(name.begin(), name.end(), name.begin(), ::tolower);
-
-				if (FNV1A_RT(name.c_str()) != module)
-					continue;
-
-				ret = reinterpret_cast<uintptr_t>(entry.hModule);
-				break;
-			}
+			m_dos_header = std::get<IMAGE_DOS_HEADER*>(headers);
+			m_nt_headers = std::get<IMAGE_NT_HEADERS*>(headers);
 		}
 
-		CloseHandle(snapshot);
+		__forceinline address_t get_base() const { return address_t(m_ldr_entry->DllBase); }
 
-		return ret;
-	}
+		__forceinline std::string get_name() const {
+			if (!m_ldr_entry)
+				return "";
 
-	__forceinline std::vector<int> sig_to_bytes(const char* sig) {
-		const auto start = const_cast<char*>(sig);
-		const auto end = const_cast<char*>(sig) + strlen(sig);
+			const auto base_dll_name = reinterpret_cast<UNICODE_STRING*>(&m_ldr_entry->Reserved4[0]);
 
-		auto ret = std::vector<int>();
+			const auto name = std::wstring(base_dll_name->Buffer, base_dll_name->Length >> 1);
 
-		for (auto it = start; it < end; it++) {
-			if (*it == '?') {
-				it++;
+			const auto size = WideCharToMultiByte(CP_UTF8, 0, name.data(), name.size(), 0, 0, 0, 0);
 
-				if (*it == '?') {
-					it++;
-				}
+			auto ret = std::string(size, 0);
 
-				ret.push_back(-1);
-			}
-			else {
-				ret.push_back(static_cast<int>(strtoul(it, &it, 0x10)));
-			}
+			WideCharToMultiByte(CP_UTF8, 0, name.data(), name.size(), ret.data(), size, 0, 0);
+
+			std::transform(ret.begin(), ret.end(), ret.begin(), ::tolower);
+
+			return ret;
 		}
 
-		return ret;
-	}
+		IMAGE_DOS_HEADER* m_dos_header = nullptr;
+		IMAGE_NT_HEADERS* m_nt_headers = nullptr;
 
-	__forceinline address_t find_sig(uint32_t offset, const char* sig, uint32_t range = 0u) {
-		const auto sig_bytes = sig_to_bytes(sig);
-		const auto size = sig_bytes.size();
-		const auto data = sig_bytes.data();
-
-		const auto scan_bytes = reinterpret_cast<uint8_t*>(offset);
-
-		for (auto i = 0u; i < range - size; i++) {
-			auto found = true;
-
-			for (auto j = 0u; j < size; j++) {
-				if (data[j] == -1
-					|| scan_bytes[i + j] == data[j])
-					continue;
-
-				found = false;
-				break;
-			}
-
-			if (found)
-				return &scan_bytes[i];
-		}
-
-		return address_t();
-	}
-
-	__forceinline address_t find_module_sig(uint32_t hash, const char* sig) {
-		const auto module = get_module_handle(hash);
-		if (!module)
-			return address_t();
-
-		const auto dos_header = reinterpret_cast<PIMAGE_DOS_HEADER>(module);
-		const auto nt_headers = reinterpret_cast<PIMAGE_NT_HEADERS>(reinterpret_cast<uint8_t*>(module) + dos_header->e_lfanew);
-
-		return find_sig(module, sig, nt_headers->OptionalHeader.SizeOfImage);
-	}
+		LDR_DATA_TABLE_ENTRY* m_ldr_entry = nullptr;
+	};
 
 	template <typename T>
 	__forceinline T capture_interface(uint32_t hash, const char* interface_name) {
-		const auto module_handle = get_module_handle(hash);
-		if (!module_handle)
-			return nullptr;
-
-		const auto create_interface_fn = reinterpret_cast<T(__cdecl*)(const char*, int*)>(GetProcAddress(reinterpret_cast<HMODULE>(module_handle), _("CreateInterface")));
+		const auto create_interface_fn = get_export(hash, FNV1A("CreateInterface")).cast<T(__cdecl*)(const char*, int*)>();
 		if (!create_interface_fn)
 			return nullptr;
 
 		return reinterpret_cast<T>(create_interface_fn(interface_name, nullptr));
 	}
 
-	template<typename T>
+	template <typename T>
 	__forceinline T get_vfunc(void* base, int index) { return (*static_cast<T**>(base))[index]; }
+
+	headers_t get_file_headers(address_t addr);
+
+	void get_all_modules();
+
+	std::vector<int> sig_to_bytes(const char* sig);
+
+	address_t find_sig(uint32_t offset, const char* sig, uint32_t range = 0u);
+
+	address_t find_module_sig(uint32_t hash, const char* sig);
+
+	address_t get_export(uint32_t module_hash, uint32_t export_hash);
+
+	extern std::unordered_map<uint32_t, module_t> m_modules;
 }
 
 #define SIG(module_name, sig) memory::find_module_sig(FNV1A(module_name), _(sig))
+#define EXPORT(module_name, export_name) memory::get_export(FNV1A(module_name), FNV1A(export_name))
 
 #define _INTERFACE(value, type, module_name, interface_name) value = memory::capture_interface<type*>(FNV1A(module_name), _(interface_name));
 #define _INTERFACE_OFFSET(value, type, ptr, index, add) value = **reinterpret_cast<type***>((*reinterpret_cast<uintptr_t**>(ptr))[index] + add);

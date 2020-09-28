@@ -57,9 +57,9 @@ void __stdcall hooks::client_dll::create_move::fn(int sequence_number, float inp
 
 	movement->fix(g::angles::view, cmd->m_view_angles);
 
-	cmd->m_move.x = std::clamp(cmd->m_move.x, -450.f, 450.f);
-	cmd->m_move.y = std::clamp(cmd->m_move.y, -450.f, 450.f);
-	cmd->m_move.z = std::clamp(cmd->m_move.z, -320.f, 320.f);
+	cmd->m_move.x = math::clamp(cmd->m_move.x, -450.f, 450.f);
+	cmd->m_move.y = math::clamp(cmd->m_move.y, -450.f, 450.f);
+	cmd->m_move.z = math::clamp(cmd->m_move.z, -320.f, 320.f);
 
 	send_packet = g::send_packet;
 

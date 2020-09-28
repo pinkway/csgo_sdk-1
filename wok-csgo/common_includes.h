@@ -23,6 +23,7 @@
 #include <intrin.h>
 #include <any>
 #include <filesystem>
+#include <winternl.h>
 
 #include <d3d9.h>
 #include <d3dx9core.h>
