@@ -1,23 +1,15 @@
 #pragma once
 
-class c_event_info {
-public:
+struct event_info_t {
 	int				m_class_id;
 	float			m_delay;
 	char			pad1[4];
 	c_client_class*	m_client_class;
 	char			pad2[40];
-	c_event_info*	m_next;
+	event_info_t*	m_next;
 };
 
 class i_client_state {
-	class c_clock_drift_mgr {
-	public:
-		float			m_clock_offsets[16];
-		int				m_cur_clock_offset;
-		int				m_server_tick;
-		int				m_client_tick;
-	};
 public:
 	char				pad0[156];
 	i_net_channel*		m_net_channel;
@@ -29,7 +21,14 @@ public:
 	int					m_server_count;
 	int					m_cur_sequence;
 	char				pad3[8];
-	c_clock_drift_mgr	m_clock_drift_mgr;
+
+	struct {
+		float			m_clock_offsets[16];
+		int				m_cur_clock_offset;
+		int				m_server_tick;
+		int				m_client_tick;
+	} m_clock_drift_mgr;
+
 	int					m_delta_tick;
 	bool				m_paused;
 	char				pad4[3];
@@ -55,5 +54,5 @@ public:
 	char				pad8[80];
 	qangle_t			m_view_angles;
 	char				pad9[208];
-	c_event_info*		m_events;
+	event_info_t*		m_events;
 };

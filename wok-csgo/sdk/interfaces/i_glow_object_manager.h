@@ -3,7 +3,7 @@
 class i_glow_object_manager {
 public:
 	struct glow_object_t {
-		void set(const col_t& clr, int style) {
+		__forceinline void set(const col_t& clr, int style) {
 			m_red = clr.r() / 255.f;
 			m_green = clr.g() / 255.f;
 			m_blue = clr.b() / 255.f;
@@ -16,14 +16,13 @@ public:
 			m_bloom_amount = 0.8f;
 		}
 
-		bool				is_unused() const { return m_next_free_slot != -2; }
+		__forceinline bool is_unused() const { return m_next_free_slot != -2; }
 
 		c_base_entity*		m_entity;
 		float				m_red;
 		float				m_green;
 		float				m_blue;
 		float				m_alpha;
-
 		char				pad0[8];
 		float				m_bloom_amount;
 		char				pad1[4];

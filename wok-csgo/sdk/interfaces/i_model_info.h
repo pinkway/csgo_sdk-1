@@ -276,11 +276,13 @@ struct virtualmodel_t {
 	c_utl_vector<uint16_t>			m_auto_play_sequences;
 };
 
+class c_studio_hdr;
+
 class c_activity_to_sequence_mapping {
 public:
-	char pad0[32];
+	VFUNC_SIG(select_weighted_sequence_from_modifiers(c_studio_hdr* hdr, int activity, void* modifiers, int count), "server.dll", "55 8B EC 83 EC 2C 53 56 8B 75 08 8B D9", int(__thiscall*)(void*, c_studio_hdr*, int, void*, int), hdr, activity, modifiers, count)
 
-	friend class c_studio_hdr;
+	char pad0[32];
 };
 
 class c_studio_hdr {
@@ -320,7 +322,7 @@ public:
 class i_model_info {
 public:
 	VFUNC(get_model(int index), 1, model_t*(__thiscall*)(void*, int), index)
-		VFUNC(get_model_index(const char* name), 2, int(__thiscall*)(void*, const char*), name)
-		VFUNC(get_model_name(const model_t* model), 3, const char*(__thiscall*)(void*, const model_t*), model)
-		VFUNC(get_studio_model(const model_t* model), 32, studiohdr_t*(__thiscall*)(void*, const model_t*), model)
+	VFUNC(get_model_index(const char* name), 2, int(__thiscall*)(void*, const char*), name)
+	VFUNC(get_model_name(const model_t* model), 3, const char*(__thiscall*)(void*, const model_t*), model)
+	VFUNC(get_studio_model(const model_t* model), 32, studiohdr_t*(__thiscall*)(void*, const model_t*), model)
 };

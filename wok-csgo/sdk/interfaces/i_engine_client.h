@@ -8,6 +8,4 @@ public:
 	VFUNC(is_connected(), 27, bool(__thiscall*)(void*))
 	VFUNC(client_cmd(const char* cmd), 108, void(__thiscall*)(void*, const char*), cmd)
 	VFUNC(client_cmd_unrestricted(const char* cmd, const char* flag = 0), 114, void(__thiscall*)(void*, const char*, bool), cmd, flag)
-
-	bool in_game_and_connected() { return is_in_game() && is_connected(); }
 };

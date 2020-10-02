@@ -61,6 +61,34 @@ struct type_description_t {
 };
 
 struct data_map_t {
+	__forceinline uint32_t find(uint32_t hash) const {
+		auto data_map = this;
+
+		while (data_map) {
+			for (auto i = 0; i < data_map->m_data_num_fields; i++) {
+				if (!data_map->m_data_description[i].m_field_name)
+					continue;
+
+				if (hash == FNV1A_RT(data_map->m_data_description[i].m_field_name))
+					return data_map->m_data_description[i].m_field_offset;
+
+				if (data_map->m_data_description[i].m_field_type != FIELD_EMBEDDED
+					|| !data_map->m_data_description[i].m_data_map)
+					continue;
+
+				const auto offset = data_map->m_data_description[i].m_data_map->find(hash);
+				if (!offset)
+					continue;
+
+				return offset;
+			}
+
+			data_map = data_map->m_base_map;
+		}
+
+		return 0u;
+	}
+
 	type_description_t*	m_data_description;
 	int                 m_data_num_fields;
 	char const*			m_data_class_name;
@@ -71,31 +99,8 @@ struct data_map_t {
 	int                 m_packed_size;
 };
 
-__declspec(noinline) static uint32_t find_in_data_map(data_map_t* map, uint32_t hash) {
-	while (map) {
-		for (int i = 0; i < map->m_data_num_fields; i++) {
-			if (!map->m_data_description[i].m_field_name)
-				continue;
-
-			if (hash == FNV1A_RT(map->m_data_description[i].m_field_name))
-				return map->m_data_description[i].m_field_offset;
-
-			if (map->m_data_description[i].m_field_type == FIELD_EMBEDDED) {
-				if (map->m_data_description[i].m_data_map) {
-					if (const auto offset = find_in_data_map(map->m_data_description[i].m_data_map, hash))
-						return offset;
-				}
-			}
-		}
-
-		map = map->m_base_map;
-	}
-
-	return 0;
-}
-
 #define DATA_MAP(func, type, name) \
 	__forceinline type& func { \
-		static const auto offset = find_in_data_map(get_pred_desc_map(), FNV1A(name)); \
+		static const auto offset = get_pred_desc_map()->find(FNV1A(name)); \
 		return *reinterpret_cast<type*>(reinterpret_cast<uintptr_t>(this) + offset ); \
 	}

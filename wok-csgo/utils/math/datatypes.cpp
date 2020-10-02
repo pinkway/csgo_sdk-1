@@ -100,7 +100,7 @@ matrix3x4_t qangle_t::matrix() const {
 qangle_t matrix3x4_t::angle() const {
 	auto ret = qangle_t();
 
-	const auto dist = fast_sqrt(m_matrix[0][0] * m_matrix[0][0] + m_matrix[1][0] * m_matrix[1][0]);
+	const auto dist = math::sqrt(m_matrix[0][0] * m_matrix[0][0] + m_matrix[1][0] * m_matrix[1][0]);
 
 	if (dist > 0.001f) {
 		ret.x = RAD2DEG(math::atan2(-m_matrix[2][0], dist));

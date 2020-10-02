@@ -70,14 +70,14 @@ public:
 struct recv_prop_hook_t {
 	recv_prop_hook_t(c_recv_prop* prop) { m_prop = prop; }
 
-	void hook(recv_var_proxy_fn proxy_fn) {
+	__forceinline void hook(recv_var_proxy_fn proxy_fn) {
 		m_original = m_prop->m_proxy_fn;
 		m_prop->m_proxy_fn = proxy_fn;
 	}
 
-	void unhook() { m_prop->m_proxy_fn = m_original; }
+	__forceinline void unhook() { m_prop->m_proxy_fn = m_original; }
 
-	recv_var_proxy_fn get_original() { return m_original; }
+	__forceinline recv_var_proxy_fn get_original() { return m_original; }
 
 	c_recv_prop* m_prop;
 	recv_var_proxy_fn m_original;

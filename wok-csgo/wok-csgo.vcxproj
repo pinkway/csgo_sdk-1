@@ -172,7 +172,7 @@
     <ClCompile Include="hooks\hooks.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="menu\menu.cpp" />
-    <ClCompile Include="sdk\misc.cpp" />
+    <ClCompile Include="sdk\sdk.cpp" />
     <ClCompile Include="sdk\interfaces.cpp" />
     <ClCompile Include="sdk\_classes.cpp" />
     <ClCompile Include="utils\cfg\cfg.cpp" />

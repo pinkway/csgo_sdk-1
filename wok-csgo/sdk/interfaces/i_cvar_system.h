@@ -1,6 +1,6 @@
 #pragma once
 
-using create_interface_fn = uintptr_t * (__cdecl*)(const char* name, int* code);
+using create_interface_fn = uintptr_t*(__cdecl*)(const char* name, int* code);
 
 class i_app_system {
 public:

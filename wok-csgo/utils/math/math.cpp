@@ -65,7 +65,7 @@ namespace math {
 		ret -= 0.2121144;
 		ret *= x;
 		ret += 1.5707288;
-		ret = 3.14159265358979 * 0.5 - fast_sqrt(1.0 - x) * ret;
+		ret = 3.14159265358979 * 0.5 - sqrt(1.0 - x) * ret;
 
 		return ret - 2.f * negate * ret;
 	}
@@ -138,7 +138,7 @@ namespace math {
 		ret -= 0.2121144;
 		ret *= x;
 		ret += 1.5707288;
-		ret *= fast_sqrt(1.0 - x);
+		ret *= sqrt(1.0 - x);
 		ret -= 2 * negate * ret;
 
 		return negate * 3.14159265358979 + ret;

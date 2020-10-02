@@ -33,7 +33,6 @@ public:
 	virtual int		get_event_debug_id() { return EVENT_DEBUG_ID_INIT; }
 };
 
-#undef CreateEvent
 class i_game_event_manager {
 public:
 	virtual					~i_game_event_manager() {};

@@ -1,7 +1,7 @@
 #pragma once
 
 struct model_t {
-	void*   m_table;
+	char	pad0[4];
 	char    m_name[260];
 	int		m_load_flags;
 	int		m_server_count;
@@ -10,7 +10,7 @@ struct model_t {
 	vec3_t  m_mins;
 	vec3_t  m_maxs;
 	float   m_radius;
-	char    pad0[28];
+	char    pad1[28];
 };
 
 struct model_render_info_t {
@@ -49,6 +49,6 @@ enum e_override_type {
 class i_model_render {
 public:
 	VFUNC(forced_material_override(i_material* material = nullptr, e_override_type type = OVERRIDE_NORMAL), 1, void(__thiscall*)(void*, i_material*, e_override_type, int), material, type, 0)
-		VFUNC(is_forced_material_override(), 2, bool(__thiscall*)(void*))
-		VFUNC(draw_model_execute(void* context, const draw_model_state_t& state, const model_render_info_t& info, matrix3x4_t* bones), 21, void(__thiscall*)(void*, void*, const draw_model_state_t&, const model_render_info_t&, matrix3x4_t*), context, state, info, bones)
+	VFUNC(is_forced_material_override(), 2, bool(__thiscall*)(void*))
+	VFUNC(draw_model_execute(void* context, const draw_model_state_t& state, const model_render_info_t& info, matrix3x4_t* bones), 21, void(__thiscall*)(void*, void*, const draw_model_state_t&, const model_render_info_t&, matrix3x4_t*), context, state, info, bones)
 };

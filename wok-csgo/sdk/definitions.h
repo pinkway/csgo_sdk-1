@@ -231,13 +231,15 @@
 
 class c_animation_layer;
 
-using pose_params_t = std::array<float, 24>;
-using anim_layers_t = std::array<c_animation_layer, 15>;
+using pose_params_t = std::array<float, 24u>;
+using anim_layers_t = std::array<c_animation_layer, 15u>;
 
-double inline __declspec (naked) __fastcall fast_sqrt(double n) {
-	_asm {
-		fld qword ptr[esp + 4]
-		fsqrt
-		ret 8
+namespace math {
+	double inline __declspec (naked) __fastcall sqrt(double n) {
+		_asm {
+			fld qword ptr[esp + 4]
+			fsqrt
+			ret 8
+		}
 	}
 }

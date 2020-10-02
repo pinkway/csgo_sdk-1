@@ -22,8 +22,6 @@ namespace memory {
 
 		const auto list = &peb->Ldr->InMemoryOrderModuleList;
 
-		auto ret = std::vector<module_t>();
-
 		for (auto it = list->Flink; it != list; it = it->Flink) {
 			const auto ldr_entry = CONTAINING_RECORD(it, LDR_DATA_TABLE_ENTRY, InMemoryOrderLinks);
 			if (!ldr_entry)

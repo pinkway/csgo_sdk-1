@@ -37,7 +37,7 @@ class c_bone_merge_cache {
 
 class c_base_entity : public i_client_entity {
 public:
-	template<typename T>
+	template <typename T>
 	__forceinline T& get(int offset) { return *reinterpret_cast<T*>(reinterpret_cast<uintptr_t>(this) + offset); }
 
 	VFUNC(get_pred_desc_map(), 17, data_map_t*(__thiscall*)(void*))
@@ -91,7 +91,7 @@ public:
 	DATA_MAP(get_abs_velocity(), vec3_t, "m_vecAbsVelocity")
 	DATA_MAP(get_abs_rotation(), qangle_t, "m_angAbsRotation")
 
-	void invalidate_bone_cache() {
+	__forceinline void invalidate_bone_cache() {
 		static const auto most_recent_model_bone_counter = **SIG("client.dll", "80 3D ? ? ? ? ? 74 16 A1 ? ? ? ? 48 C7 81").self_offset(0xA).cast<unsigned long**>();
 
 		get_last_setup_bones_time() = -FLT_MAX;
@@ -100,7 +100,7 @@ public:
 
 	bool is_enemy();
 
-	bool is_breakable() {
+	__forceinline bool is_breakable() {
 		if (!this
 			|| !get_index())
 			return false;
@@ -238,9 +238,9 @@ public:
 	VFUNC_SIG(post_think_v_physics(), "client.dll", "55 8B EC 83 E4 F8 81 EC ? ? ? ? 53 8B D9 56 57 83 BB", bool(__thiscall*)(void*))
 	VFUNC_SIG(simulate_player_simulated_entities(), "client.dll", "56 8B F1 57 8B BE ? ? ? ? 83 EF 01 78 72", bool(__thiscall*)(void*))
 
-	bool is_alive() { return get_life_state() == LIFE_ALIVE; }
+	__forceinline bool is_alive() { return get_life_state() == LIFE_ALIVE; }
 
-	vec3_t get_bone_position(int id) {
+	__forceinline vec3_t get_bone_position(int id) {
 		static const auto get_bone_position_fn = SIG("client.dll", "55 8B EC 83 E4 F8 83 EC 30 8D").cast<void(__thiscall*)(void*, int, vec3_t*, vec3_t*)>();
 		
 		vec3_t position, rotation;
@@ -249,7 +249,7 @@ public:
 		return position;
 	}
 
-	vec3_t get_eye_position() {
+	__forceinline vec3_t get_eye_position() {
 		vec3_t ret;
 		memory::get_vfunc<void(__thiscall*)(void*, vec3_t&)>(this, 284)(this, ret);
 
@@ -271,11 +271,24 @@ public:
 		
 	VFUNC(set_sequence(int sequence), 218, void(__thiscall*)(void*, int), sequence)
 	VFUNC(studio_frame_advance(), 219, void(__thiscall*)(void*))
-		
+	VFUNC(get_layer_sequence_cycle_rate(c_animation_layer* layer, int sequence), 222, float(__thiscall*)(void*, c_animation_layer*, int), layer, sequence)
+
 	POFFSET(get_bone_accessor(), c_bone_accessor, 0x26A4)
 	OFFSET(get_bone_merge_cache(), c_bone_merge_cache*, 0x290C)
 
-	void set_pose_parameter(int param, float value) {
+	__forceinline int select_weighted_sequence_from_modifiers(int activity, void* modifiers, int count) {
+		const auto hdr = get_studio_hdr();
+		if (!hdr)
+			return -1;
+
+		if (!hdr->m_activity_to_sequence) {
+			hdr->m_activity_to_sequence = hdr->find_mapping();
+		}
+
+		return hdr->m_activity_to_sequence->select_weighted_sequence_from_modifiers(hdr, activity, modifiers, count);
+	}
+
+	__forceinline void set_pose_parameter(int param, float value) {
 		static const auto studio_set_pose_parameter_fn = SIG("client.dll", "55 8B EC 83 E4 F8 83 EC 08 F3 0F 11 54 24 ? 85 D2").get();
 
 		auto result = 0.0f;
@@ -326,7 +339,7 @@ public:
 
 	player_info_t get_info();
 
-	static uintptr_t* get_vtable() {
+	__forceinline static uintptr_t* get_vtable() {
 		static const auto vtable = SIG("client.dll", "55 8B EC 83 E4 F8 83 EC 18 56 57 8B F9 89 7C 24 0C").self_offset(0x47).cast<uintptr_t*>();
 
 		return vtable;

@@ -10,7 +10,7 @@ public:
 	VFUNC_SIG(find_key(const char* name, bool create), "client.dll", "55 8B EC 83 EC 1C 53 8B D9 85 DB", c_key_values*(__thiscall*)(void*, const char*, bool), name, create)
 
 	void set_int(const char* name, int value) {
-		auto key = find_key(name, true);
+		const auto key = find_key(name, true);
 		if (!key)
 			return;
 
@@ -19,7 +19,7 @@ public:
 	}
 
 	void set_string(const char* name, const char* a2) {
-		auto key = find_key(name, true);
+		const auto key = find_key(name, true);
 		if (!key)
 			return;
 

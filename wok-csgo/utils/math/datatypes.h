@@ -72,7 +72,7 @@ struct vec2_t {
 
 	__forceinline float length_sqr() const { return x * x + y * y; }
 
-	__forceinline float length() const { return fast_sqrt(length_sqr()); }
+	__forceinline float length() const { return math::sqrt(length_sqr()); }
 
 	__forceinline float dot_product(const vec2_t& value) const { return x * value.x + y * value.y; }
 
@@ -186,9 +186,9 @@ struct vec3_t {
 
 	__forceinline float length_sqr() const { return x * x + y * y + z * z; }
 
-	__forceinline float length() const { return fast_sqrt(length_sqr()); }
+	__forceinline float length() const { return math::sqrt(length_sqr()); }
 
-	__forceinline float length_2d() const { return fast_sqrt(x * x + y * y); }
+	__forceinline float length_2d() const { return math::sqrt(x * x + y * y); }
 
 	__forceinline float dot_product(const vec3_t& value) const { return x * value.x + y * value.y + z * value.z; }
 
@@ -372,9 +372,9 @@ struct qangle_t {
 
 	__forceinline float length_sqr() const { return x * x + y * y + z * z; }
 
-	__forceinline float length() const { return fast_sqrt(length_sqr()); }
+	__forceinline float length() const { return math::sqrt(length_sqr()); }
 
-	__forceinline float length_2d() const { return fast_sqrt(x * x + y * y); }
+	__forceinline float length_2d() const { return math::sqrt(x * x + y * y); }
 
 	__forceinline bool is_valid() const { return std::isfinite(x) && std::isfinite(y) && std::isfinite(z); }
 
@@ -673,24 +673,20 @@ struct matrix3x4_t {
 	}
 
 	__forceinline matrix3x4_t operator*(float value) const {
-		auto ret = matrix3x4_t();
-
-		ret[0][0] = m_matrix[0][0] * value;
-		ret[0][1] = m_matrix[0][1] * value;
-		ret[0][2] = m_matrix[0][2] * value;
-		ret[0][3] = m_matrix[0][3] * value;
-
-		ret[1][0] = m_matrix[1][0] * value;
-		ret[1][1] = m_matrix[1][1] * value;
-		ret[1][2] = m_matrix[1][2] * value;
-		ret[1][3] = m_matrix[1][3] * value;
-
-		ret[2][0] = m_matrix[2][0] * value;
-		ret[2][1] = m_matrix[2][1] * value;
-		ret[2][2] = m_matrix[2][2] * value;
-		ret[2][3] = m_matrix[2][3] * value;
-
-		return ret;
+		return matrix3x4_t(
+			m_matrix[0][0] * value,
+			m_matrix[0][1] * value,
+			m_matrix[0][2] * value,
+			m_matrix[0][3] * value,
+			m_matrix[1][0] * value,
+			m_matrix[1][1] * value,
+			m_matrix[1][2] * value,
+			m_matrix[1][3] * value,
+			m_matrix[2][0] * value,
+			m_matrix[2][1] * value,
+			m_matrix[2][2] * value,
+			m_matrix[2][3] * value
+		);
 	}
 
 	__forceinline vec3_t operator*(const vec3_t& value) const {

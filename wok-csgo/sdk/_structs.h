@@ -64,8 +64,22 @@ class c_anim_state {
 public:
 	VFUNC_SIG(reset(), "client.dll", "56 6A 01 68 ? ? ? ? 8B F1", void(__thiscall*)(void*))
 	VFUNC_SIG(create(c_base_entity* entity), "client.dll", "55 8B EC 56 8B F1 B9 ? ? ? ? C7 46", void(__thiscall*)(void*, c_base_entity*), entity)
+	VFUNC_SIG(get_weapon_prefix(), "client.dll", "53 56 57 8B F9 33 F6 8B 4F 60 8B 01 FF 90", const char*(__thiscall*)(void*))
 
-	void update(qangle_t angle) {
+	__forceinline float get_body_yaw_modifier() const {
+		const auto v48 = m_feet_speed_forwards_or_sideways >= 0.f ? fminf(m_feet_speed_forwards_or_sideways, 1.f) : 0.f;
+		const auto v49 = ((m_stop_to_full_running_fraction * -0.30000001f) - 0.19999999f) * v48;
+		const auto v51 = v49 + 1.f;
+
+		if (m_duck_amount <= 0.f)
+			return v51;
+
+		const auto v53 = m_feet_speed_unknown_forward_or_sideways >= 0.f ? fminf(m_feet_speed_unknown_forward_or_sideways, 1.f) : 0.f;
+
+		return v51 + (m_duck_amount * v53) * (0.5f - v51);
+	}
+
+	__forceinline void update(qangle_t angle) {
 		static const auto update_fn = SIG("client.dll", "55 8B EC 83 E4 F8 83 EC 18 56 57 8B F9 F3 0F 11 54 24").get();
 		if (!update_fn)
 			return;
@@ -82,9 +96,11 @@ public:
 		}
 	}
 
-	char					pad0[8];
+	char					pad0[4];
+	bool					m_reset;
+	char					pad1[3];
 	int						m_tick_count;
-	char					pad1[83];
+	char					pad2[83];
 	c_base_entity*			m_base_entity;
 	c_base_combat_weapon*	m_active_weapon;
 	c_base_combat_weapon*	m_last_active_weapon;
@@ -98,18 +114,18 @@ public:
 	float					m_cur_torso_yaw;
 	float					m_velocity_lean;
 	float					m_lean_amount;
-	char					pad2[4];
-	float					m_feet_cycle;
-	float					m_feet_yaw_rate;
 	char					pad3[4];
+	float					m_feet_cycle;
+	float					m_feet_weight;
+	char					pad4[4];
 	float					m_duck_amount;
 	float					m_landing_duck_additive;
-	char					pad4[4];
+	char					pad5[4];
 	vec3_t					m_origin;
 	vec3_t					m_last_origin;
 	vec3_t					m_velocity;
 	vec3_t					m_velocity_normalized;
-	vec3_t					m_last_velocity_non_zero;
+	vec3_t					m_velocity_normalized_non_zero;
 	float					m_speed_2d;
 	float					m_up_velocity;
 	float					m_speed_normalized;
@@ -119,20 +135,21 @@ public:
 	float					m_time_since_stopped_moving;
 	bool					m_on_ground;
 	bool					m_in_hit_ground_animation;
-	char					pad5[6];
+	char					pad6[6];
 	float					m_time_since_in_air;
 	float					m_last_origin_z;
 	float					m_head_height_or_offset_from_hitting_ground_animation;
 	float					m_stop_to_full_running_fraction;
-	char					pad6[4];
+	char					pad7[4];
 	float					m_magic_fraction;
-	char					pad7[48];
+	bool					m_on_ladder;
+	char					pad8[47];
 	float					m_last_velocity_test_time;
 	vec3_t					m_last_velocity;
 	vec3_t					m_dst_acceleration;
 	vec3_t					m_acceleration;
 	float					m_acceleration_weight;
-	char					pad8[428];
+	char					pad9[428];
 	float					m_min_body_yaw;
 	float					m_max_body_yaw;
 	float					m_min_body_pitch;
