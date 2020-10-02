@@ -43,8 +43,8 @@ public:
 		const auto head = m_data_bytes & 3;
 		const auto byeteofs = pos / 8;
 
-		if ((m_data_bytes < 4)
-			|| (head && (byeteofs < head))) {
+		if (m_data_bytes < 4
+			|| head && byeteofs < head) {
 			auto partial = reinterpret_cast<uint8_t const*>(m_data);
 
 			if (m_data) {
@@ -59,7 +59,7 @@ public:
 				}
 			}
 
-			m_data_in = (uint32_t const*)partial;
+			m_data_in = reinterpret_cast<uint32_t const*>(partial);
 			m_in_buf_word >>= (pos & 31);
 			m_bits_avail = (head << 3) - (pos & 31);
 		}
