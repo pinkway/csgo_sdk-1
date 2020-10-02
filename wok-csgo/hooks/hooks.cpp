@@ -59,6 +59,7 @@ namespace hooks {
 		m_d3d_device->unhook();
 		m_client_dll->unhook();
 		m_client_mode->unhook();
+		m_model_render->unhook();
 		m_player->unhook();
 		m_renderable->unhook();
 	}
