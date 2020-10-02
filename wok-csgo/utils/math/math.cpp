@@ -9,9 +9,9 @@ namespace math {
 	void angle_vectors(const qangle_t& angles, vec3_t* forward, vec3_t* right, vec3_t* up) {
 		vec3_t cos, sin;
 
-		sin_cos(DEG2RAD(angles.x), sin.x, cos.x);
-		sin_cos(DEG2RAD(angles.y), sin.y, cos.y);
-		sin_cos(DEG2RAD(angles.z), sin.z, cos.z);
+		sin_cos(deg_to_rad(angles.x), sin.x, cos.x);
+		sin_cos(deg_to_rad(angles.y), sin.y, cos.y);
+		sin_cos(deg_to_rad(angles.z), sin.z, cos.z);
 
 		if (forward) {
 			forward->x = cos.x * cos.y;
@@ -43,7 +43,7 @@ namespace math {
 			|| delta.y == 0.f && delta.x == 0.f)
 			return qangle_t();
 
-		auto angles = qangle_t(asin(delta.z / length) * M_RADPI, atan(delta.y / delta.x) * M_RADPI, 0.f);
+		auto angles = qangle_t(asin(delta.z / length) * m_rad_pi, atan(delta.y / delta.x) * m_rad_pi, 0.f);
 
 		if (delta.x >= 0.f) {
 			angles.y += 180.f;

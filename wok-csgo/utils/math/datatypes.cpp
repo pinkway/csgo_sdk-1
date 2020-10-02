@@ -33,13 +33,13 @@ qangle_t vec3_t::angle() const {
 		ret.x = z > 0.f ? 90.f : 270.f;
 	}
 	else {
-		ret.y = RAD2DEG(math::atan2(y, x));
+		ret.y = math::rad_to_deg(math::atan2(y, x));
 
 		if (ret.y < 0.f) {
 			ret.y += 360.f;
 		}
 
-		ret.x = RAD2DEG(math::atan2(-z, length_2d()));
+		ret.x = math::rad_to_deg(math::atan2(-z, length_2d()));
 
 		if (ret.x < 0.f) {
 			ret.x += 360.f;
@@ -57,13 +57,13 @@ qangle_t vec3_t::angle(const vec3_t& up) const {
 	const auto dist = length_2d();
 
 	if (dist > 0.001f) {
-		ret.x = RAD2DEG(math::atan2(-z, dist));
-		ret.y = RAD2DEG(math::atan2(y, x));
-		ret.z = RAD2DEG(math::atan2(left.z, left.y * x - left.x * y));
+		ret.x = math::rad_to_deg(math::atan2(-z, dist));
+		ret.y = math::rad_to_deg(math::atan2(y, x));
+		ret.z = math::rad_to_deg(math::atan2(left.z, left.y * x - left.x * y));
 	}
 	else {
-		ret.x = RAD2DEG(math::atan2(-z, dist));
-		ret.y = RAD2DEG(math::atan2(-left.x, left.y));
+		ret.x = math::rad_to_deg(math::atan2(-z, dist));
+		ret.y = math::rad_to_deg(math::atan2(-left.x, left.y));
 		ret.z = 0.f;
 	}
 
@@ -81,9 +81,9 @@ qangle_t& qangle_t::sanitize() {
 matrix3x4_t qangle_t::matrix() const {
 	vec3_t sin, cos;
 
-	math::sin_cos(DEG2RAD(x), sin.x, cos.x);
-	math::sin_cos(DEG2RAD(y), sin.y, cos.y);
-	math::sin_cos(DEG2RAD(z), sin.z, cos.z);
+	math::sin_cos(math::deg_to_rad(x), sin.x, cos.x);
+	math::sin_cos(math::deg_to_rad(y), sin.y, cos.y);
+	math::sin_cos(math::deg_to_rad(z), sin.z, cos.z);
 
 	const auto crcy = cos.z * cos.y;
 	const auto crsy = cos.z * sin.y;
@@ -103,13 +103,13 @@ qangle_t matrix3x4_t::angle() const {
 	const auto dist = math::sqrt(m_matrix[0][0] * m_matrix[0][0] + m_matrix[1][0] * m_matrix[1][0]);
 
 	if (dist > 0.001f) {
-		ret.x = RAD2DEG(math::atan2(-m_matrix[2][0], dist));
-		ret.y = RAD2DEG(math::atan2(m_matrix[1][0], m_matrix[0][0]));
-		ret.z = RAD2DEG(math::atan2(m_matrix[2][1], m_matrix[2][2]));
+		ret.x = math::rad_to_deg(math::atan2(-m_matrix[2][0], dist));
+		ret.y = math::rad_to_deg(math::atan2(m_matrix[1][0], m_matrix[0][0]));
+		ret.z = math::rad_to_deg(math::atan2(m_matrix[2][1], m_matrix[2][2]));
 	}
 	else {
-		ret.x = RAD2DEG(math::atan2(-m_matrix[2][0], dist));
-		ret.y = RAD2DEG(math::atan2(-m_matrix[0][1], m_matrix[1][1]));
+		ret.x = math::rad_to_deg(math::atan2(-m_matrix[2][0], dist));
+		ret.y = math::rad_to_deg(math::atan2(-m_matrix[0][1], m_matrix[1][1]));
 		ret.z = 0.f;
 	}
 

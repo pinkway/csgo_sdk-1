@@ -1,10 +1,5 @@
 #pragma once
 
-#define M_PI		3.14159265358979323846f
-#define M_RADPI		57.295779513082f
-#define RAD2DEG(x)  (static_cast<float>(x) * static_cast<float>(180.f / M_PI))
-#define DEG2RAD(x)  (static_cast<float>(x) * static_cast<float>(M_PI / 180.f))
-
 #define IN_RANGE(a, b, c)		(a >= b && a <= c) 
 
 #define TICK_INTERVAL			(interfaces::global_vars->m_interval_per_tick)
@@ -235,7 +230,7 @@ using pose_params_t = std::array<float, 24u>;
 using anim_layers_t = std::array<c_animation_layer, 15u>;
 
 namespace math {
-	double inline __declspec (naked) __fastcall sqrt(double n) {
+	double __forceinline __declspec (naked) __fastcall sqrt(double n) {
 		_asm {
 			fld qword ptr[esp + 4]
 			fsqrt
