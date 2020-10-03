@@ -1,5 +1,30 @@
 #pragma once
 
+struct jiggle_data_t {
+	jiggle_data_t(int bone, float cur_time, const vec3_t& base_pos, const vec3_t& tip_pos) {
+		m_bone = bone;
+
+		m_last_ipdate = cur_time;
+
+		m_base_pos = m_base_last_pos = base_pos;
+		m_base_velocity = m_base_acceleration = vec3_t();
+
+		m_tip_pos = tip_pos;
+		m_tip_velocity = m_tip_acceleration = vec3_t();
+	}
+
+	int		m_bone;
+	int		m_id;
+	float	m_last_ipdate;
+	vec3_t	m_base_pos;
+	vec3_t	m_base_last_pos;
+	vec3_t	m_base_velocity;
+	vec3_t	m_base_acceleration;
+	vec3_t	m_tip_pos;
+	vec3_t	m_tip_velocity;
+	vec3_t	m_tip_acceleration;
+};
+
 struct player_info_t {
 	int64_t			pad0;
 
