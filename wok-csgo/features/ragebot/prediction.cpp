@@ -23,9 +23,6 @@ void c_prediction::predict(c_cs_player* player, c_user_cmd* cmd) {
 	interfaces::global_vars->m_cur_time = TICKS_TO_TIME(player->get_tick_base());
 	interfaces::global_vars->m_frame_time = player->get_flags().has(FL_FROZEN) ? 0.f : interfaces::global_vars->m_interval_per_tick;
 
-	player->get_cur_cmd() = cmd;
-	player->get_last_cmd() = *cmd;
-
 	interfaces::move_helper->set_host(player);
 
 	interfaces::game_movement->start_track_prediction_errors(player);
@@ -38,7 +35,6 @@ void c_prediction::predict(c_cs_player* player, c_user_cmd* cmd) {
 
 	interfaces::move_helper->set_host(nullptr);
 
-	player->get_cur_cmd() = nullptr;
 
 	m_player = nullptr;
 	*m_random_seed = -1;
