@@ -35,7 +35,6 @@ void c_prediction::predict(c_cs_player* player, c_user_cmd* cmd) {
 
 	interfaces::move_helper->set_host(nullptr);
 
-
 	m_player = nullptr;
 	*m_random_seed = -1;
 
