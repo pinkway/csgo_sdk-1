@@ -9,7 +9,16 @@ void c_menu::on_paint() {
 	ImGui::SetNextWindowSize(ImVec2(500, 450), ImGuiCond_Once);
 
 	if (ImGui::Begin(_("wok sdk v2"), 0, ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoCollapse)) {
+		ImGui::ColorEdit3(_("color picker 3"), cfg::get<std::vector<float>>(FNV1A("example::clr3")).data());
+		ImGui::ColorEdit4(_("color picker 4"), cfg::get<std::vector<float>>(FNV1A("example::clr4")).data());
 
+		if (ImGui::Button(_("save"))) {
+			cfg::save();
+		}
+
+		if (ImGui::Button(_("load"))) {
+			cfg::load();
+		}
 	}
 	ImGui::End();
 }

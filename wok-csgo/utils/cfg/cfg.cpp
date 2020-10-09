@@ -1,10 +1,14 @@
 #include "../utils.h"
 
 #define ADD_ITEM(type, name, def) m_items[FNV1A(name)] = { FNV1A(#type), std::make_any<type>(def) };
+#define ADD_ITEM_FLOAT_VEC(name, ...) m_items[FNV1A(name)] = { FNV1A("std::vector<float>"), std::make_any<std::vector<float>>({ __VA_ARGS__ }) };
+#define ADD_ITEM_INT_VEC(name, ...) m_items[FNV1A(name)] = { FNV1A("std::vector<float>"), std::make_any<std::vector<float>>({ __VA_ARGS__ }) };
+#define ADD_ITEM_BOOL_VEC(name, ...) m_items[FNV1A(name)] = { FNV1A("std::vector<float>"), std::make_any<std::vector<float>>({ __VA_ARGS__ }) };
 
 namespace cfg {
 	void init() {
-		ADD_ITEM(bool, "example::bool", false)
+		ADD_ITEM_FLOAT_VEC("example::clr3", 1.f, 1.f, 1.f)
+		ADD_ITEM_FLOAT_VEC("example::clr4", 1.f, 1.f, 1.f, 1.f)
 	}
 
 	void save() {
@@ -108,7 +112,7 @@ namespace cfg {
 			case FNV1A("col_t"): {
 				const auto vec = nlohmann::json::parse(item[_("inner")].get<std::string>());
 
-				cur_item.set<col_t>(col_t(vec.at(0).get<uint8_t>(), vec.at(1).get<uint8_t>(), vec.at(2).get<uint8_t>(), vec.at(3).get<uint8_t>()));
+				cur_item.set<col_t>(col_t(vec.at(0u).get<uint8_t>(), vec.at(1u).get<uint8_t>(), vec.at(2u).get<uint8_t>(), vec.at(3u).get<uint8_t>()));
 			} break;
 			case FNV1A("std::vector<int>"): {
 				const auto vec = nlohmann::json::parse(item[_("inner")].get<std::string>());
