@@ -2,8 +2,8 @@
 
 #define ADD_ITEM(type, name, def) m_items[FNV1A(name)] = { FNV1A(#type), std::make_any<type>(def) };
 #define ADD_ITEM_FLOAT_VEC(name, ...) m_items[FNV1A(name)] = { FNV1A("std::vector<float>"), std::make_any<std::vector<float>>({ __VA_ARGS__ }) };
-#define ADD_ITEM_INT_VEC(name, ...) m_items[FNV1A(name)] = { FNV1A("std::vector<float>"), std::make_any<std::vector<float>>({ __VA_ARGS__ }) };
-#define ADD_ITEM_BOOL_VEC(name, ...) m_items[FNV1A(name)] = { FNV1A("std::vector<float>"), std::make_any<std::vector<float>>({ __VA_ARGS__ }) };
+#define ADD_ITEM_INT_VEC(name, ...) m_items[FNV1A(name)] = { FNV1A("std::vector<int>"), std::make_any<std::vector<int>>({ __VA_ARGS__ }) };
+#define ADD_ITEM_BOOL_VEC(name, ...) m_items[FNV1A(name)] = { FNV1A("std::vector<bool>"), std::make_any<std::vector<bool>>({ __VA_ARGS__ }) };
 
 namespace cfg {
 	void init() {
