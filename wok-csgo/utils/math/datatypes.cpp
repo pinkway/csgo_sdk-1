@@ -100,16 +100,16 @@ matrix3x4_t qangle_t::matrix() const {
 qangle_t matrix3x4_t::angle() const {
 	auto ret = qangle_t();
 
-	const auto dist = math::sqrt(m_matrix[0][0] * m_matrix[0][0] + m_matrix[1][0] * m_matrix[1][0]);
+	const auto dist = math::sqrt(m_value[0][0] * m_value[0][0] + m_value[1][0] * m_value[1][0]);
 
 	if (dist > 0.001f) {
-		ret.x = math::rad_to_deg(math::atan2(-m_matrix[2][0], dist));
-		ret.y = math::rad_to_deg(math::atan2(m_matrix[1][0], m_matrix[0][0]));
-		ret.z = math::rad_to_deg(math::atan2(m_matrix[2][1], m_matrix[2][2]));
+		ret.x = math::rad_to_deg(math::atan2(-m_value[2][0], dist));
+		ret.y = math::rad_to_deg(math::atan2(m_value[1][0], m_value[0][0]));
+		ret.z = math::rad_to_deg(math::atan2(m_value[2][1], m_value[2][2]));
 	}
 	else {
-		ret.x = math::rad_to_deg(math::atan2(-m_matrix[2][0], dist));
-		ret.y = math::rad_to_deg(math::atan2(-m_matrix[0][1], m_matrix[1][1]));
+		ret.x = math::rad_to_deg(math::atan2(-m_value[2][0], dist));
+		ret.y = math::rad_to_deg(math::atan2(-m_value[0][1], m_value[1][1]));
 		ret.z = 0.f;
 	}
 

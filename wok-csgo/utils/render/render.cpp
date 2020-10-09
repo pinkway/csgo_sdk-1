@@ -36,7 +36,7 @@ namespace render {
 		return vec2_t(IM_FLOOR(size.x + 0.95f), size.y);
 	}
 
-	void text(const std::string& txt, vec2_t pos, const col_t& clr, ImFont* font, bit_flag_t flags) {
+	void text(const std::string& txt, vec2_t pos, const col_t& clr, ImFont* font, bit_flag_t<uint8_t> flags) {
 		if (!font
 			|| txt.empty()
 			|| clr.a() <= 0

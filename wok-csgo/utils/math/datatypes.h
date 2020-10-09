@@ -387,17 +387,17 @@ struct col_t {
 	col_t(int r, int g, int b, int a) { set(r, g, b, a); }
 	col_t(const col_t& col, int a) { set(col.r(), col.g(), col.b(), a); }
 
-	std::array<uint8_t, 4> clr = {};
+	std::array<uint8_t, 4> m_value = {};
 
-	__forceinline void set(uint8_t r, uint8_t g, uint8_t b, uint8_t a) { clr = { r, g, b, a }; }
+	__forceinline void set(uint8_t r, uint8_t g, uint8_t b, uint8_t a) { m_value = { r, g, b, a }; }
 
-	__forceinline int r() const { return clr.at(0); }
+	__forceinline int r() const { return m_value.at(0u); }
 
-	__forceinline int g() const { return clr.at(1); }
+	__forceinline int g() const { return m_value.at(1u); }
 
-	__forceinline int b() const { return clr.at(2); }
+	__forceinline int b() const { return m_value.at(2u); }
 
-	__forceinline int a() const { return clr.at(3); }
+	__forceinline int a() const { return m_value.at(3u); }
 
 	__forceinline unsigned int hex(bool rgba = false) const {
 		return rgba
@@ -600,110 +600,110 @@ struct col_t {
 struct matrix3x4_t {
 	matrix3x4_t() = default;
 	matrix3x4_t(float m00, float m01, float m02, float m03, float m10, float m11, float m12, float m13, float m20, float m21, float m22, float m23) {
-		m_matrix[0][0] = m00;
-		m_matrix[0][1] = m01;
-		m_matrix[0][2] = m02;
-		m_matrix[0][3] = m03;
+		m_value[0][0] = m00;
+		m_value[0][1] = m01;
+		m_value[0][2] = m02;
+		m_value[0][3] = m03;
 
-		m_matrix[1][0] = m10;
-		m_matrix[1][1] = m11;
-		m_matrix[1][2] = m12;
-		m_matrix[1][3] = m13;
+		m_value[1][0] = m10;
+		m_value[1][1] = m11;
+		m_value[1][2] = m12;
+		m_value[1][3] = m13;
 
-		m_matrix[2][0] = m20;
-		m_matrix[2][1] = m21;
-		m_matrix[2][2] = m22;
-		m_matrix[2][3] = m23;
+		m_value[2][0] = m20;
+		m_value[2][1] = m21;
+		m_value[2][2] = m22;
+		m_value[2][3] = m23;
 	}
 
 	matrix3x4_t(const vec3_t& x_axis, const vec3_t& y_axis, const vec3_t& z_axis, const vec3_t& origin) {
-		m_matrix[0][0] = x_axis.x;
-		m_matrix[0][1] = y_axis.x;
-		m_matrix[0][2] = z_axis.x;
-		m_matrix[0][3] = origin.x;
+		m_value[0][0] = x_axis.x;
+		m_value[0][1] = y_axis.x;
+		m_value[0][2] = z_axis.x;
+		m_value[0][3] = origin.x;
 
-		m_matrix[1][0] = x_axis.y;
-		m_matrix[1][1] = y_axis.y;
-		m_matrix[1][2] = z_axis.y;
-		m_matrix[1][3] = origin.y;
+		m_value[1][0] = x_axis.y;
+		m_value[1][1] = y_axis.y;
+		m_value[1][2] = z_axis.y;
+		m_value[1][3] = origin.y;
 
-		m_matrix[2][0] = x_axis.z;
-		m_matrix[2][1] = y_axis.z;
-		m_matrix[2][2] = z_axis.z;
-		m_matrix[2][3] = origin.z;
+		m_value[2][0] = x_axis.z;
+		m_value[2][1] = y_axis.z;
+		m_value[2][2] = z_axis.z;
+		m_value[2][3] = origin.z;
 	}
 
-	__forceinline vec3_t get_column(int column) const { return vec3_t(m_matrix[0][column], m_matrix[1][column], m_matrix[2][column]); }
+	__forceinline vec3_t get_column(int column) const { return vec3_t(m_value[0][column], m_value[1][column], m_value[2][column]); }
 
 	__forceinline void set_column(const vec3_t& value, int column) {
-		m_matrix[0][column] = value.x;
-		m_matrix[1][column] = value.y;
-		m_matrix[2][column] = value.z;
+		m_value[0][column] = value.x;
+		m_value[1][column] = value.y;
+		m_value[2][column] = value.z;
 	}
 
 	__forceinline void add_to_column(const vec3_t& value, int column) {
-		m_matrix[0][column] += value.x;
-		m_matrix[1][column] += value.y;
-		m_matrix[2][column] += value.z;
+		m_value[0][column] += value.x;
+		m_value[1][column] += value.y;
+		m_value[2][column] += value.z;
 	}
 
 	__forceinline matrix3x4_t operator+(const matrix3x4_t& value) const {
 		return matrix3x4_t(
-			m_matrix[0][0] + value[0][0], m_matrix[0][1] + value[0][1], m_matrix[0][2] + value[0][2], m_matrix[0][3] + value[0][3],
-			m_matrix[1][0] + value[1][0], m_matrix[1][1] + value[1][1], m_matrix[1][2] + value[1][2], m_matrix[1][3] + value[1][3],
-			m_matrix[2][0] + value[2][0], m_matrix[2][1] + value[2][1], m_matrix[2][2] + value[2][2], m_matrix[2][3] + value[2][3]
+			m_value[0][0] + value[0][0], m_value[0][1] + value[0][1], m_value[0][2] + value[0][2], m_value[0][3] + value[0][3],
+			m_value[1][0] + value[1][0], m_value[1][1] + value[1][1], m_value[1][2] + value[1][2], m_value[1][3] + value[1][3],
+			m_value[2][0] + value[2][0], m_value[2][1] + value[2][1], m_value[2][2] + value[2][2], m_value[2][3] + value[2][3]
 		);
 	}
 
 	__forceinline matrix3x4_t operator*(const matrix3x4_t& value) const {
 		return matrix3x4_t(
-			m_matrix[0][0] * value[0][0] + m_matrix[0][1] * value[1][0] + m_matrix[0][2] * value[2][0],
-			m_matrix[0][0] * value[0][1] + m_matrix[0][1] * value[1][1] + m_matrix[0][2] * value[2][1],
-			m_matrix[0][0] * value[0][2] + m_matrix[0][1] * value[1][2] + m_matrix[0][2] * value[2][2],
-			m_matrix[0][0] * value[0][3] + m_matrix[0][1] * value[1][3] + m_matrix[0][2] * value[2][3] + m_matrix[0][3],
-			m_matrix[1][0] * value[0][0] + m_matrix[1][1] * value[1][0] + m_matrix[1][2] * value[2][0],
-			m_matrix[1][0] * value[0][1] + m_matrix[1][1] * value[1][1] + m_matrix[1][2] * value[2][1],
-			m_matrix[1][0] * value[0][2] + m_matrix[1][1] * value[1][2] + m_matrix[1][2] * value[2][2],
-			m_matrix[1][0] * value[0][3] + m_matrix[1][1] * value[1][3] + m_matrix[1][2] * value[2][3] + m_matrix[1][3],
-			m_matrix[2][0] * value[0][0] + m_matrix[2][1] * value[1][0] + m_matrix[2][2] * value[2][0],
-			m_matrix[2][0] * value[0][1] + m_matrix[2][1] * value[1][1] + m_matrix[2][2] * value[2][1],
-			m_matrix[2][0] * value[0][2] + m_matrix[2][1] * value[1][2] + m_matrix[2][2] * value[2][2],
-			m_matrix[2][0] * value[0][3] + m_matrix[2][1] * value[1][3] + m_matrix[2][2] * value[2][3] + m_matrix[2][3]
+			m_value[0][0] * value[0][0] + m_value[0][1] * value[1][0] + m_value[0][2] * value[2][0],
+			m_value[0][0] * value[0][1] + m_value[0][1] * value[1][1] + m_value[0][2] * value[2][1],
+			m_value[0][0] * value[0][2] + m_value[0][1] * value[1][2] + m_value[0][2] * value[2][2],
+			m_value[0][0] * value[0][3] + m_value[0][1] * value[1][3] + m_value[0][2] * value[2][3] + m_value[0][3],
+			m_value[1][0] * value[0][0] + m_value[1][1] * value[1][0] + m_value[1][2] * value[2][0],
+			m_value[1][0] * value[0][1] + m_value[1][1] * value[1][1] + m_value[1][2] * value[2][1],
+			m_value[1][0] * value[0][2] + m_value[1][1] * value[1][2] + m_value[1][2] * value[2][2],
+			m_value[1][0] * value[0][3] + m_value[1][1] * value[1][3] + m_value[1][2] * value[2][3] + m_value[1][3],
+			m_value[2][0] * value[0][0] + m_value[2][1] * value[1][0] + m_value[2][2] * value[2][0],
+			m_value[2][0] * value[0][1] + m_value[2][1] * value[1][1] + m_value[2][2] * value[2][1],
+			m_value[2][0] * value[0][2] + m_value[2][1] * value[1][2] + m_value[2][2] * value[2][2],
+			m_value[2][0] * value[0][3] + m_value[2][1] * value[1][3] + m_value[2][2] * value[2][3] + m_value[2][3]
 		);
 	}
 
 	__forceinline matrix3x4_t operator*(float value) const {
 		return matrix3x4_t(
-			m_matrix[0][0] * value,
-			m_matrix[0][1] * value,
-			m_matrix[0][2] * value,
-			m_matrix[0][3] * value,
-			m_matrix[1][0] * value,
-			m_matrix[1][1] * value,
-			m_matrix[1][2] * value,
-			m_matrix[1][3] * value,
-			m_matrix[2][0] * value,
-			m_matrix[2][1] * value,
-			m_matrix[2][2] * value,
-			m_matrix[2][3] * value
+			m_value[0][0] * value,
+			m_value[0][1] * value,
+			m_value[0][2] * value,
+			m_value[0][3] * value,
+			m_value[1][0] * value,
+			m_value[1][1] * value,
+			m_value[1][2] * value,
+			m_value[1][3] * value,
+			m_value[2][0] * value,
+			m_value[2][1] * value,
+			m_value[2][2] * value,
+			m_value[2][3] * value
 		);
 	}
 
 	__forceinline vec3_t operator*(const vec3_t& value) const {
 		return vec3_t(
-			m_matrix[0][0] * value.x + m_matrix[0][1] * value.y + m_matrix[0][2] * value.z + m_matrix[0][3],
-			m_matrix[1][0] * value.x + m_matrix[1][1] * value.y + m_matrix[1][2] * value.z + m_matrix[1][3],
-			m_matrix[2][0] * value.x + m_matrix[2][1] * value.y + m_matrix[2][2] * value.z + m_matrix[2][3]
+			m_value[0][0] * value.x + m_value[0][1] * value.y + m_value[0][2] * value.z + m_value[0][3],
+			m_value[1][0] * value.x + m_value[1][1] * value.y + m_value[1][2] * value.z + m_value[1][3],
+			m_value[2][0] * value.x + m_value[2][1] * value.y + m_value[2][2] * value.z + m_value[2][3]
 		);
 	}
 
 	qangle_t angle() const;
 
-	__forceinline vec4_t& operator[](int i) { return m_matrix.at(i); }
+	__forceinline vec4_t& operator[](int i) { return m_value.at(i); }
 
-	__forceinline const vec4_t& operator[](int i) const { return m_matrix.at(i); }
+	__forceinline const vec4_t& operator[](int i) const { return m_value.at(i); }
 
-	std::array<vec4_t, 3> m_matrix = {};
+	std::array<vec4_t, 3u> m_value = {};
 };
 
 struct ALIGN16 matrix3x4a_t : public matrix3x4_t {
@@ -711,38 +711,41 @@ struct ALIGN16 matrix3x4a_t : public matrix3x4_t {
 };
 
 struct v_matrix {
-	__forceinline vec4_t& operator[](int i) { return m_matrix.at(i); }
+	__forceinline vec4_t& operator[](int i) { return m_value.at(i); }
 
-	__forceinline const vec4_t& operator[](int i) const { return m_matrix.at(i); }
+	__forceinline const vec4_t& operator[](int i) const { return m_value.at(i); }
 
-	std::array<vec4_t, 4> m_matrix = {};
+	std::array<vec4_t, 4u> m_value = {};
 };
 
+template <typename T>
 struct bit_flag_t {
 	bit_flag_t() = default;
-	bit_flag_t(uint32_t value) { m_value = value; }
+	bit_flag_t(const T& value) { m_value = value; }
 
-	__forceinline bool has(uint32_t value) const { return m_value & value; }
+	__forceinline bool has(const T& value) const { return m_value & value; }
 
-	__forceinline void add(uint32_t value) { m_value |= value; }
+	__forceinline void add(const T& value) { m_value |= value; }
 
-	__forceinline void remove(uint32_t value) { m_value &= ~value; }
+	__forceinline void remove(const T& value) { m_value &= ~value; }
 
-	__forceinline bool is_valid() const { return m_value; }
+	__forceinline void clear() { m_value = {}; }
 
-	__forceinline operator uint32_t() const { return m_value; }
+	__forceinline bool empty() const { return m_value == std::numeric_limits<T>::quiet_NaN(); }
 
-	__forceinline bit_flag_t& operator=(bit_flag_t value) {
+	__forceinline operator T() const { return m_value; }
+
+	__forceinline bit_flag_t<T>& operator=(const bit_flag_t<T>& value) {
 		m_value = value.m_value;
 
 		return *this;
 	}
 
-	__forceinline uint32_t& operator=(uint32_t value) {
+	__forceinline T& operator=(const T& value) {
 		m_value = value;
 
 		return m_value;
 	}
 
-	uint32_t m_value = 0u;
+	T m_value = {};
 };

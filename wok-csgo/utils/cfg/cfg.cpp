@@ -33,10 +33,9 @@ namespace cfg {
 
 				nlohmann::json sub;
 
-				sub.push_back(clr.r());
-				sub.push_back(clr.g());
-				sub.push_back(clr.b());
-				sub.push_back(clr.a());
+				for (auto& value : clr.m_value) {
+					sub.push_back(value);
+				}
 
 				cur[_("inner")] = sub.dump();
 			} break;

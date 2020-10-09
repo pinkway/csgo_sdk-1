@@ -31,7 +31,7 @@ public:
 	int								m_registered;
 	char*							m_name;
 	char*							m_help_string;
-	bit_flag_t						m_flags;
+	bit_flag_t<uint32_t>			m_flags;
 	char							pad1[4];
 	c_cvar*							m_parent;
 	char*							m_default_value;

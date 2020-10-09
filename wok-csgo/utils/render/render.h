@@ -1,7 +1,7 @@
 #pragma once
 
 enum e_font_flags {
-	FONT_NONE = 0,
+	FONT_NONE,
 	FONT_CENTERED_X = 1 << 0,
 	FONT_CENTERED_Y = 1 << 1,
 	FONT_CENTERED = FONT_CENTERED_X | FONT_CENTERED_Y,
@@ -18,7 +18,7 @@ namespace render {
 
 	vec2_t get_text_size(const std::string& txt, ImFont* font);
 
-	void text(const std::string& txt, vec2_t pos, const col_t& clr, ImFont* font, bit_flag_t flags = FONT_NONE);
+	void text(const std::string& txt, vec2_t pos, const col_t& clr, ImFont* font, bit_flag_t<uint8_t> flags = FONT_NONE);
 
 	void line(const vec2_t& from, const vec2_t& to, const col_t& clr);
 
