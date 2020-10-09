@@ -2,18 +2,18 @@
 
 namespace memory {
 	struct protect_t {
-		protect_t(LPVOID address, uint32_t size, DWORD flags) {
+		protect_t(LPVOID addr, uint32_t size, DWORD flags) {
 			m_size = size;
-			m_address = address;
+			m_addr = addr;
 
-			VirtualProtect(m_address, m_size, flags, &m_flags);
+			VirtualProtect(m_addr, m_size, flags, &m_flags);
 		}
 
-		~protect_t() { VirtualProtect(m_address, m_size, m_flags, &m_flags); }
+		~protect_t() { VirtualProtect(m_addr, m_size, m_flags, &m_flags); }
 
 		DWORD m_flags = 0ul;
 		uint32_t m_size = 0u;
-		LPVOID m_address = nullptr;
+		LPVOID m_addr = nullptr;
 	};
 
 	struct hook_t {
