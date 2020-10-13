@@ -136,29 +136,6 @@ namespace render {
 		m_draw_list->PathFillConvex(clr.hex());
 	}
 
-	bool world_to_screen(const vec3_t& in, vec2_t& out) {
-		static const auto& matrix = *reinterpret_cast<v_matrix*>(*SIG("client.dll", "0F 10 05 ? ? ? ? 8D 85 ? ? ? ? B9").self_offset(0x3).cast<uintptr_t*>() + 0xB0);
-
-		out.x = matrix[0][0] * in.x + matrix[0][1] * in.y + matrix[0][2] * in.z + matrix[0][3];
-		out.y = matrix[1][0] * in.x + matrix[1][1] * in.y + matrix[1][2] * in.z + matrix[1][3];
-
-		const auto w = matrix[3][0] * in.x + matrix[3][1] * in.y + matrix[3][2] * in.z + matrix[3][3];
-
-		if (w < 0.001f) {
-			out.x *= 100000.f;
-			out.y *= 100000.f;
-			return false;
-		}
-
-		out.x /= w;
-		out.y /= w;
-
-		out.x = m_screen_size.x * 0.5f + (out.x * m_screen_size.x) * 0.5f;
-		out.y = m_screen_size.y * 0.5f - (out.y * m_screen_size.y) * 0.5f;
-
-		return true;
-	}
-
 	std::mutex m_mutex;
 
 	vec2_t m_screen_size;

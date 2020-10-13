@@ -208,6 +208,8 @@ struct vec3_t {
 
 	qangle_t angle(const vec3_t& up) const;
 
+	bool to_screen(vec2_t& value) const;
+
 	__forceinline float dist_to(const vec3_t& value) const { return (*this - value).length(); }
 
 	__forceinline float dist_to_2d(const vec3_t& value) const { return (*this - value).length_2d(); }

@@ -70,6 +70,24 @@ qangle_t vec3_t::angle(const vec3_t& up) const {
 	return ret;
 }
 
+bool vec3_t::to_screen(vec2_t& value) const {
+	static const auto& matrix = *reinterpret_cast<v_matrix*>(*SIG("client.dll", "0F 10 05 ? ? ? ? 8D 85 ? ? ? ? B9").self_offset(0x3).cast<uintptr_t*>() + 0xB0);
+
+	value.x = matrix[0][0] * x + matrix[0][1] * y + matrix[0][2] * z + matrix[0][3];
+	value.y = matrix[1][0] * x + matrix[1][1] * y + matrix[1][2] * z + matrix[1][3];
+
+	const auto w = matrix[3][0] * x + matrix[3][1] * y + matrix[3][2] * z + matrix[3][3];
+	if (w < 0.001f)
+		return false;
+
+	value /= w;
+
+	value.x = render::m_screen_size.x * 0.5f + (value.x * render::m_screen_size.x) * 0.5f;
+	value.y = render::m_screen_size.y * 0.5f - (value.y * render::m_screen_size.y) * 0.5f;
+
+	return true;
+}
+
 qangle_t& qangle_t::sanitize() {
 	x = math::clamp(remainderf(x, 360.f), -89.f, 89.f);
 	y = math::clamp(remainderf(y, 360.f), -180.f, 180.f);

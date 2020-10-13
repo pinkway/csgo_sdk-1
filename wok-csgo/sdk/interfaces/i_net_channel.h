@@ -83,9 +83,9 @@ public:
 	bool m_processing_messages;
 	bool m_should_delete;
 	char pad1[2];
-	int	 m_out_sequence_nr;
-	int	 m_in_sequence_nr;
-	int  m_out_sequence_nr_ack;
+	int	 m_out_sequence_number;
+	int	 m_in_sequence_number;
+	int  m_out_sequence_number_ack;
 	int  m_out_reliable_state;
 	int  m_in_reliable_state;
 	int  m_choked_packets;

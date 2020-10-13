@@ -30,8 +30,6 @@ namespace render {
 
 	void multi_rect_filled(const std::vector<vec2_t>& points, const col_t& clr);
 	
-	bool world_to_screen(const vec3_t& in, vec2_t& out);
-
 	extern std::mutex m_mutex;
 
 	extern vec2_t m_screen_size;
