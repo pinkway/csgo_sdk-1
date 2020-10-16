@@ -42,7 +42,7 @@ public:
 	char			m_level_name_short[40];
 	char			pad7[212];
 	int				m_max_clients;
-	char			pad8[18828];
+	char			pad8[18836];
 	int				m_old_tick_count;
 	float			m_tick_remainder;
 	float			m_frame_time;
