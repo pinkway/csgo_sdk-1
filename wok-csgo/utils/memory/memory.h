@@ -119,7 +119,7 @@ namespace memory {
 
 		__forceinline uint8_t* offset(uint32_t offset) const { return m_ptr + offset; };
 
-		__forceinline address_t self_offset(uint32_t offset) {
+		__forceinline address_t& self_offset(uint32_t offset) {
 			m_ptr += offset;
 
 			return *this;
@@ -127,7 +127,7 @@ namespace memory {
 
 		__forceinline uint8_t* jmp(uint32_t offset = 0x1) const { return m_ptr + offset + sizeof(uintptr_t) + *reinterpret_cast<int*>(m_ptr + offset); }
 
-		__forceinline address_t self_jmp(uint32_t offset = 0x1) {
+		__forceinline address_t& self_jmp(uint32_t offset = 0x1) {
 			m_ptr = jmp(offset);
 
 			return *this;
