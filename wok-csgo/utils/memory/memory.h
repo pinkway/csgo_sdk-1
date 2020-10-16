@@ -117,10 +117,10 @@ namespace memory {
 		template <typename T>
 		__forceinline T cast() const { return reinterpret_cast<T>(m_ptr); }
 
-		__forceinline uint8_t* offset(uint32_t offset) const { return m_ptr + offset; };
+		__forceinline uint8_t* offset(uint32_t value) const { return m_ptr + value; };
 
-		__forceinline address_t& self_offset(uint32_t offset) {
-			m_ptr += offset;
+		__forceinline address_t& self_offset(uint32_t value) {
+			m_ptr += value;
 
 			return *this;
 		}
