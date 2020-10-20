@@ -11,7 +11,7 @@ namespace netvars {
 		}
 	}
 
-	void dump_recursive(const char* base_class, c_recv_table* table, uint32_t offset) {
+	void dump_recursive(const char* base_class, recv_table_t* table, uint32_t offset) {
 		for (auto i = 0u; i < table->m_props_count; i++) {
 			const auto prop = &table->m_props[i];
 			if (!prop
@@ -35,5 +35,5 @@ namespace netvars {
 		}
 	}
 
-	std::unordered_map<uint32_t, std::pair<c_recv_prop*, uint32_t>> m_list;
+	std::unordered_map<uint32_t, std::pair<recv_prop_t*, uint32_t>> m_list;
 }

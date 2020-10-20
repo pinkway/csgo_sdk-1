@@ -35,45 +35,46 @@ public:
 
 class i_net_channel;
 
-class i_net_msg {
+class i_net_message {
 public:
-	virtual					~i_net_msg() = default;
+	virtual					~i_net_message() = default;
 	virtual void			set_net_channel(i_net_channel* net_channel) = 0;
 	virtual void			set_reliable(bool state) = 0;
 	virtual bool			process() = 0;
-	virtual bool			read_from_buffer(bf_read* buffer) = 0;
-	virtual bool			write_to_buffer(bf_write* buffer) = 0;
+	virtual bool			read_from_buffer(c_bf_read& buffer) = 0;
+	virtual bool			write_to_buffer(c_bf_write& buffer) = 0;
 	virtual bool			is_reliable() const = 0;
 	virtual int				get_type() const = 0;
 	virtual int				get_group() const = 0;
 	virtual const char*		get_name() const = 0;
-	virtual i_net_channel*		get_net_channel() const = 0;
+	virtual i_net_channel*	get_net_channel() const = 0;
 	virtual const char*		to_string() const = 0;
+	virtual uint32_t			get_size() const = 0;
 };
 
 template <typename T>
-class i_net_msg_pb : public i_net_msg, public T {
+class i_net_msg_pb : public i_net_message, public T {
 public:
 
 };
 
-class i_move_msg {
+class i_move_message {
 public:
 	char			pad0[8];
 	int				m_backup_commands;
 	int				m_new_commands;
 	std::string*	m_data;
-	bf_read			m_data_in;
-	bf_write		m_data_out;
+	c_bf_read			m_data_in;
+	c_bf_write		m_data_out;
 };
 
-using i_move_msg_t = i_net_msg_pb<i_move_msg>;
+using i_move_message_t = i_net_msg_pb<i_move_message>;
 
 class i_net_channel {
 public:
 	VFUNC(set_time_out(float time), 4, void(__thiscall*)(void*, float), time)
 	VFUNC(get_latency(int flow), 9, float(__thiscall*)(void*, int), flow)
-	VFUNC(send_net_msg(i_net_msg* msg, bool reliable, bool voice), 40, bool(__thiscall*)(void*, i_net_msg*, bool, bool), msg, reliable, voice)
+	VFUNC(send_net_msg(i_net_message& message, bool reliable = false, bool voice = false), 40, bool(__thiscall*)(void*, i_net_message&, bool, bool), message, reliable, voice)
 	VFUNC(send_datagram(), 46, int(__thiscall*)(void*, void*), nullptr)
 	VFUNC(transmit(bool reliable), 49, bool(__thiscall*)(void*, bool), reliable)
 	VFUNC(request_file(const char* file_name), 62, int(__thiscall*)(void*, const char*), file_name)

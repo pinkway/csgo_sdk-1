@@ -47,7 +47,7 @@ public:
 	virtual bool			fire_event_client_side(i_game_event* event) = 0;
 	virtual i_game_event*	duplicate_event(i_game_event* event) = 0;
 	virtual void			free_event(i_game_event* event) = 0;
-	virtual bool			serialize_event(i_game_event* event, bf_write* buf) = 0;
-	virtual i_game_event*	unserialize_event(bf_read* buf) = 0;
+	virtual bool			serialize_event(i_game_event* event, c_bf_write* buf) = 0;
+	virtual i_game_event*	unserialize_event(c_bf_read* buf) = 0;
 	virtual void*			get_event_data_types(i_game_event* event) = 0;
 };

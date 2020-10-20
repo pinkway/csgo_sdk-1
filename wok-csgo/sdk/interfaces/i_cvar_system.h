@@ -12,16 +12,16 @@ public:
 	virtual const void*		get_dependencies() = 0;
 	virtual int				get_tier() = 0;
 	virtual void            reconnect(create_interface_fn factory, const char* name) = 0;
-	virtual void			unknown0() = 0;
-	virtual void			unknown1() = 0;
+	virtual void			pad0() = 0;
+	virtual void			oad1() = 0;
 };
 
 class i_cvar_system : public i_app_system {
 public:
-	virtual void			unknown2() = 0;
+	virtual int				allocate_dll_identifier() = 0;
 	virtual void			register_cmd(c_cvar* cvar) = 0;
 	virtual void			unregister_cmd(c_cvar* cvar) = 0;
-	virtual void			unknown3() = 0;
+	virtual void			unregister_cmds(int id) = 0;
 	virtual c_cvar*			find_var(const char* name) = 0;
 
 	template <typename... A>

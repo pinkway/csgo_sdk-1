@@ -14,8 +14,8 @@ struct move_data_t {
 	float			m_max_speed;
 	float			m_client_max_speed;
 	vec3_t			m_velocity;
-	vec3_t			m_old_velocity;
-	char			pad0[4];
+	vec3_t			m_trailing_velocity;
+	float				m_trailing_velocity_time;
 	qangle_t        m_angles;
 	qangle_t		m_old_angles;
 	float			m_out_step_height;
@@ -57,10 +57,8 @@ public:
 	bool						m_prev_ack_had_errors;
 	char						pad3[4];
 	int							m_incoming_acknowledged;
-	bool						m_unknown0;
-	char						pad4[3];
+	char						pad4[4];
 	c_utl_vector<c_base_handle> m_prediction_handles;
-	bool						m_unknown1;
-	char						pad5[3];
+	char						pad5[4];
 	i_global_vars				m_saved_globals;
 };

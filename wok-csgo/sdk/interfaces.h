@@ -24,14 +24,14 @@ namespace interfaces {
 	extern i_surface_data*			surface_data;
 	extern i_input_system*			input_system;
 	extern i_client_leaf_system*	leaf_system;
-	extern c_game_rules**			game_rules;
+	extern i_game_rules**			game_rules;
 	extern i_mdl_cache*				model_cache;
 	extern i_model_render*			model_render;
 	extern i_material_system*		material_system;
 	extern i_glow_object_manager*	glow_manager;
 	extern i_view_render_beams*		beams;
 	extern i_weapon_system*			weapon_system;
-	extern c_cs_player_resource**	player_resource;
+	extern i_cs_player_resource**	player_resource;
 	extern i_localize*				localize;
 	extern i_panel*					panel;
 

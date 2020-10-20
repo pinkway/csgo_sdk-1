@@ -4,7 +4,7 @@ struct event_info_t {
 	int				m_class_id;
 	float			m_delay;
 	char			pad1[4];
-	c_client_class*	m_client_class;
+	client_class_t*	m_client_class;
 	char			pad2[40];
 	event_info_t*	m_next;
 };

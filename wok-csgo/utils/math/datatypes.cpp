@@ -1,14 +1,14 @@
 #include "../utils.h"
 
 vec3_t vec3_t::transform(const matrix3x4_t& in) const {
-	return vec3_t(dot_product(in[0]) + in[0][3], dot_product(in[1]) + in[1][3], dot_product(in[2]) + in[2][3]);
+	return vec3_t(dot_product(in[0]) + in[0].w, dot_product(in[1]) + in[1].w, dot_product(in[2]) + in[2].w);
 }
 
 vec3_t vec3_t::i_transform(const matrix3x4_t& in) const {
 	return vec3_t(
-		(x - in[0][3]) * in[0][0] + (y - in[1][3]) * in[1][0] + (z - in[2][3]) * in[2][0],
-		(x - in[0][3]) * in[0][1] + (y - in[1][3]) * in[1][1] + (z - in[2][3]) * in[2][1],
-		(x - in[0][3]) * in[0][2] + (y - in[1][3]) * in[1][2] + (z - in[2][3]) * in[2][2]
+		(x - in[0].w) * in[0].x + (y - in[1].w) * in[1].x + (z - in[2].w) * in[2].x,
+		(x - in[0].w) * in[0].y + (y - in[1].w) * in[1].y + (z - in[2].w) * in[2].y,
+		(x - in[0].w) * in[0].z + (y - in[1].w) * in[1].z + (z - in[2].w) * in[2].z
 	);
 }
 
@@ -18,9 +18,9 @@ vec3_t vec3_t::rotate(const matrix3x4_t& in) const {
 
 vec3_t vec3_t::i_rotate(const matrix3x4_t& in) const {
 	return vec3_t(
-		x * in[0][0] + y * in[1][0] + z * in[2][0],
-		x * in[0][1] + y * in[1][1] + z * in[2][1],
-		x * in[0][2] + y * in[1][2] + z * in[2][2]
+		x * in[0].x + y * in[1].x + z * in[2].x,
+		x * in[0].y + y * in[1].y + z * in[2].y,
+		x * in[0].z + y * in[1].z + z * in[2].z
 	);
 }
 
@@ -30,7 +30,7 @@ qangle_t vec3_t::angle() const {
 	if (z == 0.f
 		&& x == 0.f) {
 		ret.y = 0.f;
-		ret.x = z > 0.f ? 90.f : 270.f;
+		ret.x = z > 0.f ? 90.f : (360.f - 90.f);
 	}
 	else {
 		ret.y = math::rad_to_deg(math::atan2(y, x));
@@ -73,10 +73,10 @@ qangle_t vec3_t::angle(const vec3_t& up) const {
 bool vec3_t::to_screen(vec2_t& value) const {
 	static const auto& matrix = *reinterpret_cast<v_matrix*>(*SIG("client.dll", "0F 10 05 ? ? ? ? 8D 85 ? ? ? ? B9").self_offset(0x3).cast<uintptr_t*>() + 0xB0);
 
-	value.x = matrix[0][0] * x + matrix[0][1] * y + matrix[0][2] * z + matrix[0][3];
-	value.y = matrix[1][0] * x + matrix[1][1] * y + matrix[1][2] * z + matrix[1][3];
+	value.x = matrix[0].x * x + matrix[0].y * y + matrix[0].z * z + matrix[0].w;
+	value.y = matrix[1].x * x + matrix[1].y * y + matrix[1].z * z + matrix[1].w;
 
-	const auto w = matrix[3][0] * x + matrix[3][1] * y + matrix[3][2] * z + matrix[3][3];
+	const auto w = matrix[3].x * x + matrix[3].y * y + matrix[3].z * z + matrix[3].w;
 	if (w < 0.001f)
 		return false;
 
@@ -118,7 +118,7 @@ matrix3x4_t qangle_t::matrix() const {
 qangle_t matrix3x4_t::angle() const {
 	auto ret = qangle_t();
 
-	const auto dist = math::sqrt(m_value[0][0] * m_value[0][0] + m_value[1][0] * m_value[1][0]);
+	const auto dist = math::sqrt(m_value[0].x * m_value[0].x + m_value[1].x * m_value[1].x);
 
 	if (dist > 0.001f) {
 		ret.x = math::rad_to_deg(math::atan2(-m_value[2][0], dist));
