@@ -66,23 +66,6 @@
 #define TEXTURE_GROUP_RENDER_TARGET_SURFACE			"RenderTarget Surfaces"
 #define TEXTURE_GROUP_MORPH_TARGETS					"Morph Targets"
 
-#define FLOW_OUTGOING	0		
-#define FLOW_INCOMING	1
-#define MAX_FLOWS		2
-
-#define DAMAGE_NO			        0
-#define DAMAGE_EVENTS_ONLY	        1	
-#define DAMAGE_YES					2
-#define DAMAGE_AIM					3
-
-#define STUDIO_PROC_AXISINTERP		1
-#define STUDIO_PROC_QUATINTERP		2
-#define STUDIO_PROC_AIMATBONE		3
-#define STUDIO_PROC_AIMATATTACH		4
-#define STUDIO_PROC_JIGGLE			5
-#define STUDIO_PROC_TWIST_MASTER	6
-#define STUDIO_PROC_TWIST_SLAVE		7
-
 #define CHAR_TEX_CONCRETE	'C'	
 #define CHAR_TEX_METAL		'M'
 #define CHAR_TEX_DIRT		'D'
@@ -97,26 +80,6 @@
 #define CHAR_TEX_SNOW		'N'
 #define CHAR_TEX_PLASTIC	'L'
 #define CHAR_TEX_CARDBOARD	'U'
-
-#define	SURF_LIGHT		0x0001
-#define	SURF_SKY2D		0x0002
-#define	SURF_SKY		0x0004
-#define	SURF_WARP		0x0008
-#define	SURF_TRANS		0x0010
-#define SURF_NOPORTAL	0x0020
-#define	SURF_TRIGGER	0x0040
-#define	SURF_NODRAW		0x0080
-
-#define	SURF_HINT		0x0100
-
-#define	SURF_SKIP		0x0200
-#define SURF_NOLIGHT	0x0400
-#define SURF_BUMPLIGHT	0x0800
-#define SURF_NOSHADOWS	0x1000
-#define SURF_NODECALS	0x2000
-#define SURF_NOPAINT	SURF_NODECALS
-#define SURF_NOCHOP		0x4000
-#define SURF_HITBOX		0x8000
 
 #define	CONTENTS_EMPTY					0
 
@@ -193,41 +156,14 @@
 
 #define MAX_PENETRATION_DISTANCE	90.f
 
-#define CAM_HULL_OFFSET		14.0 
+#define CAM_HULL_OFFSET		14.f
 #define CAM_HULL_MIN		vec3_t(-CAM_HULL_OFFSET, -CAM_HULL_OFFSET, -CAM_HULL_OFFSET)
 #define CAM_HULL_MAX		vec3_t(CAM_HULL_OFFSET, CAM_HULL_OFFSET, CAM_HULL_OFFSET)
 
-#define IN_ATTACK        (1 << 0)
-#define IN_JUMP          (1 << 1)
-#define IN_DUCK          (1 << 2)
-#define IN_FORWARD       (1 << 3)
-#define IN_BACK          (1 << 4)
-#define IN_USE           (1 << 5)
-#define IN_CANCEL        (1 << 6)
-#define IN_LEFT          (1 << 7)
-#define IN_RIGHT         (1 << 8)
-#define IN_MOVELEFT      (1 << 9)
-#define IN_MOVERIGHT     (1 << 10)
-#define IN_ATTACK2       (1 << 11)
-#define IN_RUN           (1 << 12)
-#define IN_RELOAD        (1 << 13)
-#define IN_ALT1          (1 << 14)
-#define IN_ALT2          (1 << 15)
-#define IN_SCORE         (1 << 16)
-#define IN_SPEED         (1 << 17)
-#define IN_WALK          (1 << 18)
-#define IN_ZOOM          (1 << 19)
-#define IN_WEAPON1       (1 << 20)
-#define IN_WEAPON2       (1 << 21)
-#define IN_BULLRUSH      (1 << 22)
-#define IN_GRENADE1      (1 << 23)
-#define IN_GRENADE2      (1 << 24)
-#define IN_ATTACK3       (1 << 25)
-
-class c_animation_layer;
+struct animation_layer_t;
 
 using pose_params_t = std::array<float, 24u>;
-using anim_layers_t = std::array<c_animation_layer, 15u>;
+using anim_layers_t = std::array<animation_layer_t, 15u>;
 
 namespace math {
 	double __forceinline __declspec (naked) __fastcall sqrt(double n) {

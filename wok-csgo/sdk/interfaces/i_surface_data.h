@@ -23,8 +23,8 @@ struct surfaceaudioparams_t {
 struct surfacesoundnames_t {
 	uint16_t    m_walk_step_left;
 	uint16_t    m_walk_step_right;
-	uint16_t	m_run_step_left;
-	uint16_t	m_run_step_right;
+	uint16_t		m_run_step_left;
+	uint16_t		m_run_step_right;
 	uint16_t    m_impact_soft;
 	uint16_t    m_impact_hard;
 	uint16_t    m_scrape_smooth;
@@ -41,7 +41,7 @@ struct surfacegameprops_t {
 	float		m_penetration_modifier;
 	float		m_damage_modifier;
 	uint16_t	m_material;
-	uint8_t		m_climbable;
+	uint8_t	m_climbable;
 };
 
 struct surfacedata_t {

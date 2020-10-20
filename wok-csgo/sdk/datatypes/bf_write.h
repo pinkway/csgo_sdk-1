@@ -1,8 +1,8 @@
 #pragma once
 
-class bf_write {
+class c_bf_write {
 public:
-	bf_write() {
+	c_bf_write() {
 		m_data = 0;
 		m_data_bytes = 0;
 		m_data_bits = -1;
@@ -12,14 +12,14 @@ public:
 		m_debug_name = 0;
 	}
 
-	bf_write(void* data, int bytes, int bits = -1) {
+	c_bf_write(void* data, int bytes, int bits = -1) {
 		m_assert_on_overflow = true;
 		m_debug_name = 0;
 
 		start_writing(data, bytes, 0, bits);
 	}
 
-	bf_write(const char* debug_name, void* data, int bytes, int bits = -1) {
+	c_bf_write(const char* debug_name, void* data, int bytes, int bits = -1) {
 		m_assert_on_overflow = true;
 		m_debug_name = debug_name;
 

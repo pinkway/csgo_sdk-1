@@ -1,6 +1,6 @@
 #pragma once
 
-class c_game_rules {
+class i_game_rules {
 public:
 	NETVAR(m_warmup_period(), bool, "CCSGameRulesProxy->m_bWarmupPeriod")
 	NETVAR(m_freeze_period(), bool, "CCSGameRulesProxy->m_bFreezePeriod")

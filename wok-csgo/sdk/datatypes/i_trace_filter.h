@@ -16,13 +16,6 @@ struct plane_t {
 	char		pad0[2];
 };
 
-enum e_trace_type {
-	TRACE_EVERYTHING,
-	TRACE_WORLD_ONLY,
-	TRACE_ENTITIES_ONLY,
-	TRACE_EVERYTHING_FILTER_PROPS
-};
-
 class i_trace_filter {
 public:
 	virtual bool should_hit_entity(i_handle_entity* handle, int mask) = 0;
@@ -103,14 +96,14 @@ struct ray_t {
 		m_world_axis_transform = nullptr;
 
 		m_is_ray = true;
-		m_is_swept = m_delta.length_sqr() != 0.f;
+		m_is_swept = m_delta.length_sqr();
 	}
 
 	ray_t(const vec3_t& start, const vec3_t& end, const vec3_t& mins, const vec3_t& maxs) {
 		m_delta = end - start;
 
 		m_world_axis_transform = nullptr;
-		m_is_swept = m_delta.length() != 0.f;
+		m_is_swept = m_delta.length_sqr();
 
 		m_extents = (maxs - mins) * 0.5f;
 		m_is_ray = m_extents.length_sqr() < 1e-6;

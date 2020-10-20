@@ -4,7 +4,7 @@ struct jiggle_data_t {
 	jiggle_data_t(int bone, float cur_time, const vec3_t& base_pos, const vec3_t& tip_pos) {
 		m_bone = bone;
 
-		m_last_ipdate = cur_time;
+		m_last_update = cur_time;
 
 		m_base_pos = m_base_last_pos = base_pos;
 		m_base_velocity = m_base_acceleration = vec3_t();
@@ -15,7 +15,7 @@ struct jiggle_data_t {
 
 	int		m_bone;
 	int		m_id;
-	float	m_last_ipdate;
+	float		m_last_update;
 	vec3_t	m_base_pos;
 	vec3_t	m_base_last_pos;
 	vec3_t	m_base_velocity;
@@ -47,8 +47,7 @@ struct player_info_t {
 	unsigned char	m_files_downloaded;
 };
 
-class c_bone_cache {
-public:
+struct bone_cache_t {
 	matrix3x4_t*	m_cached_bones;
 	char			pad0[8];
 	uint32_t		m_cached_bones_count;
@@ -57,16 +56,14 @@ public:
 class c_base_entity;
 class c_base_animating;
 
-class c_bone_accessor {
-public:
+struct bone_accessor_t {
 	c_base_animating*	m_animating;
 	matrix3x4a_t*		m_bones;
 	int					m_readable_bones;
 	int					m_writable_bones;
 };
 
-class c_animation_layer {
-public:
+struct animation_layer_t {
 	float			m_anim_time;
 	float			m_fade_out_time;
 	int				m_flags;
@@ -929,6 +926,43 @@ enum e_anim_state_poses {
 	ACT_EXIT_LADDER_BOTTOM
 };
 
+enum e_client_frame_stage {
+	FRAME_UNDEFINED = -1,
+	FRAME_START,
+	FRAME_NET_UPDATE_START,
+	FRAME_NET_UPDATE_POSTDATAUPDATE_START,
+	FRAME_NET_UPDATE_POSTDATAUPDATE_END,
+	FRAME_NET_UPDATE_END,
+	FRAME_RENDER_START,
+	FRAME_RENDER_END
+};
+
+enum e_override_type {
+	OVERRIDE_NORMAL,
+	OVERRIDE_BUILD_SHADOWS,
+	OVERRIDE_DEPTH_WRITE,
+	OVERRIDE_SSAO_DEPTH_WRITE,
+};
+
+enum e_send_prop_type {
+	DPT_INT = 0,
+	DPT_FLOAT,
+	DPT_VECTOR,
+	DPT_VECTORXY,
+	DPT_STRING,
+	DPT_ARRAY,
+	DPT_DATATABLE,
+	DPT_INT64,
+	DPT_NUMSENDPROPTYPES
+};
+
+enum e_trace_type {
+	TRACE_EVERYTHING,
+	TRACE_WORLD_ONLY,
+	TRACE_ENTITIES_ONLY,
+	TRACE_EVERYTHING_FILTER_PROPS
+};
+
 enum e_anim_layer {
 	ANIMATION_LAYER_AIMMATRIX,
 	ANIMATION_LAYER_WEAPON_ACTION,
@@ -1140,4 +1174,109 @@ enum e_studio_flags {
 	STUDIO_SHADOW_TEXTURE					= (1 << 29),
 	STUDIO_SHADOW_DEPTH_TEXTURE			= (1 << 30),
 	STUDIO_TRANSPARENCY						= (1 << 31),
+};
+
+enum e_flow_type {
+	FLOW_OUTGOING,
+	FLOW_INCOMING,
+	MAX_FLOWS
+};
+
+enum e_damage_type {
+	DAMAGE_NO,
+	DAMAGE_EVENTS_ONLY,
+	DAMAGE_YES,
+	DAMAGE_AIM
+};
+
+enum e_studio_proc_type {
+	STUDIO_PROC_AXISINTERP = 1,
+	STUDIO_PROC_QUATINTERP,
+	STUDIO_PROC_AIMATBONE,
+	STUDIO_PROC_AIMATATTACH,
+	STUDIO_PROC_JIGGLE,
+	STUDIO_PROC_TWIST_MASTER,
+	STUDIO_PROC_TWIST_SLAVE,
+};
+
+enum e_surf_flags {
+	SURF_LIGHT		= (1 << 0),
+	SURF_SKY2D		= (1 << 1),
+	SURF_SKY			= (1 << 2),
+	SURF_WARP		= (1 << 3),
+	SURF_TRANS		= (1 << 4),
+	SURF_NOPORTAL	= (1 << 5),
+	SURF_TRIGGER	= (1 << 6),
+	SURF_NODRAW		= (1 << 7),
+	SURF_HINT		= (1 << 8),
+	SURF_SKIP		= (1 << 9),
+	SURF_NOLIGHT	= (1 << 10),
+	SURF_BUMPLIGHT = (1 << 11),
+	SURF_NOSHADOWS = (1 << 12),
+	SURF_NODECALS	= (1 << 13),
+	SURF_NOCHOP		= (1 << 14),
+	SURF_HITBOX		= (1 << 15),
+	SURF_NOPAINT	= SURF_NODECALS
+};
+
+enum e_buttons {
+	IN_ATTACK      = (1 << 0),
+	IN_JUMP        = (1 << 1),
+	IN_DUCK        = (1 << 2),
+	IN_FORWARD     = (1 << 3),
+	IN_BACK        = (1 << 4),
+	IN_USE         = (1 << 5),
+	IN_CANCEL      = (1 << 6),
+	IN_LEFT        = (1 << 7),
+	IN_RIGHT       = (1 << 8),
+	IN_MOVELEFT    = (1 << 9),
+	IN_MOVERIGHT   = (1 << 10),
+	IN_ATTACK2     = (1 << 11),
+	IN_RUN         = (1 << 12),
+	IN_RELOAD      = (1 << 13),
+	IN_ALT1        = (1 << 14),
+	IN_ALT2        = (1 << 15),
+	IN_SCORE       = (1 << 16),
+	IN_SPEED       = (1 << 17),
+	IN_WALK        = (1 << 18),
+	IN_ZOOM        = (1 << 19),
+	IN_WEAPON1     = (1 << 20),
+	IN_WEAPON2     = (1 << 21),
+	IN_BULLRUSH    = (1 << 22),
+	IN_GRENADE1    = (1 << 23),
+	IN_GRENADE2    = (1 << 24),
+	IN_SPINLOOK    = (1 << 25)
+};
+
+enum e_beam_type {
+	TE_BEAMPOINTS,
+	TE_SPRITE,
+	TE_BEAMDISK,
+	TE_BEAMCYLINDER,
+	TE_BEAMFOLLOW,
+	TE_BEAMRING,
+	TE_BEAMSPLINE,
+	TE_BEAMRINGPOINT,
+	TE_BEAMLASER,
+	TE_BEAMTESLA
+};
+
+enum e_beam_flags {
+	FBEAM_STARTENTITY		= (1 << 0),
+	FBEAM_ENDENTITY		= (1 << 1),
+	FBEAM_FADEIN			= (1 << 2),
+	FBEAM_FADEOUT			= (1 << 3),
+	FBEAM_SINENOISE		= (1 << 4),
+	FBEAM_SOLID				= (1 << 5),
+	FBEAM_SHADEIN			= (1 << 6),
+	FBEAM_SHADEOUT			= (1 << 7),
+	FBEAM_ONLYNOISEONCE	= (1 << 8),
+	FBEAM_NOTILE			= (1 << 9),
+	FBEAM_USE_HITBOXES	= (1 << 10),
+	FBEAM_STARTVISIBLE	= (1 << 11),
+	FBEAM_ENDVISIBLE		= (1 << 12),
+	FBEAM_ISACTIVE			= (1 << 13),
+	FBEAM_FOREVER			= (1 << 14),
+	FBEAM_HALOBEAM			= (1 << 15),
+	FBEAM_REVERSED			= (1 << 16)
 };

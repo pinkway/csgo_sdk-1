@@ -124,7 +124,7 @@ public:
 	OFFSET(get_networkable(), i_client_networkable*, 0x8)
 
 	OFFSET(get_studio_hdr(), c_studio_hdr*, 0x294C)
-	POFFSET(get_bone_cache(), c_bone_cache, 0x290C + 0x4)
+	POFFSET(get_bone_cache(), bone_cache_t, 0x290C + 0x4)
 	OFFSET(get_occlusion_mask(), bit_flag_t<uint32_t>, 0xA24)
 	OFFSET(get_occlusion_frame_count(), int, 0xA30)
 	OFFSET(get_unknown_occlusion_flags(), bit_flag_t<uint32_t>, 0xA2C)
@@ -326,9 +326,9 @@ public:
 		
 	VFUNC(set_sequence(int sequence), 218, void(__thiscall*)(void*, int), sequence)
 	VFUNC(studio_frame_advance(), 219, void(__thiscall*)(void*))
-	VFUNC(get_layer_sequence_cycle_rate(c_animation_layer* layer, int sequence), 222, float(__thiscall*)(void*, c_animation_layer*, int), layer, sequence)
+	VFUNC(get_layer_sequence_cycle_rate(animation_layer_t* layer, int sequence), 222, float(__thiscall*)(void*, animation_layer_t*, int), layer, sequence)
 
-	POFFSET(get_bone_accessor(), c_bone_accessor, 0x26A4)
+	POFFSET(get_bone_accessor(), bone_accessor_t, 0x26A4)
 	OFFSET(get_bone_merge_cache(), c_bone_merge_cache*, 0x290C)
 
 	__forceinline int select_weighted_sequence_from_modifiers(int activity, void* modifiers, int count) {

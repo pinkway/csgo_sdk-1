@@ -1,6 +1,6 @@
 #pragma once
 
-class bf_read {
+class c_bf_read {
 public:
 	const char*			m_debug_name;
 	bool				m_overflow;
@@ -12,11 +12,11 @@ public:
 	const uint32_t*		m_buffer_end;
 	const uint32_t*		m_data;
 
-	bf_read() = default;
+	c_bf_read() = default;
 
-	bf_read(const void* data, int bytes, int bits = -1) { start_reading(data, bytes, 0, bits); }
+	c_bf_read(const void* data, int bytes, int bits = -1) { start_reading(data, bytes, 0, bits); }
 
-	void start_reading(const void* data, int bytes, int start_bit, int bits) {
+	__forceinline void start_reading(const void* data, int bytes, int start_bit, int bits) {
 		m_data = reinterpret_cast<uint32_t const*>(data);
 		m_data_in = m_data;
 		m_data_bytes = bytes;
@@ -31,7 +31,7 @@ public:
 		}
 	}
 
-	bool seek(int pos) {
+	__forceinline bool seek(int pos) {
 		auto succ = true;
 		if (pos < 0
 			|| pos > m_data_bits) {

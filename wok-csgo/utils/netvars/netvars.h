@@ -4,12 +4,12 @@
 namespace netvars {
 	void init();
 
-	void dump_recursive(const char* base_class, c_recv_table* table, uint32_t offset);
+	void dump_recursive(const char* base_class, recv_table_t* table, uint32_t offset);
 
 	template<typename T>
 	__declspec(noinline) static T get(uint32_t hash) { return std::get<T>(m_list.at(hash)); }
 
-	extern std::unordered_map<uint32_t, std::pair<c_recv_prop*, uint32_t>> m_list;
+	extern std::unordered_map<uint32_t, std::pair<recv_prop_t*, uint32_t>> m_list;
 };
 
 #define NETVAR(func, type, name) \
@@ -49,8 +49,8 @@ namespace netvars {
 	}
 
 #define NETPROP(func, name) \
-	__forceinline static c_recv_prop* func { \
-		static const auto prop = netvars::get<c_recv_prop*>(FNV1A(name)); \
+	__forceinline static recv_prop_t* func { \
+		static const auto prop = netvars::get<recv_prop_t*>(FNV1A(name)); \
 		return prop; \
 	}
 
