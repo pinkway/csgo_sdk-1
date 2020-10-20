@@ -15,5 +15,5 @@ public:
 	VFUNC(get_net_channel_info(), 78, i_net_channel_info*(__thiscall*)(void*))
 	VFUNC(is_paused(), 90, bool(__thiscall*)(void*))
 	VFUNC(client_cmd(const char* cmd), 108, void(__thiscall*)(void*, const char*), cmd)
-	VFUNC(client_cmd_unrestricted(const char* cmd, const char* flag = 0), 114, void(__thiscall*)(void*, const char*, bool), cmd, flag)
+	VFUNC(client_cmd_unrestricted(const char* cmd, bool unk = false), 114, void(__thiscall*)(void*, const char*, bool), cmd, unk)
 };
