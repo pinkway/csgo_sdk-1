@@ -1,5 +1,17 @@
 #pragma once
 
+enum e_send_prop_type {
+	DPT_INT,
+	DPT_FLOAT,
+	DPT_VECTOR,
+	DPT_VECTORXY,
+	DPT_STRING,
+	DPT_ARRAY,
+	DPT_DATATABLE,
+	DPT_INT64,
+	DPT_NUMSENDPROPTYPES
+};
+
 struct d_variant {
 	union {
 		float		m_float;

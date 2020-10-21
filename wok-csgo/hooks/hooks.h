@@ -39,8 +39,8 @@ namespace hooks {
 	namespace client_mode {
 		namespace override_view {
 			constexpr auto index = 18u;
-			using T = void(__stdcall*)(c_view_setup*);
-			void __stdcall fn(c_view_setup* view);
+			using T = void(__stdcall*)(view_setup_t*);
+			void __stdcall fn(view_setup_t* view);
 		}
 	}
 

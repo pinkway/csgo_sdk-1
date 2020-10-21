@@ -43,21 +43,21 @@ struct input_data_t;
 using input_fn_t = void(__cdecl*)(input_data_t&);
 
 struct type_description_t {
-	e_field_type		m_field_type;
-	const char*			m_field_name;
-	int					m_field_offset;
-	uint16_t			m_field_size;
-	bit_flag_t<uint16_t>				m_flags;
-	const char*			m_external_name;
-	uintptr_t*			m_save_restore_ops;
-	input_fn_t			m_input_fn;
-	data_map_t*			m_data_map;
-	uint32_t					m_field_size_in_bytes;
-	type_description_t*	m_override_field;
-	uint32_t					m_override_count;
-	float				m_field_tolerance;
-	int					m_flat_offset[2];
-	uint16_t			m_flat_group;
+	e_field_type			m_field_type;
+	const char*				m_field_name;
+	int						m_field_offset;
+	uint16_t				m_field_size;
+	bit_flag_t<uint16_t>	m_flags;
+	const char*				m_external_name;
+	uintptr_t*				m_save_restore_ops;
+	input_fn_t				m_input_fn;
+	data_map_t*				m_data_map;
+	uint32_t				m_field_size_in_bytes;
+	type_description_t*		m_override_field;
+	uint32_t				m_override_count;
+	float					m_field_tolerance;
+	int						m_flat_offset[2];
+	uint16_t				m_flat_group;
 };
 
 struct data_map_t {

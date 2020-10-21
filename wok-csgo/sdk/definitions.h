@@ -160,10 +160,10 @@
 #define CAM_HULL_MIN		vec3_t(-CAM_HULL_OFFSET, -CAM_HULL_OFFSET, -CAM_HULL_OFFSET)
 #define CAM_HULL_MAX		vec3_t(CAM_HULL_OFFSET, CAM_HULL_OFFSET, CAM_HULL_OFFSET)
 
-struct animation_layer_t;
+struct anim_layer_t;
 
 using pose_params_t = std::array<float, 24u>;
-using anim_layers_t = std::array<animation_layer_t, 15u>;
+using anim_layers_t = std::array<anim_layer_t, 15u>;
 
 namespace math {
 	double __forceinline __declspec (naked) __fastcall sqrt(double n) {

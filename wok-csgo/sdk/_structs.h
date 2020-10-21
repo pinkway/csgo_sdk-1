@@ -15,7 +15,7 @@ struct jiggle_data_t {
 
 	int		m_bone;
 	int		m_id;
-	float		m_last_update;
+	float	m_last_update;
 	vec3_t	m_base_pos;
 	vec3_t	m_base_last_pos;
 	vec3_t	m_base_velocity;
@@ -63,7 +63,7 @@ struct bone_accessor_t {
 	int					m_writable_bones;
 };
 
-struct animation_layer_t {
+struct anim_layer_t {
 	float			m_anim_time;
 	float			m_fade_out_time;
 	int				m_flags;
@@ -89,13 +89,13 @@ public:
 	VFUNC_SIG(get_weapon_prefix(), "client.dll", "53 56 57 8B F9 33 F6 8B 4F 60 8B 01 FF 90", const char*(__thiscall*)(void*))
 	
 	__forceinline float get_body_yaw_modifier() const {
-		const auto walk_speed = math::clamp(m_walk_speed, 0.f, 1.f);
+		const auto walk_speed = math::clamp(m_speed_as_portion_of_walk_speed, 0.f, 1.f);
 
 		const auto run_speed = ((m_walk_to_run_transition * -0.30000001f) - 0.19999999f) * walk_speed;
 		const auto modifier = run_speed + 1.f;
 
 		if (m_duck_amount > 0.f) {
-			const auto crouch_walk_speed = math::clamp(m_crouch_walk_speed, 0.f, 1.f);
+			const auto crouch_walk_speed = math::clamp(m_speed_as_portion_of_crouch_speed, 0.f, 1.f);
 
 			return modifier + (m_duck_amount * crouch_walk_speed) * (0.5f - modifier);
 		}
@@ -128,13 +128,13 @@ public:
 	c_base_entity*			m_base_entity;
 	c_base_combat_weapon*	m_active_weapon;
 	c_base_combat_weapon*	m_last_active_weapon;
-	float					m_last_client_side_animation_update_time;
-	int						m_last_client_side_animation_update_frame_count;
+	float					m_last_cur_time;
+	int						m_last_frame_count;
 	float					m_delta_time;
 	float					m_eye_yaw;
 	float					m_eye_pitch;
 	float					m_goal_feet_yaw;
-	float					m_cur_feet_yaw;
+	float					m_last_feet_yaw;
 	float					m_cur_torso_yaw;
 	float					m_velocity_lean;
 	float					m_lean_amount;
@@ -152,9 +152,9 @@ public:
 	vec3_t					m_velocity_normalized_non_zero;
 	float					m_speed_2d;
 	float					m_up_velocity;
-	float				m_run_speed;
-	float				m_walk_speed;
-	float				m_crouch_walk_speed;
+	float					m_speed_as_portion_of_run_speed;
+	float					m_speed_as_portion_of_walk_speed;
+	float					m_speed_as_portion_of_crouch_speed;
 	float					m_time_since_started_moving;
 	float					m_time_since_stopped_moving;
 	bool					m_on_ground;
@@ -807,20 +807,18 @@ enum e_item_definition_index : short {
 };
 
 enum e_move_type {
-	MOVETYPE_NONE,
-	MOVETYPE_ISOMETRIC,
-	MOVETYPE_WALK,
-	MOVETYPE_STEP,
-	MOVETYPE_FLY,
-	MOVETYPE_FLYGRAVITY,
-	MOVETYPE_VPHYSICS,
-	MOVETYPE_PUSH,
-	MOVETYPE_NOCLIP,
-	MOVETYPE_LADDER,
-	MOVETYPE_OBSERVER,
-	MOVETYPE_CUSTOM,
-	MOVETYPE_LAST = MOVETYPE_CUSTOM,
-	MOVETYPE_MAX_BITS = 4
+	MOVE_TYPE_NONE,
+	MOVE_TYPE_ISOMETRIC,
+	MOVE_TYPE_WALK,
+	MOVE_TYPE_STEP,
+	MOVE_TYPE_FLY,
+	MOVE_TYPE_FLYGRAVITY,
+	MOVE_TYPE_VPHYSICS,
+	MOVE_TYPE_PUSH,
+	MOVE_TYPE_NOCLIP,
+	MOVE_TYPE_LADDER,
+	MOVE_TYPE_OBSERVER,
+	MOVE_TYPE_CUSTOM
 };
 
 enum e_entity_flags {
@@ -942,18 +940,6 @@ enum e_override_type {
 	OVERRIDE_BUILD_SHADOWS,
 	OVERRIDE_DEPTH_WRITE,
 	OVERRIDE_SSAO_DEPTH_WRITE,
-};
-
-enum e_send_prop_type {
-	DPT_INT = 0,
-	DPT_FLOAT,
-	DPT_VECTOR,
-	DPT_VECTORXY,
-	DPT_STRING,
-	DPT_ARRAY,
-	DPT_DATATABLE,
-	DPT_INT64,
-	DPT_NUMSENDPROPTYPES
 };
 
 enum e_trace_type {
