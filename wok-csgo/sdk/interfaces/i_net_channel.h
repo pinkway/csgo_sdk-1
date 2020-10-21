@@ -35,9 +35,9 @@ public:
 
 class i_net_channel;
 
-class i_net_message {
+class i_net_msg {
 public:
-	virtual					~i_net_message() = default;
+	virtual					~i_net_msg() = default;
 	virtual void			set_net_channel(i_net_channel* net_channel) = 0;
 	virtual void			set_reliable(bool state) = 0;
 	virtual bool			process() = 0;
@@ -53,12 +53,12 @@ public:
 };
 
 template <typename T>
-class i_net_msg_pb : public i_net_message, public T {
+class i_net_msg_pb : public i_net_msg, public T {
 public:
 
 };
 
-class i_move_message {
+class i_move_msg {
 public:
 	char			pad0[8];
 	int				m_backup_commands;
@@ -68,13 +68,13 @@ public:
 	c_bf_write		m_data_out;
 };
 
-using i_move_message_t = i_net_msg_pb<i_move_message>;
+using i_move_msg_t = i_net_msg_pb<i_move_msg>;
 
 class i_net_channel {
 public:
 	VFUNC(set_time_out(float time), 4, void(__thiscall*)(void*, float), time)
 	VFUNC(get_latency(int flow), 9, float(__thiscall*)(void*, int), flow)
-	VFUNC(send_net_msg(i_net_message& message, bool reliable = false, bool voice = false), 40, bool(__thiscall*)(void*, i_net_message&, bool, bool), message, reliable, voice)
+	VFUNC(send_net_msg(i_net_msg* msg, bool reliable = false, bool voice = false), 40, bool(__thiscall*)(void*, i_net_msg*, bool, bool), msg, reliable, voice)
 	VFUNC(send_datagram(), 46, int(__thiscall*)(void*, void*), nullptr)
 	VFUNC(transmit(bool reliable), 49, bool(__thiscall*)(void*, bool), reliable)
 	VFUNC(request_file(const char* file_name), 62, int(__thiscall*)(void*, const char*), file_name)

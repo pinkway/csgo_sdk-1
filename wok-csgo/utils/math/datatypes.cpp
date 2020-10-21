@@ -30,7 +30,7 @@ qangle_t vec3_t::angle() const {
 	if (z == 0.f
 		&& x == 0.f) {
 		ret.y = 0.f;
-		ret.x = z > 0.f ? 90.f : (360.f - 90.f);
+		ret.x = z > 0.f ? 90.f : 270.f;
 	}
 	else {
 		ret.y = math::rad_to_deg(math::atan2(y, x));

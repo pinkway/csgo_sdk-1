@@ -13,7 +13,7 @@ public:
 	virtual int				get_tier() = 0;
 	virtual void            reconnect(create_interface_fn factory, const char* name) = 0;
 	virtual void			pad0() = 0;
-	virtual void			oad1() = 0;
+	virtual void			pad1() = 0;
 };
 
 class i_cvar_system : public i_app_system {
