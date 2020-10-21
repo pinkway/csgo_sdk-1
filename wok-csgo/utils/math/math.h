@@ -3,7 +3,8 @@
 namespace math {
 	constexpr auto m_pi = 3.14159265358979323846f;
 	constexpr auto m_rad_pi = 180.f / m_pi;
-	constexpr auto m_one2 = 0.5;
+	constexpr auto m_round_error = std::numeric_limits<double>::round_error();
+
 	void sin_cos(float rad, float& sin, float& cos);
 
 	__forceinline float rad_to_deg(float rad) { return rad * m_rad_pi; }
@@ -15,46 +16,19 @@ namespace math {
 		return value;
 	}
 
-	double __forceinline __declspec (naked) __fastcall asin(double x) {
+	double __forceinline __declspec (naked) __fastcall sin(double x) {
 		__asm {
-			fld		qword ptr [esp + 4]
-			fld		st
-			fabs
-			fcom		dword ptr [m_one2]
-			fstsw		ax
-			sahf
-			jbe		asin_cont
-			fld1
-			fsubrp		st(1), st(0)
-			fld		st
-			fadd		st(0), st(0)
-			fxch		st(1)
-			fmul		st(0), st(0)
-			fsubp		st(1), st(0)
-			jmp		asin_exit
-
-			asin_cont:
-
-			fstp		st(0)
-			fld		st(0)
-			fmul		st(0), st(0)
-			fld1
-			fsubrp		st(1), st(0)
-
-			asin_exit:
-
-			fsqrt
-			fpatan
-			ret		8
+			fld	qword ptr [esp + 4]
+			fsin
+			ret	8
 		}
 	}
-	
-	double __forceinline __declspec (naked) __fastcall tan(double x) {
+
+	double __forceinline __declspec (naked) __fastcall cos(double x) {
 		__asm {
-			fld		qword ptr [esp + 4]
-			fptan
-			fstp		st(0)
-			ret		8
+			fld	qword ptr [esp + 4]
+			fcos
+			ret	8
 		}
 	}
 
@@ -76,30 +50,47 @@ namespace math {
 		}
 	}
 
-	double __forceinline __declspec (naked) __fastcall sin(double x) {
+	double __forceinline __declspec (naked) __fastcall asin(double x) {
 		__asm {
 			fld	qword ptr [esp + 4]
-			fsin
-			ret	8
-		}
-	}
+			fld	st
+			fabs
+			fcom dword ptr [m_round_error]
+			fstsw ax
+			sahf
+			jbe skip
 
-	double __forceinline __declspec (naked) __fastcall cos(double x) {
-		__asm {
-			fld	qword ptr [esp + 4]
-			fcos
+			fld1
+			fsubrp st(1), st(0)
+			fld	st
+			fadd st(0), st(0)
+			fxch st(1)
+			fmul st(0), st(0)
+			fsubp st(1), st(0)
+			jmp	end
+
+			skip:
+			fstp st(0)
+			fld	st(0)
+			fmul st(0), st(0)
+			fld1
+			fsubrp st(1), st(0)
+
+			end:
+			fsqrt
+			fpatan
 			ret	8
 		}
 	}
 
 	double __forceinline __declspec (naked) __fastcall acos(double x) {
 		__asm {
-			fld	qword ptr [esp + 4]
+			fld	qword ptr[esp + 4]
 			fld1
 			fchs
 			fcomp st(1)
 			fstsw ax
-			je aaaaaaaa
+			je skip
 
 			fld	st(0)
 			fld1
@@ -110,13 +101,13 @@ namespace math {
 			fdivp st(1), st(0)
 			fsqrt
 			fld1
-			jmp	finish
+			jmp	end
 
-			aaaaaaaa:
+			skip:
 			fld1
 			fldz
 
-			finish:
+			end:
 			fpatan
 			fadd st(0), st(0)
 			ret	8
@@ -125,25 +116,24 @@ namespace math {
 	
 	double __forceinline __declspec (naked) __fastcall floor(double x) {
 		__asm {
-			fld		qword ptr [esp + 4]
+			fld	qword ptr [esp + 4]
 			fld1
-			fld		st(1)
+			fld	st(1)
 			fprem
-			sub		esp, 4
-			fst		dword ptr [esp]
-			fxch		st(2)
-			mov		eax, [esp]
-			cmp		eax, 0x80000000
-			jbe		floor_exit
-			fsub		st, st(1)
+			sub	esp, 4
+			fst	dword ptr [esp]
+			fxch st(2)
+			mov	eax, [esp]
+			cmp eax, 80000000h
+			jbe end
+			fsub st, st(1)
 
-			floor_exit:
-
-			fsub		st, st(2)
-			fstp		st(1)
-			fstp		st(1)
-			pop		eax
-			ret		8
+			end:
+			fsub st, st(2)
+			fstp st(1)
+			fstp st(1)
+			pop	eax
+			ret	8
 		}
 	}
 
