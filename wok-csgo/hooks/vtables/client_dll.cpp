@@ -11,8 +11,7 @@ __declspec (naked) void __stdcall hooks::client_dll::create_move::gate(int seque
 		push ebp
 		mov ebp, esp
 		push ebx
-		lea ecx, [esp]
-		push ecx
+		push esp
 		push dword ptr [active]
 		push dword ptr [input_sample_frame_time]
 		push dword ptr [sequence_number]
