@@ -12,9 +12,9 @@ namespace wok {
 
 		g::local = *SIG("client.dll", "8B 0D ? ? ? ? 83 FF FF 74 07").self_offset(0x2).cast<c_local_player*>();
 
-		input::init();
-
 		interfaces::init();
+
+		input::init();
 
 		render::init();
 
