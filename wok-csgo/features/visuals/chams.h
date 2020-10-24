@@ -5,18 +5,17 @@ class c_chams : public c_singleton<c_chams> {
 private:
 	enum e_material_type {
 		MATERIAL_TYPE_REGULAR,
-		MATERIAL_TYPE_FLAT,
-		MATERIAL_TYPE_DONT_DRAW
+		MATERIAL_TYPE_FLAT
 	};
 
 	bool override_material(int type, const col_t& clr, bool ignorez);
 	i_material* create_material(const std::string& material_name, const std::string& shader_type, const std::string& material_data);
 
-	i_material* m_regular;
-	i_material* m_regular_z;
+	i_material* m_regular = nullptr;
+	i_material* m_regular_z = nullptr;
 
-	i_material* m_flat;
-	i_material* m_flat_z;
+	i_material* m_flat = nullptr;
+	i_material* m_flat_z = nullptr;
 public:
 	c_chams() {
 		m_regular = create_material(_("wok_regular.vmt"), _("VertexLitGeneric"), _(R"#("VertexLitGeneric" {

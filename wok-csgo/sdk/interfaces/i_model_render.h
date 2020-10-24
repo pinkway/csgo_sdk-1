@@ -23,7 +23,7 @@ struct model_render_info_t {
 	const matrix3x4_t*		m_model_to_world;
 	const matrix3x4_t*		m_lighting_offset;
 	const vec3_t*			m_lighting_origin;
-	int						m_flags;
+	bit_flag_t<int>			m_flags;
 	int						m_index;
 	int						m_skin;
 	int						m_body;
