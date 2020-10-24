@@ -244,7 +244,7 @@ class c_base_player : public c_base_combat_character {
 public:
 	DATA_MAP(get_duck_amount(), float, "m_flDuckAmount")
 	DATA_MAP(get_ground_entity(), c_base_handle, "m_hGroundEntity")
-	DATA_MAP(get_move_type(), int, "m_MoveType")
+	DATA_MAP(get_move_type(), uint8_t, "m_MoveType")
 	DATA_MAP(get_next_attack(), float, "m_flNextAttack")
 
 	DATA_MAP(get_impulse(), int, "m_nImpulse")
