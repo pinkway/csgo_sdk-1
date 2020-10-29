@@ -82,7 +82,7 @@ namespace xor_str {
 		}
 
 		template <typename T>
-		XORSTR_FORCEINLINE constexpr uint64_t load_xored_str8(uint64_t key, size_t index) {
+		XORSTR_FORCEINLINE constexpr uint64_t load_xored_str8(uint64_t key, uint32_t index) {
 			using cast_type = typename unsigned_t<sizeof(typename T::value_t)>::type;
 
 			constexpr auto size = sizeof(typename T::value_t);
@@ -166,4 +166,8 @@ namespace xor_str {
 
 #define CREATE_XOR_STR(txt) xor_str::create([]() { return txt; }, std::make_index_sequence<sizeof(txt) / sizeof(*txt)>(), std::make_index_sequence<xor_str::detail::get_buffer_size<sizeof(txt)>()>())
 
+#ifdef _DEBUG
+#define _(txt) txt
+#else
 #define _(txt) CREATE_XOR_STR(txt).get()
+#endif
