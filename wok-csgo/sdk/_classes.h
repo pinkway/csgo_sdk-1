@@ -225,7 +225,7 @@ public:
 	NETVAR(get_item_id_low(), int, "CBaseAttributableItem->m_iItemIDLow")
 	NETVAR(get_fallback_paint_kit(), int, "CBaseAttributableItem->m_nFallbackPaintKit")
 	NETVAR(get_fallback_seed(), int, "CBaseAttributableItem->m_nFallbackSeed")
-	NETVAR(get_fallback_wear(), int, "CBaseAttributableItem->m_flFallbackWear")
+	NETVAR(get_fallback_wear(), float, "CBaseAttributableItem->m_flFallbackWear")
 	NETVAR(get_fallback_stat_trak(), int, "CBaseAttributableItem->m_nFallbackStatTrak")
 };
 
