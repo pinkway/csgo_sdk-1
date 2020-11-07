@@ -43,6 +43,7 @@ namespace interfaces {
 
 		INTERFACE_EXPORT(localize, i_localize, "localize.dll", "Localize_001")
 		INTERFACE_EXPORT(panel, i_panel, "vgui2.dll", "VGUI_Panel009")
+		INTERFACE_EXPORT(render_view, i_render_view, "engine.dll", "VEngineRenderView014")
 
 		uintptr_t** shader_device = nullptr;
 		INTERFACE_EXPORT(shader_device, uintptr_t*, "shaderapidx9.dll", "ShaderDevice001")
@@ -84,6 +85,7 @@ namespace interfaces {
 	i_cs_player_resource**	player_resource = nullptr;
 	i_localize*				localize = nullptr;
 	i_panel*				panel = nullptr;
+	i_render_view*			render_view = nullptr;
 
 	IDirect3DDevice9*		d3d_device = nullptr;
 }

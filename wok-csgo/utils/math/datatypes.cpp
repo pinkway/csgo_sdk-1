@@ -27,10 +27,10 @@ vec3_t vec3_t::i_rotate(const matrix3x4_t& in) const {
 qangle_t vec3_t::angle() const {
 	auto ret = qangle_t();
 
-	if (z == 0.f
-		&& x == 0.f) {
+	if (x == 0.f
+		&& y == 0.f) {
 		ret.y = 0.f;
-		ret.x = z > 0.f ? 90.f : 270.f;
+		ret.x = z > 0.f ? 270.f : 90.f;
 	}
 	else {
 		ret.y = math::rad_to_deg(math::atan2(y, x));

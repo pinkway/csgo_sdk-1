@@ -35,6 +35,7 @@ namespace interfaces {
 	extern i_cs_player_resource**	player_resource;
 	extern i_localize*				localize;
 	extern i_panel*					panel;
+	extern i_render_view*			render_view;
 
 	extern IDirect3DDevice9*		d3d_device;
 }

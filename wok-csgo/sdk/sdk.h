@@ -33,6 +33,7 @@
 #include "interfaces/i_debug_overlay.h"
 #include "interfaces/i_cvar_system.h"
 #include "interfaces/i_game_event_manager.h"
+#include "interfaces/i_render_view.h"
 
 #include "datatypes/i_trace_filter.h"
 #include "datatypes/key_values.h"
