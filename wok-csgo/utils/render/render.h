@@ -26,9 +26,11 @@ namespace render {
 
 	void rect_filled(const vec2_t& pos, const vec2_t& size, const col_t& clr, float rounding = 0.f);
 
-	void multi_rect(const std::vector<vec2_t>& points, const col_t& clr);
+	void rect_filed_multi_clr(const vec2_t& pos, const vec2_t& size, const col_t& clr_upr_left, const col_t& clr_upr_right, const col_t& clr_bot_left, const col_t& clr_bot_right);
 
-	void multi_rect_filled(const std::vector<vec2_t>& points, const col_t& clr);
+	void polygon(const std::vector<vec2_t>& points, const col_t& clr);
+
+	void polygon_filled(const std::vector<vec2_t>& points, const col_t& clr);
 	
 	extern std::mutex m_mutex;
 

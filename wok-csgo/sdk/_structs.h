@@ -158,7 +158,7 @@ public:
 	float					m_time_since_started_moving;
 	float					m_time_since_stopped_moving;
 	bool					m_on_ground;
-	bool					m_in_hit_ground_animation;
+	bool					m_landing;
 	char					pad6[6];
 	float					m_time_since_in_air;
 	float					m_left_ground_height;

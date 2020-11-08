@@ -86,6 +86,10 @@ namespace render {
 		m_draw_list->AddRectFilled(utils::force_cast<ImVec2>(pos), ImVec2(pos.x + size.x, pos.y + size.y), clr.hex(), rounding);
 	}
 
+	void rect_filed_multi_clr(const vec2_t& pos, const vec2_t& size, const col_t& clr_upr_left, const col_t& clr_upr_right, const col_t& clr_bot_left, const col_t& clr_bot_right) {
+		m_draw_list->AddRectFilledMultiColor(utils::force_cast<ImVec2>(pos), ImVec2(pos.x + size.x, pos.y + size.y), clr_upr_left.hex(), clr_upr_right.hex(), clr_bot_right.hex(), clr_bot_left.hex());
+	}
+
 	void add_to_draw_list() {
 		const auto lock = std::unique_lock<std::mutex>(m_mutex, std::try_to_lock);
 		if (lock.owns_lock()) {
@@ -110,7 +114,7 @@ namespace render {
 		}
 	}
 
-	void multi_rect(const std::vector<vec2_t>& points, const col_t& clr) {
+	void polygon(const std::vector<vec2_t>& points, const col_t& clr) {
 		if (clr.a() <= 0)
 			return;
 
@@ -123,7 +127,7 @@ namespace render {
 		m_draw_list->PathStroke(clr.hex(), true, 1.f);
 	}
 
-	void multi_rect_filled(const std::vector<vec2_t>& points, const col_t& clr) {
+	void polygon_filled(const std::vector<vec2_t>& points, const col_t& clr) {
 		if (clr.a() <= 0)
 			return;
 
