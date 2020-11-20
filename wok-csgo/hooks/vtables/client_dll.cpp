@@ -40,7 +40,11 @@ void __stdcall hooks::client_dll::create_move::fn(int sequence_number, float inp
 	g::cmd = cmd;
 	g::angles::view = cmd->m_view_angles;
 
+	movement->set_view_angles(cmd->m_view_angles);
+
 	engine_prediction->update();
+
+	movement->on_create_move(false);
 
 	engine_prediction->process(g::local, cmd);
 
@@ -54,7 +58,7 @@ void __stdcall hooks::client_dll::create_move::fn(int sequence_number, float inp
 
 	g::angles::real = cmd->m_view_angles;
 
-	movement->fix(g::angles::view, cmd->m_view_angles);
+	movement->on_create_move(true);
 
 	cmd->m_move.x = math::clamp(cmd->m_move.x, -450.f, 450.f);
 	cmd->m_move.y = math::clamp(cmd->m_move.y, -450.f, 450.f);

@@ -77,8 +77,10 @@ bool vec3_t::to_screen(vec2_t& value) const {
 	value.y = matrix[1].x * x + matrix[1].y * y + matrix[1].z * z + matrix[1].w;
 
 	const auto w = matrix[3].x * x + matrix[3].y * y + matrix[3].z * z + matrix[3].w;
-	if (w < 0.001f)
+	if (w < 0.001f) {
+		value *= 100000.f;
 		return false;
+	}
 
 	value /= w;
 

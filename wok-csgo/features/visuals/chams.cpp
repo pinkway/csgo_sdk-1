@@ -10,7 +10,7 @@ i_material* c_chams::create_material(const std::string& material_name, const std
 	return interfaces::material_system->create_material(material_name.c_str(), key_values);
 }
 
-bool c_chams::override_material(int type, const col_t& clr, bool ignorez) {
+void c_chams::override_material(int type, const col_t& clr, bool ignorez) {
 	i_material* material = nullptr;
 
 	switch (type) {
@@ -26,8 +26,6 @@ bool c_chams::override_material(int type, const col_t& clr, bool ignorez) {
 	}
 
 	interfaces::model_render->forced_material_override(material);
-
-	return true;
 }
 
 bool c_chams::on_draw_model(i_model_render* ecx, void* context, const draw_model_state_t& state, const model_render_info_t& info, matrix3x4_t* bones) {
@@ -47,5 +45,7 @@ bool c_chams::on_draw_model(i_model_render* ecx, void* context, const draw_model
 
 	original(ecx, context, state, info, bones);
 
-	return override_material(MATERIAL_TYPE_REGULAR, col_t::palette_t::purple(), false);
+	override_material(MATERIAL_TYPE_REGULAR, col_t::palette_t::purple(), false);
+
+	return true;
 }

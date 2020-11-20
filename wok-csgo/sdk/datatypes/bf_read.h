@@ -79,7 +79,7 @@ public:
 			}
 
 			m_in_buf_word >>= (adj_pos & 31);
-			m_bits_avail = min(m_bits_avail, 32 - (adj_pos & 31));
+			m_bits_avail = std::min<int>(m_bits_avail, 32 - (adj_pos & 31));
 		}
 
 		return succ;

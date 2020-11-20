@@ -472,8 +472,8 @@ struct col_t {
 		const auto green = g() / 255.f;
 		const auto blue = b() / 255.f;
 
-		const auto max = max(red, max(green, blue));
-		const auto min = min(red, min(green, blue));
+		const auto max = std::max<float>({ red, green, blue });
+		const auto min = std::min<float>({ red, green, blue });
 
 		if (max == min)
 			return 0.f;
@@ -506,8 +506,8 @@ struct col_t {
 		const auto green = g() / 255.f;
 		const auto blue = b() / 255.f;
 
-		const auto max = max(red, max(green, blue));
-		const auto min = min(red, min(green, blue));
+		const auto max = std::max<float>({ red, green, blue });
+		const auto min = std::min<float>({ red, green, blue });
 
 		const auto delta = max - min;
 
@@ -517,7 +517,7 @@ struct col_t {
 		return delta / max;
 	}
 
-	__forceinline float brightness() const { return max(r() / 255.f, max(g() / 255.f, b() / 255.f)); }
+	__forceinline float brightness() const { return std::max<float>({ r() / 255.f, g() / 255.f, b() / 255.f }); }
 
 	__forceinline static col_t from_hsb(float hue, float saturation, float brightness) {
 		const auto h = hue == 1.f ? 0 : hue * 6.f;

@@ -105,7 +105,7 @@ namespace render {
 
 		m_screen_size = utils::force_cast<vec2_t>(ImGui::GetIO().DisplaySize);
 
-		// call ur visuals etc... here
+		/* call ur visuals etc... here */
 
 		{
 			const auto lock = std::unique_lock<std::mutex>(m_mutex);

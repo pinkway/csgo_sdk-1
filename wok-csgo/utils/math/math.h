@@ -3,13 +3,14 @@
 namespace math {
 	constexpr auto m_pi = 3.14159265358979323846f;
 	constexpr auto m_rad_pi = 180.f / m_pi;
+	constexpr auto m_deg_pi = m_pi / 180.f;
 	constexpr auto m_round_error = std::numeric_limits<double>::round_error();
 
 	void sin_cos(float rad, float& sin, float& cos);
 
 	__forceinline float rad_to_deg(float rad) { return rad * m_rad_pi; }
 
-	__forceinline float deg_to_rad(float deg) { return deg * (m_pi / 180.f); }
+	__forceinline float deg_to_rad(float deg) { return deg * m_deg_pi; }
 
 	__forceinline float clamp(float value, float min, float max) {
 		_mm_store_ss(&value, _mm_min_ss(_mm_max_ss(_mm_set_ss(value), _mm_set_ss(min)), _mm_set_ss(max)));
