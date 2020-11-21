@@ -401,13 +401,13 @@ struct col_t {
 
 	__forceinline int a() const { return m_value.at(3u); }
 
-	__forceinline unsigned int hex(bool rgba = false) const {
+	__forceinline uint32_t hex(bool rgba = false) const {
 		return rgba
 			? ((r() & 0xFF) << 24) + ((g() & 0xFF) << 16) + ((b() & 0xFF) << 8) + (a() & 0xFF)
 			: ((a() & 0xFF) << 24) + ((b() & 0xFF) << 16) + ((g() & 0xFF) << 8) + (r() & 0xFF);
 	}
 
-	__forceinline col_t& alpha(int value) { return col_t(r(), g(), b(), value); }
+	__forceinline col_t alpha(int value) const { return col_t(r(), g(), b(), value); }
 
 	__forceinline col_t& operator=(const col_t& value) {
 		set(value.r(), value.g(), value.b(), value.a());

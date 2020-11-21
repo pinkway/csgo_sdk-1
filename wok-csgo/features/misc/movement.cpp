@@ -27,16 +27,17 @@ void c_movement::rotate(const qangle_t& wish_angles) {
 	if (const auto speed_2d = move_2d.length()) {
 		const auto delta = g::cmd->m_view_angles.y - wish_angles.y;
 
-		const auto angle_2d = vec2_t(
-			remainderf(math::rad_to_deg(math::atan2(0.f, speed_2d)), 360.f),
-			remainderf(math::rad_to_deg(math::atan2(move_2d.y / speed_2d, move_2d.x / speed_2d)) + delta, 360.f)
-		);
-
 		vec2_t v1;
 
-		math::sin_cos(math::deg_to_rad(angle_2d.y), v1.x, v1.y);
+		math::sin_cos(
+			math::deg_to_rad(
+				remainderf(math::rad_to_deg(math::atan2(move_2d.y / speed_2d, move_2d.x / speed_2d)) + delta, 360.f)
+			), v1.x, v1.y
+		);
 
-		const auto cos_x = math::cos(math::deg_to_rad(angle_2d.x));
+		const auto cos_x = math::cos(
+			math::deg_to_rad(remainderf(math::rad_to_deg(math::atan2(0.f, speed_2d)), 360.f))
+		);
 
 		move_2d.x = cos_x * v1.y * speed_2d;
 		move_2d.y = cos_x * v1.x * speed_2d;

@@ -1,13 +1,13 @@
 #include "../features.h"
 #include "../../hooks/hooks.h"
 
-i_material* c_chams::create_material(const std::string& material_name, const std::string& shader_type, const std::string& material_data) {
+i_material* c_chams::create_material(std::string_view material_name, std::string_view shader_type, std::string_view material_data) {
 	const auto key_values = reinterpret_cast<c_key_values*>(interfaces::mem_alloc->alloc(36u));
 
-	key_values->init(shader_type.c_str());
-	key_values->load_from_buffer(material_name.c_str(), material_data.c_str());
+	key_values->init(shader_type.data());
+	key_values->load_from_buffer(material_name.data(), material_data.data());
 
-	return interfaces::material_system->create_material(material_name.c_str(), key_values);
+	return interfaces::material_system->create_material(material_name.data(), key_values);
 }
 
 void c_chams::override_material(int type, const col_t& clr, bool ignorez) {

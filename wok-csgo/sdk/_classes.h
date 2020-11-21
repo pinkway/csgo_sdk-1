@@ -119,6 +119,7 @@ public:
 
 	VFUNC_SIG(set_abs_angles(const qangle_t& angles), "client.dll", "55 8B EC 83 E4 F8 83 EC 64 53 56 57 8B F1", void(__thiscall*)(void*, const qangle_t&), angles)
 	VFUNC_SIG(set_abs_origin(const vec3_t& origin), "client.dll", "55 8B EC 83 E4 F8 51 53 56 57 8B F1 E8 ? ? ? ? 8B 7D", void(__thiscall*)(void*, const vec3_t&), origin)
+	VFUNC_SIG(is_breakable_game(), "client.dll", "55 8B EC 51 56 8B F1 85 F6 74 68 83 BE", bool(__thiscall*)(void*))
 
 	OFFSET(get_renderable(), i_client_renderable*, 0x4)
 	OFFSET(get_networkable(), i_client_networkable*, 0x8)
@@ -149,8 +150,8 @@ public:
 	__forceinline void invalidate_bone_cache() {
 		static const auto most_recent_model_bone_counter = **SIG("client.dll", "80 3D ? ? ? ? ? 74 16 A1 ? ? ? ? 48 C7 81").self_offset(0xA).cast<unsigned long**>();
 
-		get_last_setup_bones_time() = -FLT_MAX;
-		get_most_recent_model_bone_counter() = most_recent_model_bone_counter - 1;
+		get_last_setup_bones_time() = std::numeric_limits<float>::lowest();
+		get_most_recent_model_bone_counter() = most_recent_model_bone_counter - 1ul;
 	}
 
 	bool is_enemy();
@@ -160,23 +161,17 @@ public:
 			|| !get_index())
 			return false;
 
-		const auto backup_take_damage = get_take_damage();
+		if (is_breakable_game())
+			return true;
 
-		static const auto is_breakable_fn = SIG("client.dll", "55 8B EC 51 56 8B F1 85 F6 74 68").cast<bool(__thiscall*)(void*)>();
+		const auto client_class = get_client_class();
+		if (!client_class)
+			return false;
 
-		const auto class_id = get_client_class()->m_class_id;
-
-		if (class_id == C_BASE_DOOR
-			|| class_id == C_BREAKABLE_SURFACE || class_id == C_FUNC_BRUSH
-			|| class_id == C_BASE_ENTITY && get_collideable()->get_solid() == SOLID_BSP) {
-			get_take_damage() = DAMAGE_YES;
-		}
-
-		const auto ret = is_breakable_fn(this);
-
-		get_take_damage() = backup_take_damage;
-
-		return ret;
+		return client_class->m_class_id == C_BASE_DOOR 
+			|| client_class->m_class_id == C_BREAKABLE_SURFACE
+			|| client_class->m_class_id == C_FUNC_BRUSH
+			|| client_class->m_class_id == C_BASE_ENTITY && get_collideable()->get_solid() == SOLID_BSP;
 	}
 };
 
@@ -293,12 +288,13 @@ public:
 	VFUNC_SIG(post_think_v_physics(), "client.dll", "55 8B EC 83 E4 F8 81 EC ? ? ? ? 53 8B D9 56 57 83 BB", bool(__thiscall*)(void*))
 	VFUNC_SIG(simulate_player_simulated_entities(), "client.dll", "56 8B F1 57 8B BE ? ? ? ? 83 EF 01 78 72", bool(__thiscall*)(void*))
 
-	__forceinline bool is_alive() { return get_life_state() == LIFE_ALIVE; }
+	__forceinline bool is_alive() { return get_life_state() == LIFE_ALIVE && get_health(); }
 
 	__forceinline vec3_t get_bone_position(int id) {
 		static const auto get_bone_position_fn = SIG("client.dll", "55 8B EC 83 E4 F8 83 EC 30 8D").cast<void(__thiscall*)(void*, int, vec3_t*, vec3_t*)>();
 		
 		vec3_t position, rotation;
+
 		get_bone_position_fn(this, id, &position, &rotation);
 
 		return position;

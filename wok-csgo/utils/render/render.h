@@ -16,9 +16,9 @@ namespace render {
 
 	void begin();
 
-	vec2_t get_text_size(const std::string& txt, ImFont* font);
+	vec2_t get_text_size(std::string_view txt, ImFont* font);
 
-	void text(const std::string& txt, vec2_t pos, const col_t& clr, ImFont* font, bit_flag_t<uint8_t> flags = FONT_NONE);
+	void text(std::string_view txt, vec2_t pos, const col_t& clr, ImFont* font, bit_flag_t<uint8_t> flags = FONT_NONE);
 
 	void line(const vec2_t& from, const vec2_t& to, const col_t& clr);
 

@@ -25,18 +25,18 @@ namespace render {
 		ImGuiFreeType::BuildFontAtlas(io.Fonts);
 	}
 
-	vec2_t get_text_size(const std::string& txt, ImFont* font) {
+	vec2_t get_text_size(std::string_view txt, ImFont* font) {
 		if (!font
 			|| txt.empty()
 			|| !font->IsLoaded())
 			return vec2_t();
 
-		const auto size = font->CalcTextSizeA(font->FontSize, (std::numeric_limits<float>::max)(), 0.f, txt.c_str());
+		const auto size = font->CalcTextSizeA(font->FontSize, std::numeric_limits<float>::max(), 0.f, txt.data());
 
 		return vec2_t(IM_FLOOR(size.x + 0.95f), size.y);
 	}
 
-	void text(const std::string& txt, vec2_t pos, const col_t& clr, ImFont* font, bit_flag_t<uint8_t> flags) {
+	void text(std::string_view txt, vec2_t pos, const col_t& clr, ImFont* font, bit_flag_t<uint8_t> flags) {
 		if (!font
 			|| txt.empty()
 			|| clr.a() <= 0
@@ -62,13 +62,13 @@ namespace render {
 		m_draw_list->PushTextureID(font->ContainerAtlas->TexID);
 
 		if (flags.has(FONT_DROP_SHADOW)) {
-			m_draw_list->AddTextSoftShadow(font, font->FontSize, utils::force_cast<ImVec2>(pos), clr.hex(), txt.c_str());
+			m_draw_list->AddTextSoftShadow(font, font->FontSize, utils::force_cast<ImVec2>(pos), clr.hex(), txt.data());
 		}
 		else if (flags.has(FONT_OUTLINE)) {
-			m_draw_list->AddTextOutline(font, font->FontSize, utils::force_cast<ImVec2>(pos), clr.hex(), txt.c_str());
+			m_draw_list->AddTextOutline(font, font->FontSize, utils::force_cast<ImVec2>(pos), clr.hex(), txt.data());
 		}
 		else {
-			m_draw_list->AddText(font, font->FontSize, utils::force_cast<ImVec2>(pos), clr.hex(), txt.c_str());
+			m_draw_list->AddText(font, font->FontSize, utils::force_cast<ImVec2>(pos), clr.hex(), txt.data());
 		}
 
 		m_draw_list->PopTextureID();

@@ -38,28 +38,28 @@ namespace utils {
 		return u.m_out;
 	};
 
-	__forceinline std::string to_utf8(const std::wstring& txt) {
+	__forceinline std::string to_utf8(std::wstring_view txt) {
 		if (txt.empty())
 			return "";
 
-		const auto size = WideCharToMultiByte(CP_UTF8, 0, &txt[0], txt.size(), 0, 0, 0, 0);
+		const auto size = WideCharToMultiByte(CP_UTF8, 0, txt.data(), txt.size(), 0, 0, 0, 0);
 
 		auto ret = std::string(size, 0);
 
-		WideCharToMultiByte(CP_UTF8, 0, &txt[0], txt.size(), &ret[0], size, 0, 0);
+		WideCharToMultiByte(CP_UTF8, 0, txt.data(), txt.size(), ret.data(), size, 0, 0);
 
 		return ret;
 	}
 
-	__forceinline std::wstring to_unicode(const std::string& txt) {
+	__forceinline std::wstring to_unicode(std::string_view txt) {
 		if (txt.empty())
 			return L"";
 
-		const auto size = MultiByteToWideChar(CP_UTF8, 0, &txt[0], txt.size(), 0, 0);
+		const auto size = MultiByteToWideChar(CP_UTF8, 0, txt.data(), txt.size(), 0, 0);
 
 		auto ret = std::wstring(size, 0);
 
-		MultiByteToWideChar(CP_UTF8, 0, &txt[0], txt.size(), &ret[0], size);
+		MultiByteToWideChar(CP_UTF8, 0, txt.data(), txt.size(), ret.data(), size);
 
 		return ret;
 	}
