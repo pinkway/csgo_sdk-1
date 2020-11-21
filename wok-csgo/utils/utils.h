@@ -28,16 +28,6 @@
 #include "cfg/cfg.h"
 
 namespace utils {
-	template<typename O, typename I>
-	__forceinline O force_cast(I in) {
-		union {
-			I m_in;
-			O m_out;
-		} u = { in };
-
-		return u.m_out;
-	};
-
 	__forceinline std::string to_utf8(std::wstring_view txt) {
 		if (txt.empty())
 			return "";

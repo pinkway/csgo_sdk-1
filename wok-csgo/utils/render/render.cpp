@@ -62,32 +62,32 @@ namespace render {
 		m_draw_list->PushTextureID(font->ContainerAtlas->TexID);
 
 		if (flags.has(FONT_DROP_SHADOW)) {
-			m_draw_list->AddTextSoftShadow(font, font->FontSize, utils::force_cast<ImVec2>(pos), clr.hex(), txt.data());
+			m_draw_list->AddTextSoftShadow(font, font->FontSize, *reinterpret_cast<ImVec2*>(&pos), clr.hex(), txt.data());
 		}
 		else if (flags.has(FONT_OUTLINE)) {
-			m_draw_list->AddTextOutline(font, font->FontSize, utils::force_cast<ImVec2>(pos), clr.hex(), txt.data());
+			m_draw_list->AddTextOutline(font, font->FontSize, *reinterpret_cast<ImVec2*>(&pos), clr.hex(), txt.data());
 		}
 		else {
-			m_draw_list->AddText(font, font->FontSize, utils::force_cast<ImVec2>(pos), clr.hex(), txt.data());
+			m_draw_list->AddText(font, font->FontSize, *reinterpret_cast<ImVec2*>(&pos), clr.hex(), txt.data());
 		}
 
 		m_draw_list->PopTextureID();
 	}
 
 	void line(const vec2_t& from, const vec2_t& to, const col_t& clr) {
-		m_draw_list->AddLine(utils::force_cast<ImVec2>(from), utils::force_cast<ImVec2>(to), clr.hex());
+		m_draw_list->AddLine(*reinterpret_cast<const ImVec2*>(&from), *reinterpret_cast<const ImVec2*>(&to), clr.hex());
 	}
 
 	void rect(const vec2_t& pos, const vec2_t& size, const col_t& clr, float rounding) {
-		m_draw_list->AddRect(utils::force_cast<ImVec2>(pos), ImVec2(pos.x + size.x, pos.y + size.y), clr.hex(), rounding);
+		m_draw_list->AddRect(*reinterpret_cast<const ImVec2*>(&pos), ImVec2(pos.x + size.x, pos.y + size.y), clr.hex(), rounding);
 	}
 
 	void rect_filled(const vec2_t& pos, const vec2_t& size, const col_t& clr, float rounding) {
-		m_draw_list->AddRectFilled(utils::force_cast<ImVec2>(pos), ImVec2(pos.x + size.x, pos.y + size.y), clr.hex(), rounding);
+		m_draw_list->AddRectFilled(*reinterpret_cast<const ImVec2*>(&pos), ImVec2(pos.x + size.x, pos.y + size.y), clr.hex(), rounding);
 	}
 
 	void rect_filed_multi_clr(const vec2_t& pos, const vec2_t& size, const col_t& clr_upr_left, const col_t& clr_upr_right, const col_t& clr_bot_left, const col_t& clr_bot_right) {
-		m_draw_list->AddRectFilledMultiColor(utils::force_cast<ImVec2>(pos), ImVec2(pos.x + size.x, pos.y + size.y), clr_upr_left.hex(), clr_upr_right.hex(), clr_bot_right.hex(), clr_bot_left.hex());
+		m_draw_list->AddRectFilledMultiColor(*reinterpret_cast<const ImVec2*>(&pos), ImVec2(pos.x + size.x, pos.y + size.y), clr_upr_left.hex(), clr_upr_right.hex(), clr_bot_right.hex(), clr_bot_left.hex());
 	}
 
 	void add_to_draw_list() {
@@ -103,7 +103,7 @@ namespace render {
 		m_draw_list->Clear();
 		m_draw_list->PushClipRectFullScreen();
 
-		m_screen_size = utils::force_cast<vec2_t>(ImGui::GetIO().DisplaySize);
+		m_screen_size = *reinterpret_cast<vec2_t*>(&ImGui::GetIO().DisplaySize);
 
 		/* call ur visuals etc... here */
 
@@ -121,7 +121,7 @@ namespace render {
 		m_draw_list->_Path.reserve(m_draw_list->_Path.Size + points.size() + 1);
 
 		for (auto& point : points) {
-			m_draw_list->_Path.push_back(utils::force_cast<ImVec2>(point));
+			m_draw_list->_Path.push_back(*reinterpret_cast<const ImVec2*>(&point));
 		}
 
 		m_draw_list->PathStroke(clr.hex(), true, 1.f);
@@ -134,7 +134,7 @@ namespace render {
 		m_draw_list->_Path.reserve(m_draw_list->_Path.Size + points.size() + 1);
 
 		for (auto& point : points) {
-			m_draw_list->_Path.push_back(utils::force_cast<ImVec2>(point));
+			m_draw_list->_Path.push_back(*reinterpret_cast<const ImVec2*>(&point));
 		}
 
 		m_draw_list->PathFillConvex(clr.hex());
