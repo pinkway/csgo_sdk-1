@@ -32,7 +32,7 @@ namespace hooks {
 			constexpr auto index = 22u;
 			using T = void(__thiscall*)(void*, int, float, bool);
 			void __stdcall gate(int sequence_number, float input_sample_frame_time, bool active);
-			void __stdcall fn(int sequence_number, float input_sample_frame_time, bool active, bool& send_packet);
+			void __stdcall fn(int sequence_number, float input_sample_frame_time, bool active, bool& packet);
 		}
 	}
 

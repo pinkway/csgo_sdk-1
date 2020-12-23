@@ -65,7 +65,7 @@ struct data_map_t {
 		auto data_map = this;
 
 		while (data_map) {
-			for (auto i = 0u; i < data_map->m_data_fields_count; i++) {
+			for (auto i = 0; i < data_map->m_data_fields_count; i++) {
 				if (!data_map->m_data_description[i].m_field_name)
 					continue;
 

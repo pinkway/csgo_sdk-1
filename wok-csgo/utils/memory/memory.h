@@ -117,9 +117,7 @@ namespace memory {
 		template <typename T>
 		__forceinline T cast() const { return reinterpret_cast<T>(m_ptr); }
 
-		__forceinline uint8_t* offset(ptrdiff_t value) const {
-			return m_ptr + value;
-		}
+		__forceinline uint8_t* offset(ptrdiff_t value) const { return m_ptr + value; };
 
 		__forceinline address_t& self_offset(ptrdiff_t value) {
 			m_ptr += value;
@@ -127,10 +125,39 @@ namespace memory {
 			return *this;
 		}
 
-		__forceinline uint8_t* jmp(ptrdiff_t offset = 0x1) const { return m_ptr + offset + sizeof(uintptr_t) + *reinterpret_cast<int*>(m_ptr + offset); }
+		__forceinline uint8_t* rel8(ptrdiff_t offset = 0x1) const { return m_ptr + offset + sizeof(uint8_t) + *reinterpret_cast<char*>(m_ptr + offset); }
 
-		__forceinline address_t& self_jmp(ptrdiff_t offset = 0x1) {
-			m_ptr = jmp(offset);
+		__forceinline address_t& self_rel8(ptrdiff_t offset = 0x1) {
+			m_ptr = rel8(offset);
+
+			return *this;
+		}
+
+		__forceinline uint8_t* rel32(ptrdiff_t offset = 0x1) const { return m_ptr + offset + sizeof(uintptr_t) + *reinterpret_cast<ptrdiff_t*>(m_ptr + offset); }
+
+		__forceinline address_t& self_rel32(ptrdiff_t offset = 0x1) {
+			m_ptr = rel32(offset);
+
+			return *this;
+		}
+
+		__forceinline uint8_t* find_opcode(uint8_t opcode, ptrdiff_t offset = 0) {
+			auto ptr = m_ptr;
+
+			while (const auto it = *reinterpret_cast<uint8_t*>(ptr)) {
+				if (opcode == it)
+					break;
+
+				ptr += 1u;
+			}
+
+			ptr += offset;
+
+			return ptr;
+		}
+
+		__forceinline address_t& self_find_opcode(uint8_t opcode, ptrdiff_t offset = 0) {
+			m_ptr = find_opcode(opcode, offset);
 
 			return *this;
 		}

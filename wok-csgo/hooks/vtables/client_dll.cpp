@@ -3,6 +3,11 @@
 void __stdcall hooks::client_dll::frame_stage_notify::fn(e_client_frame_stage stage) {
 	static const auto original = m_client_dll->get_original<T>(index);
 
+	if (stage == FRAME_RENDER_START
+		&& interfaces::m_engine->is_in_game()) {
+		interfaces::m_engine->get_view_angles(globals::angles::m_view);
+	}
+
 	original(stage);
 }
 
@@ -22,23 +27,22 @@ __declspec (naked) void __stdcall hooks::client_dll::create_move::gate(int seque
 	}
 }
 
-void __stdcall hooks::client_dll::create_move::fn(int sequence_number, float input_sample_frame_time, bool active, bool& send_packet) {
+void __stdcall hooks::client_dll::create_move::fn(int sequence_number, float input_sample_frame_time, bool active, bool& packet) {
 	static const auto original = m_client_dll->get_original<T>(index);
 
-	original(interfaces::client_dll, sequence_number, input_sample_frame_time, active);
+	original(interfaces::m_client_dll, sequence_number, input_sample_frame_time, active);
 
-	g::send_packet = send_packet = true;
+	globals::m_packet = packet = true;
 
-	if (!g::local)
+	if (!globals::m_local)
 		return;
 
-	const auto cmd = interfaces::input->get_user_cmd(sequence_number);
+	const auto cmd = interfaces::m_input->get_user_cmd(sequence_number);
 	if (!cmd
 		|| !cmd->m_command_number)
 		return;
 
-	g::cmd = cmd;
-	g::angles::view = cmd->m_view_angles;
+	globals::m_cur_cmd = cmd;
 
 	movement->set_view_angles(cmd->m_view_angles);
 
@@ -46,23 +50,21 @@ void __stdcall hooks::client_dll::create_move::fn(int sequence_number, float inp
 
 	movement->on_create_move(false);
 
-	engine_prediction->process(g::local, cmd);
+	engine_prediction->process();
 
-	{
-
-	}
+	/* */
 
 	engine_prediction->restore();
 
 	cmd->m_view_angles.sanitize();
 
-	g::angles::real = cmd->m_view_angles;
+	globals::angles::m_anim = cmd->m_view_angles;
 
 	movement->on_create_move(true);
 
-	send_packet = g::send_packet;
+	packet = globals::m_packet;
 
-	const auto verified = interfaces::input->get_verified_user_cmd(sequence_number);
+	const auto verified = interfaces::m_input->get_verified_user_cmd(sequence_number);
 
 	verified->m_cmd = *cmd;
 	verified->m_crc = cmd->get_check_sum();

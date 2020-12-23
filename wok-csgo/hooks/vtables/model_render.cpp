@@ -10,5 +10,5 @@ void __fastcall hooks::model_render::draw_model_execute::fn(i_model_render* ecx,
 		original(ecx, context, state, info, bones);
 	}
 
-	interfaces::model_render->forced_material_override();
+	interfaces::m_model_render->forced_material_override();
 }

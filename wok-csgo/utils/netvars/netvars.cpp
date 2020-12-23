@@ -3,7 +3,7 @@
 
 namespace netvars {
 	void init() {
-		for (auto data = interfaces::client_dll->get_all_classes(); data; data = data->m_next) {
+		for (auto data = interfaces::m_client_dll->get_all_classes(); data; data = data->m_next) {
 			if (!data->m_recv_table)
 				continue;
 

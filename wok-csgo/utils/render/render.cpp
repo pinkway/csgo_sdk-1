@@ -7,7 +7,7 @@ namespace render {
 		ImGui::CreateContext();
 
 		ImGui_ImplWin32_Init(input::m_hwnd);
-		ImGui_ImplDX9_Init(interfaces::d3d_device);
+		ImGui_ImplDX9_Init(interfaces::m_d3d_device);
 
 		m_draw_list = std::make_shared<ImDrawList>(ImGui::GetDrawListSharedData());
 		m_data_draw_list = std::make_shared<ImDrawList>(ImGui::GetDrawListSharedData());

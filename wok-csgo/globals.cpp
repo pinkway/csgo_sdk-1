@@ -1,13 +1,13 @@
 #include "globals.h"
 
-namespace g {
+namespace globals {
 	namespace angles {
-		qangle_t    view = {};
-		qangle_t    real = {};
+		qangle_t    m_view = {};
+		qangle_t    m_anim = {};
 	}
 
-	HMODULE			module = nullptr;
-	c_local_player	local = {};
-	c_user_cmd*		cmd = nullptr;
-	bool			send_packet = true;
+	HMODULE			m_module = nullptr;
+	c_local_player	m_local = {};
+	c_user_cmd*		m_cur_cmd = nullptr;
+	bool			m_packet = true;
 }

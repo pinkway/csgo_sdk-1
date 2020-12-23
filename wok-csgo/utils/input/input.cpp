@@ -7,7 +7,7 @@ namespace input {
 	void init() {
 		auto creation_parameters = D3DDEVICE_CREATION_PARAMETERS();
 
-		interfaces::d3d_device->GetCreationParameters(&creation_parameters);
+		interfaces::m_d3d_device->GetCreationParameters(&creation_parameters);
 
 		m_hwnd = creation_parameters.hFocusWindow;
 

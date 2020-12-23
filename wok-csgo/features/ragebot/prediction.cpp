@@ -1,44 +1,44 @@
 #include "../features.h"
 
-void c_prediction::update() {
-	if (interfaces::client_state->m_delta_tick <= 0)
+void c_engine_prediction::update() {
+	if (interfaces::m_client_state->m_delta_tick <= 0)
 		return;
 
-	interfaces::prediction->update(
-		interfaces::client_state->m_delta_tick, true,
-		interfaces::client_state->m_last_command_ack, interfaces::client_state->m_last_outgoing_command + interfaces::client_state->m_choked_commands
+	interfaces::m_prediction->update(
+		interfaces::m_client_state->m_delta_tick, true,
+		interfaces::m_client_state->m_last_command_ack, interfaces::m_client_state->m_last_outgoing_command + interfaces::m_client_state->m_choked_commands
 	);
 }
 
-void c_prediction::predict(c_cs_player* player, c_user_cmd* cmd) {
-	if (!player->is_alive())
+void c_engine_prediction::predict() {
+	if (!globals::m_local->is_alive())
 		return;
 
-	m_player = player;
-	*m_random_seed = cmd->m_random_seed;
+	m_player = globals::m_local;
+	*m_random_seed = globals::m_cur_cmd->m_random_seed;
 
-	interfaces::prediction->m_in_prediction = true;
-	interfaces::prediction->m_first_time_predicted = false;
+	interfaces::m_prediction->m_in_prediction = true;
+	interfaces::m_prediction->m_first_time_predicted = false;
 
-	interfaces::global_vars->m_cur_time = TICKS_TO_TIME(player->get_tick_base());
-	interfaces::global_vars->m_frame_time = player->get_flags().has(FL_FROZEN) ? 0.f : interfaces::global_vars->m_interval_per_tick;
+	interfaces::m_global_vars->m_cur_time = TICKS_TO_TIME(globals::m_local->get_tick_base());
+	interfaces::m_global_vars->m_frame_time = globals::m_local->get_flags().has(FL_FROZEN) ? 0.f : interfaces::m_global_vars->m_interval_per_tick;
 
-	interfaces::move_helper->set_host(player);
+	interfaces::m_move_helper->set_host(globals::m_local);
 
-	interfaces::game_movement->start_track_prediction_errors(player);
+	interfaces::m_game_movement->start_track_prediction_errors(globals::m_local);
 
-	interfaces::game_movement->process_movement(player, m_move_data);
+	interfaces::m_game_movement->process_movement(globals::m_local, m_move_data);
 
-	interfaces::prediction->finish_move(player, cmd, m_move_data);
+	interfaces::m_prediction->finish_move(globals::m_local, globals::m_cur_cmd, m_move_data);
 
-	interfaces::game_movement->finish_track_prediction_errors(player);
+	interfaces::m_game_movement->finish_track_prediction_errors(globals::m_local);
 
-	interfaces::move_helper->set_host(nullptr);
+	interfaces::m_move_helper->set_host(nullptr);
 
 	m_player = nullptr;
 	*m_random_seed = -1;
 
-	const auto weapon = player->get_active_weapon();
+	const auto weapon = globals::m_local->get_active_weapon();
 	if (!weapon) {
 		m_spread = m_inaccuracy = 0.f;
 		return;
@@ -51,23 +51,23 @@ void c_prediction::predict(c_cs_player* player, c_user_cmd* cmd) {
 	m_inaccuracy = weapon->get_inaccuracy();
 }
 
-void c_prediction::process(c_cs_player* player, c_user_cmd* cmd) {
+void c_engine_prediction::process() {
 	m_backup.store();
 
-	m_player = player;
-	*m_random_seed = cmd->m_random_seed;
+	m_player = globals::m_local;
+	*m_random_seed = globals::m_cur_cmd->m_random_seed;
 
-	interfaces::global_vars->m_cur_time = TICKS_TO_TIME(player->get_tick_base());
-	interfaces::global_vars->m_frame_time = interfaces::global_vars->m_interval_per_tick;
+	interfaces::m_global_vars->m_cur_time = TICKS_TO_TIME(globals::m_local->get_tick_base());
+	interfaces::m_global_vars->m_frame_time = interfaces::m_global_vars->m_interval_per_tick;
 
-	interfaces::game_movement->start_track_prediction_errors(player);
+	interfaces::m_game_movement->start_track_prediction_errors(globals::m_local);
 
-	interfaces::prediction->setup_move(player, cmd, interfaces::move_helper, m_move_data);
+	interfaces::m_prediction->setup_move(globals::m_local, globals::m_cur_cmd, interfaces::m_move_helper, m_move_data);
 
-	predict(player, cmd);
+	predict();
 }
 
-void c_prediction::restore() {
+void c_engine_prediction::restore() {
 	m_player = nullptr;
 	*m_random_seed = -1;
 

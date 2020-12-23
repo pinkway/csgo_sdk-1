@@ -154,7 +154,7 @@ public:
 		get_most_recent_model_bone_counter() = most_recent_model_bone_counter - 1ul;
 	}
 
-	bool is_enemy();
+	bool is_enemy(c_base_entity* from);
 
 	__forceinline bool is_breakable() {
 		if (!this
@@ -290,26 +290,17 @@ public:
 
 	__forceinline bool is_alive() { return get_life_state() == LIFE_ALIVE && get_health(); }
 
-	__forceinline vec3_t get_bone_position(int id) {
-		static const auto get_bone_position_fn = SIG("client.dll", "55 8B EC 83 E4 F8 83 EC 30 8D").cast<void(__thiscall*)(void*, int, vec3_t*, vec3_t*)>();
+	__forceinline vec3_t get_bone_pos(int id) {
+		static const auto get_bone_pos_fn = SIG("client.dll", "55 8B EC 83 E4 F8 83 EC 30 8D").cast<void(__thiscall*)(void*, int, vec3_t*, vec3_t*)>();
 		
-		vec3_t position, rotation;
+		vec3_t pos, rotation;
 
-		get_bone_position_fn(this, id, &position, &rotation);
+		get_bone_pos_fn(this, id, &pos, &rotation);
 
-		return position;
+		return pos;
 	}
 
-	__forceinline vec3_t get_eye_position() {
-		vec3_t ret;
-		memory::get_vfunc<void(__thiscall*)(void*, vec3_t&)>(this, 284)(this, ret);
-
-		const auto view_offset = get_view_offset();
-
-		ret.z -= view_offset.z - math::floor(view_offset.z);
-
-		return ret;
-	}
+	__forceinline vec3_t get_eye_pos() { return get_origin() + get_view_offset(); }
 };
 
 class c_base_animating : public c_base_player {
@@ -337,27 +328,6 @@ public:
 		}
 
 		return hdr->m_activity_to_sequence->select_weighted_sequence_from_modifiers(hdr, activity, modifiers, count);
-	}
-
-	__forceinline void set_pose_parameter(int param, float value) {
-		static const auto studio_set_pose_parameter_fn = SIG("client.dll", "55 8B EC 83 E4 F8 83 EC 08 F3 0F 11 54 24 ? 85 D2").get();
-
-		auto result = 0.f;
-		auto hdr = get_studio_hdr();
-
-		__asm {
-			pushad
-			movss xmm2, [value]
-			lea eax, [result]
-			push eax
-			mov edx, param
-			mov ecx, hdr
-			call studio_set_pose_parameter_fn
-			pop eax
-			popad
-		}
-
-		get_pose_params()[param] = result;
 	}
 
 	int get_sequence_activity(int sequence);

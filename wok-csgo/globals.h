@@ -4,14 +4,13 @@
 #include "singleton.h"
 #include "menu/menu.h"
 
-namespace g {
+namespace globals {
 	namespace angles {
-		extern qangle_t		view;
-		extern qangle_t		real;
+		extern qangle_t		m_view;
+		extern qangle_t		m_anim;
 	}
 
-	extern HMODULE			module;
-	extern c_local_player	local;
-	extern c_user_cmd*		cmd;
-	extern bool				send_packet;
+	extern c_local_player	m_local;
+	extern c_user_cmd*		m_cur_cmd;
+	extern bool				m_packet;
 }

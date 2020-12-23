@@ -4,39 +4,39 @@ namespace hooks {
 	void init() {
 		// // // // // // // // // // // // // // // // // // // // // // //
 
-		m_d3d_device = std::make_unique<memory::hook_t>(interfaces::d3d_device);
+		m_d3d_device = std::make_unique<memory::hook_t>(interfaces::m_d3d_device);
 
 		m_d3d_device->hook(d3d_device::reset::index, d3d_device::reset::fn);
 		m_d3d_device->hook(d3d_device::present::index, d3d_device::present::fn);
 
 		// // // // // // // // // // // // // // // // // // // // // // //
 
-		m_client_dll = std::make_unique<memory::hook_t>(interfaces::client_dll);
+		m_client_dll = std::make_unique<memory::hook_t>(interfaces::m_client_dll);
 
 		m_client_dll->hook(client_dll::frame_stage_notify::index, client_dll::frame_stage_notify::fn);
 		m_client_dll->hook(client_dll::create_move::index, client_dll::create_move::gate);
 
 		// // // // // // // // // // // // // // // // // // // // // // //
 
-		m_client_mode = std::make_unique<memory::hook_t>(interfaces::client_mode);
+		m_client_mode = std::make_unique<memory::hook_t>(interfaces::m_client_mode);
 
 		m_client_mode->hook(client_mode::override_view::index, client_mode::override_view::fn);
 
 		// // // // // // // // // // // // // // // // // // // // // // //
 
-		m_model_render = std::make_unique<memory::hook_t>(interfaces::model_render);
+		m_model_render = std::make_unique<memory::hook_t>(interfaces::m_model_render);
 
 		m_model_render->hook(model_render::draw_model_execute::index, model_render::draw_model_execute::fn);
 
 		// // // // // // // // // // // // // // // // // // // // // // //
 
-		m_panel = std::make_unique<memory::hook_t>(interfaces::panel);
+		m_panel = std::make_unique<memory::hook_t>(interfaces::m_panel);
 
 		m_panel->hook(panel::paint_traverse::index, panel::paint_traverse::fn);
 
 		// // // // // // // // // // // // // // // // // // // // // // //
 
-		m_surface = std::make_unique<memory::hook_t>(interfaces::surface);
+		m_surface = std::make_unique<memory::hook_t>(interfaces::m_surface);
 
 		m_surface->hook(surface::lock_cursor::index, surface::lock_cursor::fn);
 

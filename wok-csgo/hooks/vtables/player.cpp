@@ -2,7 +2,8 @@
 
 qangle_t* __fastcall hooks::player::eye_angles::fn(c_cs_player* ecx, void* edx) {
 	static const auto original = m_player->get_original<T>(index);
-	if (ecx != g::local)
+
+	if (ecx != globals::m_local)
 		return original(ecx);
 
 	static const auto return_to_anim_state_yaw = SIG("client.dll", "F3 0F 10 55 ? 51 8B 8E ? ? ? ?").get();
@@ -10,7 +11,7 @@ qangle_t* __fastcall hooks::player::eye_angles::fn(c_cs_player* ecx, void* edx) 
 
 	if (_ReturnAddress() == return_to_anim_state_yaw
 		|| _ReturnAddress() == return_to_anim_state_pitch)
-		return &g::angles::real;
+		return &globals::angles::m_anim;
 
 	return original(ecx);
 }
