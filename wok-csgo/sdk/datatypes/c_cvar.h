@@ -45,3 +45,11 @@ public:
 	float							m_max_value;
 	c_utl_vector<change_callback_t>	m_callbacks;
 };
+
+class c_cvar_iterator {
+public:
+	virtual void set_first() = 0;
+	virtual void next() = 0;
+	virtual bool is_valid() = 0;
+	virtual c_cvar* get() = 0;
+};

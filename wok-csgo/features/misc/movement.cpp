@@ -54,9 +54,9 @@ void c_movement::rotate(const qangle_t& wish_angles) {
 		}
 	}
 
-	static const auto cl_forwardspeed = interfaces::m_cvar_system->find_var(_("cl_forwardspeed"));
-	static const auto cl_sidespeed = interfaces::m_cvar_system->find_var(_("cl_sidespeed"));
-	static const auto cl_upspeed = interfaces::m_cvar_system->find_var(_("cl_upspeed"));
+	static const auto cl_forwardspeed = interfaces::m_cvar_system->find_var(FNV1A("cl_forwardspeed"));
+	static const auto cl_sidespeed = interfaces::m_cvar_system->find_var(FNV1A("cl_sidespeed"));
+	static const auto cl_upspeed = interfaces::m_cvar_system->find_var(FNV1A("cl_upspeed"));
 
 	const auto max_forward_speed = cl_forwardspeed->get_float();
 	const auto max_side_speed = cl_sidespeed->get_float();

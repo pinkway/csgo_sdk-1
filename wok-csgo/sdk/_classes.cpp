@@ -44,7 +44,7 @@ bool c_base_entity::is_enemy(c_base_entity* from) {
 	if (this == from)
 		return false;
 
-	static const auto mp_teammates_are_enemies = interfaces::m_cvar_system->find_var(_("mp_teammates_are_enemies"));
+	static const auto mp_teammates_are_enemies = interfaces::m_cvar_system->find_var(FNV1A("mp_teammates_are_enemies"));
 	if (mp_teammates_are_enemies->get_bool())
 		return true;
 
