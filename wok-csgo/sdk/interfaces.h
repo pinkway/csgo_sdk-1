@@ -2,6 +2,35 @@
 #include "sdk.h"
 
 namespace interfaces {
+	template <typename T>
+	__forceinline T get(uint32_t module_hash, uint32_t interface_hash) {
+		auto addr = memory::get_export(module_hash, FNV1A("CreateInterface"));
+
+		if (*addr.offset(0x4) == 0xE9
+			&& *addr.self_rel32(0x5).offset(0x5) == 0x35) {
+			addr = **addr.offset(0x6).cast<memory::address_t**>();
+		}
+		else if (*addr.offset(0x2) == 0x35) {
+			addr = **addr.offset(0x3).cast<memory::address_t**>();
+		}
+		else {
+			return 0;
+		}
+
+		using create_fn_t = uintptr_t*(__cdecl*)();
+
+		for (; addr; addr = *addr.offset<memory::address_t*>(0x8)) {
+			const auto name = *addr.offset<const char**>(0x4);
+			if (!name
+				|| FNV1A_RT(name) != interface_hash)
+				continue;
+
+			return reinterpret_cast<T>((*addr.cast<create_fn_t*>())());
+		}
+
+		return 0;
+	}
+
 	void init();
 
 	extern i_base_client_dll*		m_client_dll;

@@ -32,7 +32,7 @@ public:
 class c_bone_setup {
 public:
 	__forceinline void init_pose(vec3_t* pos, vec4_t* q, c_studio_hdr* hdr) {
-		static const auto init_pose_fn = SIG("client.dll", "55 8B EC 83 EC 10 53 8B D9 89 55 F8 56 57 89 5D F4 8B 0B 89 4D F0").get();
+		static const auto init_pose_fn = SIG("client.dll", "55 8B EC 83 EC 10 53 8B D9 89 55 F8 56 57 89 5D F4 8B 0B 89 4D F0");
 		if (!init_pose_fn)
 			return;
 
@@ -49,7 +49,7 @@ public:
 	}
 	
 	__forceinline void calc_autoplay_sequences(vec3_t* pos, vec4_t* q, float time, c_ik_context* ik)  {
-		static const auto calc_autoplay_sequences_fn = SIG("client.dll", "55 8B EC 83 EC 10 53 56 57 8B 7D 10 8B D9 F3 0F 11 5D ??").get();
+		static const auto calc_autoplay_sequences_fn = SIG("client.dll", "55 8B EC 83 EC 10 53 56 57 8B 7D 10 8B D9 F3 0F 11 5D ??");
 		if (!calc_autoplay_sequences_fn)
 			return;
 
@@ -65,7 +65,7 @@ public:
 	}
 	
 	__forceinline void calc_bone_adj(vec3_t* pos, vec4_t* q, float* controllers, int bone_mask) {
-		static const auto calc_bone_adj_fn = SIG("client.dll", "55 8B EC 83 E4 F8 81 EC ?? ?? ?? ?? 8B C1 89 54 24 04 89 44 24 2C 56 57 8B 00").get();
+		static const auto calc_bone_adj_fn = SIG("client.dll", "55 8B EC 83 E4 F8 81 EC ?? ?? ?? ?? 8B C1 89 54 24 04 89 44 24 2C 56 57 8B 00");
 		if (!calc_bone_adj_fn)
 			return;
 

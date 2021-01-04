@@ -104,7 +104,7 @@ public:
 	}
 
 	__forceinline void update(qangle_t angle) {
-		static const auto update_fn = SIG("client.dll", "55 8B EC 83 E4 F8 83 EC 18 56 57 8B F9 F3 0F 11 54 24").get();
+		static const auto update_fn = SIG("client.dll", "55 8B EC 83 E4 F8 83 EC 18 56 57 8B F9 F3 0F 11 54 24");
 		if (!update_fn)
 			return;
 

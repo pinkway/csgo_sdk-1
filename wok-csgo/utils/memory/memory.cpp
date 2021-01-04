@@ -106,27 +106,27 @@ namespace memory {
 
 		const auto base = module.get_base();
 
-		const auto export_directory = reinterpret_cast<IMAGE_EXPORT_DIRECTORY*>(base.offset(data_directory->VirtualAddress));
+		const auto export_directory = base.offset<IMAGE_EXPORT_DIRECTORY*>(data_directory->VirtualAddress);;
 		if (!export_directory)
 			return address_t();
 
-		const auto names = reinterpret_cast<uint32_t*>(base.offset(export_directory->AddressOfNames));
+		const auto names = base.offset<uint32_t*>(export_directory->AddressOfNames);
 		if (!names)
 			return address_t();
 
-		const auto funcs = reinterpret_cast<uint32_t*>(base.offset(export_directory->AddressOfFunctions));
+		const auto funcs = base.offset<uint32_t*>(export_directory->AddressOfFunctions);;
 		if (!funcs)
 			return address_t();
 
-		const auto ords = reinterpret_cast<uint16_t*>(base.offset(export_directory->AddressOfNameOrdinals));
+		const auto ords = base.offset<uint16_t*>(export_directory->AddressOfNameOrdinals);
 		if (!ords)
 			return address_t();
 
 		for (auto i = 0u; i < export_directory->NumberOfNames; i++) {
-			if (FNV1A_RT(reinterpret_cast<const char*>(base.offset(names[i]))) != export_hash)
+			if (FNV1A_RT(base.offset<const char*>(names[i])) != export_hash)
 				continue;
 
-			const auto export_addr = address_t(base.offset(funcs[ords[i]]));
+			const auto export_addr = base.offset(funcs[ords[i]]);
 
 			if (export_addr.cast<uintptr_t>() >= reinterpret_cast<uintptr_t>(export_directory)
 				&& export_addr.cast<uintptr_t>() < reinterpret_cast<uintptr_t>(export_directory) + data_directory->Size) {

@@ -2,53 +2,52 @@
 
 namespace interfaces {
 	void init() {
-		INTERFACE_EXPORT(m_client_dll, i_base_client_dll, "client.dll", "VClient018")
-		INTERFACE_EXPORT(m_engine, i_engine_client, "engine.dll", "VEngineClient014")
-		INTERFACE_EXPORT(m_entity_list, i_client_entity_list, "client.dll", "VClientEntityList003")
+		m_client_dll = get<i_base_client_dll*>(FNV1A("client.dll"), FNV1A("VClient018"));
+		m_engine = get<i_engine_client*>(FNV1A("engine.dll"), FNV1A("VEngineClient014"));
+		m_entity_list = get<i_client_entity_list*>(FNV1A("client.dll"), FNV1A("VClientEntityList003"));
 
-		INTERFACE_OFFSET(m_client_mode, i_client_mode, m_client_dll, 10, 0x5)
-		INTERFACE_OFFSET(m_global_vars, i_global_vars, m_client_dll, 11, 0xA)
-		INTERFACE_OFFSET(m_client_state, i_client_state, m_engine, 12, 0x10)
+		m_client_mode = **memory::get_vfunc<memory::address_t>(m_client_dll, 10).self_offset(0x5).cast<i_client_mode***>();
+		m_global_vars = **memory::get_vfunc<memory::address_t>(m_client_dll, 11).self_offset(0xA).cast<i_global_vars***>();
+		m_client_state = **memory::get_vfunc<memory::address_t>(m_engine, 12).self_offset(0x10).cast<i_client_state***>();
 
 		m_mem_alloc = *EXPORT("tier0.dll", "g_pMemAlloc").cast<i_mem_alloc**>();
 
-		INTERFACE_EXPORT(m_model_info, i_model_info, "engine.dll", "VModelInfoClient004")
-		INTERFACE_EXPORT(m_surface, i_surface, "vguimatsurface.dll", "VGUI_Surface031")
+		m_model_info = get<i_model_info*>(FNV1A("engine.dll"), FNV1A("VModelInfoClient004"));
+		m_surface = get<i_surface*>(FNV1A("vguimatsurface.dll"), FNV1A("VGUI_Surface031"));
 
-		INTERFACE_SIG(m_input, i_input, "client.dll", "B9 ? ? ? ? 8B 40 38 FF D0 84 C0 0F 85", 0x1)
+		m_input = *SIG("client.dll", "B9 ? ? ? ? 8B 40 38 FF D0 84 C0 0F 85").self_offset(0x1).cast<i_input**>();
+		m_move_helper = **SIG("client.dll", "8B 0D ? ? ? ? 8B 45 ? 51 8B D4 89 02 8B 01").self_offset(0x2).cast<i_move_helper***>();
 
-		PINTERFACE_SIG(m_move_helper, i_move_helper, "client.dll", "8B 0D ? ? ? ? 8B 45 ? 51 8B D4 89 02 8B 01", 0x2)
+		m_prediction = get<i_prediction*>(FNV1A("client.dll"), FNV1A("VClientPrediction001"));
+		m_game_movement = get<i_game_movement*>(FNV1A("client.dll"), FNV1A("GameMovement001"));
+		m_debug_overlay = get<i_debug_overlay*>(FNV1A("engine.dll"), FNV1A("VDebugOverlay004"));
+		m_cvar_system = get<i_cvar_system*>(FNV1A("vstdlib.dll"), FNV1A("VEngineCvar007"));
+		m_event_manager = get<i_game_event_manager*>(FNV1A("engine.dll"), FNV1A("GAMEEVENTSMANAGER002"));
+		m_trace_system = get<i_engine_trace*>(FNV1A("engine.dll"), FNV1A("EngineTraceClient004"));
+		m_surface_data = get<i_surface_data*>(FNV1A("vphysics.dll"), FNV1A("VPhysicsSurfaceProps001"));
+		m_input_system = get<i_input_system*>(FNV1A("inputsystem.dll"), FNV1A("InputSystemVersion001"));
 
-		INTERFACE_EXPORT(m_prediction, i_prediction, "client.dll", "VClientPrediction001")
-		INTERFACE_EXPORT(m_game_movement, i_game_movement, "client.dll", "GameMovement001")
-		INTERFACE_EXPORT(m_debug_overlay, i_debug_overlay, "engine.dll", "VDebugOverlay004")
-		INTERFACE_EXPORT(m_cvar_system, i_cvar_system, "vstdlib.dll", "VEngineCvar007")
-		INTERFACE_EXPORT(m_event_manager, i_game_event_manager, "engine.dll", "GAMEEVENTSMANAGER002")
-		INTERFACE_EXPORT(m_trace_system, i_engine_trace, "engine.dll", "EngineTraceClient004")
-		INTERFACE_EXPORT(m_surface_data, i_surface_data, "vphysics.dll", "VPhysicsSurfaceProps001")
-		INTERFACE_EXPORT(m_input_system, i_input_system, "inputsystem.dll", "InputSystemVersion001")
+		m_game_rules = *SIG("client.dll", "A1 ? ? ? ? 85 C0 0F 84 ? ? ? ? 80 B8 ? ? ? ? ? 74 7A").self_offset(0x1).cast<i_game_rules***>();
 
-		INTERFACE_SIG(m_game_rules, i_game_rules*, "client.dll", "A1 ? ? ? ? 85 C0 0F 84 ? ? ? ? 80 B8 ? ? ? ? ? 74 7A", 0x1)
+		m_game_types = get<i_game_types*>(FNV1A("matchmaking.dll"), FNV1A("VENGINE_GAMETYPES_VERSION002"));
+		m_model_cache = get<i_mdl_cache*>(FNV1A("datacache.dll"), FNV1A("MDLCache004"));
+		m_model_render = get<i_model_render*>(FNV1A("engine.dll"), FNV1A("VEngineModel016"));
+		m_material_system = get<i_material_system*>(FNV1A("materialsystem.dll"), FNV1A("VMaterialSystem080"));
 
-		INTERFACE_EXPORT(m_game_types, i_game_types, "matchmaking.dll", "VENGINE_GAMETYPES_VERSION002")
-		INTERFACE_EXPORT(m_model_cache, i_mdl_cache, "datacache.dll", "MDLCache004")
-		INTERFACE_EXPORT(m_model_render, i_model_render, "engine.dll", "VEngineModel016")
-		INTERFACE_EXPORT(m_material_system, i_material_system, "materialsystem.dll", "VMaterialSystem080")
+		m_glow_manager = *SIG("client.dll", "0F 11 05 ? ? ? ? 83 C8 01").self_offset(0x3).cast<i_glow_object_manager**>();
+		m_beams = *SIG("client.dll", "B9 ? ? ? ? A1 ? ? ? ? FF 10 A1 ? ? ? ? B9").self_offset(0x1).cast<i_view_render_beams**>();
+		m_weapon_system = *SIG("client.dll", "8B 35 ? ? ? ? FF 10 0F B7 C0").self_offset(0x2).cast<i_weapon_system**>();
+		m_player_resource = *SIG("client.dll", "8B 3D ? ? ? ? 85 FF 0F 84 ? ? ? ? 81 C7").self_offset(0x2).cast<i_cs_player_resource***>();
 
-		INTERFACE_SIG(m_glow_manager, i_glow_object_manager, "client.dll", "0F 11 05 ? ? ? ? 83 C8 01", 0x3)
-		INTERFACE_SIG(m_beams, i_view_render_beams, "client.dll", "B9 ? ? ? ? A1 ? ? ? ? FF 10 A1 ? ? ? ? B9", 0x1)
-		INTERFACE_SIG(m_weapon_system, i_weapon_system, "client.dll", "8B 35 ? ? ? ? FF 10 0F B7 C0", 0x2)
-		INTERFACE_SIG(m_player_resource, i_cs_player_resource*, "client.dll", "8B 3D ? ? ? ? 85 FF 0F 84 ? ? ? ? 81 C7", 0x2)
+		m_localize = get<i_localize*>(FNV1A("localize.dll"), FNV1A("Localize_001"));
+		m_panel = get<i_panel*>(FNV1A("vgui2.dll"), FNV1A("VGUI_Panel009"));
+		m_render_view = get<i_render_view*>(FNV1A("engine.dll"), FNV1A("VEngineRenderView014"));
 
-		INTERFACE_EXPORT(m_localize, i_localize, "localize.dll", "Localize_001")
-		INTERFACE_EXPORT(m_panel, i_panel, "vgui2.dll", "VGUI_Panel009")
-		INTERFACE_EXPORT(m_render_view, i_render_view, "engine.dll", "VEngineRenderView014")
-
-		uintptr_t** shader_device = nullptr;
-		INTERFACE_EXPORT(shader_device, uintptr_t*, "shaderapidx9.dll", "ShaderDevice001")
-		if (const auto device_table = shader_device[0]) {
-			if (const auto shutdown_device = device_table[37]) {
-				m_d3d_device = **reinterpret_cast<IDirect3DDevice9***>(shutdown_device + 0x2);
+		if (const auto shader_device = get<uintptr_t**>(FNV1A("shaderapidx9.dll"), FNV1A("ShaderDevice001"))) {
+			if (const auto device_table = shader_device[0]) {
+				if (const auto shutdown_device = device_table[37]) {
+					m_d3d_device = **reinterpret_cast<IDirect3DDevice9***>(shutdown_device + 0x2);
+				}
 			}
 		}
 	}

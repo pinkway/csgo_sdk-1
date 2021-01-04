@@ -108,16 +108,13 @@ namespace memory {
 		address_t(uintptr_t* ptr) { m_ptr = reinterpret_cast<uint8_t*>(ptr); };
 		address_t(void* ptr) { m_ptr = reinterpret_cast<uint8_t*>(ptr); };
 
-		__forceinline operator uint8_t*() { return m_ptr; }
-
-		__forceinline operator void*() { return reinterpret_cast<void*>(m_ptr); }
-
-		__forceinline uint8_t* get() { return m_ptr; }
+		__forceinline operator uint8_t*() const { return m_ptr; }
 
 		template <typename T>
-		__forceinline T cast() const { return reinterpret_cast<T>(m_ptr); }
+		__forceinline T cast() const { return (T)(m_ptr); }
 
-		__forceinline uint8_t* offset(ptrdiff_t value) const { return m_ptr + value; };
+		template <typename T = address_t>
+		__forceinline T offset(ptrdiff_t value) const { return (T)(m_ptr + value); };
 
 		__forceinline address_t& self_offset(ptrdiff_t value) {
 			m_ptr += value;
@@ -125,23 +122,26 @@ namespace memory {
 			return *this;
 		}
 
-		__forceinline uint8_t* rel8(ptrdiff_t offset = 0x1) const { return m_ptr + offset + sizeof(uint8_t) + *reinterpret_cast<char*>(m_ptr + offset); }
+		template <typename T = address_t>
+		__forceinline T rel8(ptrdiff_t offset = 0x1) const { return (T)(m_ptr + offset + sizeof(uint8_t) + *reinterpret_cast<char*>(m_ptr + offset)); }
 
 		__forceinline address_t& self_rel8(ptrdiff_t offset = 0x1) {
-			m_ptr = rel8(offset);
+			m_ptr = rel8<uint8_t*>(offset);
 
 			return *this;
 		}
 
-		__forceinline uint8_t* rel32(ptrdiff_t offset = 0x1) const { return m_ptr + offset + sizeof(uintptr_t) + *reinterpret_cast<ptrdiff_t*>(m_ptr + offset); }
+		template <typename T = address_t>
+		__forceinline T rel32(ptrdiff_t offset = 0x1) const { return (T)(m_ptr + offset + sizeof(uintptr_t) + *reinterpret_cast<ptrdiff_t*>(m_ptr + offset)); }
 
 		__forceinline address_t& self_rel32(ptrdiff_t offset = 0x1) {
-			m_ptr = rel32(offset);
+			m_ptr = rel32<uint8_t*>(offset);
 
 			return *this;
 		}
 
-		__forceinline uint8_t* find_opcode(uint8_t opcode, ptrdiff_t offset = 0) {
+		template <typename T = address_t>
+		__forceinline T find_opcode(uint8_t opcode, ptrdiff_t offset = 0) {
 			auto ptr = m_ptr;
 
 			while (const auto it = *reinterpret_cast<uint8_t*>(ptr)) {
@@ -153,11 +153,11 @@ namespace memory {
 
 			ptr += offset;
 
-			return ptr;
+			return (T)(ptr);
 		}
 
 		__forceinline address_t& self_find_opcode(uint8_t opcode, ptrdiff_t offset = 0) {
-			m_ptr = find_opcode(opcode, offset);
+			m_ptr = find_opcode<uint8_t*>(opcode, offset);
 
 			return *this;
 		}
@@ -176,7 +176,7 @@ namespace memory {
 			m_nt_headers = std::get<IMAGE_NT_HEADERS*>(headers);
 		}
 
-		__forceinline address_t get_base() const { return address_t(m_ldr_entry->DllBase); }
+		__forceinline address_t get_base() const { return m_ldr_entry->DllBase; }
 
 		__forceinline std::string get_name() const {
 			if (!m_ldr_entry)
@@ -204,15 +204,6 @@ namespace memory {
 	};
 
 	template <typename T>
-	__forceinline T capture_interface(uint32_t hash, const char* interface_name) {
-		const auto create_interface_fn = get_export(hash, FNV1A("CreateInterface")).cast<T(__cdecl*)(const char*, int*)>();
-		if (!create_interface_fn)
-			return nullptr;
-
-		return reinterpret_cast<T>(create_interface_fn(interface_name, nullptr));
-	}
-
-	template <typename T>
 	__forceinline T get_vfunc(void* base, int index) { return (*static_cast<T**>(base))[index]; }
 
 	headers_t get_file_headers(address_t addr);
@@ -232,11 +223,6 @@ namespace memory {
 
 #define SIG(module_name, sig) memory::find_module_sig(FNV1A(module_name), _(sig))
 #define EXPORT(module_name, export_name) memory::get_export(FNV1A(module_name), FNV1A(export_name))
-
-#define INTERFACE_EXPORT(value, type, module_name, interface_name) value = memory::capture_interface<type*>(FNV1A(module_name), _(interface_name));
-#define INTERFACE_OFFSET(value, type, ptr, index, add) value = **reinterpret_cast<type***>((*reinterpret_cast<uintptr_t**>(ptr))[index] + add);
-#define INTERFACE_SIG(value, type, module_name, sig, add) { value = *SIG(module_name, sig).self_offset(add).cast<type**>(); }
-#define PINTERFACE_SIG(value, type, module_name, sig, add) { value = **SIG(module_name, sig).self_offset(add).cast<type***>(); }
 
 #define VFUNC(func, index, type, ...) __forceinline auto func { return memory::get_vfunc<type>(this, index)(this, __VA_ARGS__); };
 #define VFUNC_SIG(func, module_name, sig, type, ...) __forceinline auto func { static const auto fn = SIG(module_name, sig).cast<type>(); return fn(this, __VA_ARGS__); };

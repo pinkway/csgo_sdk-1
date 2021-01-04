@@ -40,7 +40,7 @@ public:
 	__forceinline uint32_t get_bytes_written_count() const { return (m_cur_bit + 7) >> 3; }
 
 	__forceinline void write_user_cmd(void* to, void* from) {
-		static const auto write_user_cmd_fn = SIG("client.dll", "55 8B EC 83 E4 F8 51 53 56 8B D9 8B 0D").get();
+		static const auto write_user_cmd_fn = SIG("client.dll", "55 8B EC 83 E4 F8 51 53 56 8B D9 8B 0D");
 
 		__asm {
 			mov     ecx, this
