@@ -126,7 +126,7 @@ namespace memory {
 		__forceinline T rel8(ptrdiff_t offset = 0x1) const { return (T)(m_ptr + offset + sizeof(uint8_t) + *reinterpret_cast<char*>(m_ptr + offset)); }
 
 		__forceinline address_t& self_rel8(ptrdiff_t offset = 0x1) {
-			m_ptr = rel8<uint8_t*>(offset);
+			m_ptr = rel8(offset);
 
 			return *this;
 		}
@@ -135,16 +135,16 @@ namespace memory {
 		__forceinline T rel32(ptrdiff_t offset = 0x1) const { return (T)(m_ptr + offset + sizeof(uintptr_t) + *reinterpret_cast<ptrdiff_t*>(m_ptr + offset)); }
 
 		__forceinline address_t& self_rel32(ptrdiff_t offset = 0x1) {
-			m_ptr = rel32<uint8_t*>(offset);
+			m_ptr = rel32(offset);
 
 			return *this;
 		}
 
 		template <typename T = address_t>
-		__forceinline T find_opcode(uint8_t opcode, ptrdiff_t offset = 0) {
+		__forceinline T find_opcode(uint8_t opcode, ptrdiff_t offset = 0) const {
 			auto ptr = m_ptr;
 
-			while (const auto it = *reinterpret_cast<uint8_t*>(ptr)) {
+			while (const auto it = *ptr) {
 				if (opcode == it)
 					break;
 
@@ -157,12 +157,34 @@ namespace memory {
 		}
 
 		__forceinline address_t& self_find_opcode(uint8_t opcode, ptrdiff_t offset = 0) {
-			m_ptr = find_opcode<uint8_t*>(opcode, offset);
+			m_ptr = find_opcode(opcode, offset);
 
 			return *this;
 		}
 
 		uint8_t* m_ptr = nullptr;
+	};
+
+	struct stack_t : public address_t {
+		stack_t(uint8_t* ptr = reinterpret_cast<uint8_t*>(_AddressOfReturnAddress()) - sizeof(uintptr_t)) { m_ptr = ptr; }
+
+		__forceinline address_t ret() const { return *reinterpret_cast<uint8_t**>(m_ptr + sizeof(uintptr_t)); }
+
+		__forceinline address_t addr_of_ret() const { return m_ptr + sizeof(uintptr_t); }
+
+		__forceinline stack_t next() const { return *reinterpret_cast<uint8_t**>(m_ptr); }
+
+		__forceinline stack_t& self_next() {
+			m_ptr = next();
+
+			return *this;
+		}
+
+		template <typename T = address_t>
+		__forceinline T local(uint32_t offset) const { return (T)(m_ptr - offset); }
+
+		template <typename T = address_t>
+		__forceinline T arg(uint32_t offset) const { return (T)(m_ptr + offset); }
 	};
 
 	using headers_t = std::pair<IMAGE_DOS_HEADER*, IMAGE_NT_HEADERS*>;
