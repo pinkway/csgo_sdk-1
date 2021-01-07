@@ -289,7 +289,7 @@ class c_studio_hdr;
 
 class c_activity_to_sequence_mapping {
 public:
-	VFUNC_SIG(select_weighted_sequence_from_modifiers(c_studio_hdr* hdr, int activity, void* modifiers, int count), "server.dll", "55 8B EC 83 EC 2C 53 56 8B 75 08 8B D9", int(__thiscall*)(void*, c_studio_hdr*, int, void*, int), hdr, activity, modifiers, count)
+	VFUNC_SIG(select_weighted_sequence_from_modifiers(c_studio_hdr* hdr, int activity, void* modifiers, int size), "server.dll", "55 8B EC 83 EC 2C 53 56 8B 75 08 8B D9", int(__thiscall*)(void*, c_studio_hdr*, int, void*, int), hdr, activity, modifiers, size)
 
 	char pad0[32];
 };
@@ -311,21 +311,17 @@ public:
 	VFUNC_SIG(find_mapping(), "client.dll", "55 8B EC 83 E4 F8 81 EC ? ? ? ? 53 56 57 8B F9 8B 17 83 BA ? ? ? ? ? 74 34", c_activity_to_sequence_mapping*(__thiscall*)(void*))
 
 	__forceinline const mstudioposeparamdesc_t& get_pose_parameter(int i) {
-		if (!m_v_model) {
+		if (!m_v_model)
 			return *m_studio_hdr->get_local_pose_parameter(i);
-		}
 
-		auto pose = &m_v_model->m_pose.element(i);
-
-		if (pose->m_group == 0)
+		const auto pose = &m_v_model->m_pose.at(i);
+		if (!pose->m_group)
 			return *m_studio_hdr->get_local_pose_parameter(pose->m_index);
 
-		const auto hdr = group_studio_hdr(pose->m_group);
-
-		return *hdr->get_local_pose_parameter(pose->m_index);
+		return *group_studio_hdr(pose->m_group)->get_local_pose_parameter(pose->m_index);
 	}
 
-	__forceinline int get_pose_params_count() const { return m_v_model ? m_v_model->m_pose.count() : m_studio_hdr->m_local_pose_parameters_count; }
+	__forceinline int get_pose_params_count() const { return m_v_model ? m_v_model->m_pose.size() : m_studio_hdr->m_local_pose_parameters_count; }
 };
 
 class i_model_info {

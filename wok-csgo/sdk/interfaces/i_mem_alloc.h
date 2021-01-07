@@ -2,7 +2,7 @@
 
 class i_mem_alloc {
 public:
-	VFUNC(alloc(size_t size), 1, void*(__thiscall*)(void*, size_t), size)
-	VFUNC(realloc(void* mem, size_t size), 3, void*(__thiscall*)(void*, void*, size_t), mem, size)
-	VFUNC(free(void* mem), 5, void(__thiscall*)(void*, void*), mem)
+	VFUNC(alloc(uint32_t size), 1, void*(__thiscall*)(void*, uint32_t), size)
+	VFUNC(realloc(void* memory, uint32_t size), 3, void*(__thiscall*)(void*, void*, uint32_t), memory, size)
+	VFUNC(free(void* memory), 5, void(__thiscall*)(void*, void*), memory)
 };

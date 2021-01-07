@@ -318,7 +318,7 @@ public:
 	POFFSET(get_bone_accessor(), bone_accessor_t, 0x26A4)
 	OFFSET(get_bone_merge_cache(), c_bone_merge_cache*, 0x290C)
 
-	__forceinline int select_weighted_sequence_from_modifiers(int activity, void* modifiers, int count) {
+	__forceinline int select_weighted_sequence_from_modifiers(int activity, void* modifiers, int size) {
 		const auto hdr = get_studio_hdr();
 		if (!hdr)
 			return -1;
@@ -327,7 +327,7 @@ public:
 			hdr->m_activity_to_sequence = hdr->find_mapping();
 		}
 
-		return hdr->m_activity_to_sequence->select_weighted_sequence_from_modifiers(hdr, activity, modifiers, count);
+		return hdr->m_activity_to_sequence->select_weighted_sequence_from_modifiers(hdr, activity, modifiers, size);
 	}
 
 	int get_sequence_activity(int sequence);
