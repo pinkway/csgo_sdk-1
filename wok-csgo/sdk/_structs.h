@@ -63,12 +63,14 @@ struct bone_accessor_t {
 	int					m_writable_bones;
 };
 
+class c_studio_hdr;
+
 struct anim_layer_t {
 	float			m_anim_time;
 	float			m_fade_out_time;
-	int				m_flags;
-	int				m_activity;
-	int				m_priority;
+	c_studio_hdr*	m_studio_hdr;
+	int				m_dispatched_src;
+	int				m_dispatched_dst;
 	int				m_order;
 	int				m_sequence;
 	float			m_prev_cycle;
