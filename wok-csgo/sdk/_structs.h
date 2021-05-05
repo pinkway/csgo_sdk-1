@@ -124,7 +124,7 @@ public:
 	bool					m_reset;
 	char					pad1[3];
 	int						m_tick_count;
-	char					pad2[83];
+	char					pad2[84];
 	c_base_animating*		m_base_entity;
 	c_base_combat_weapon*	m_active_weapon;
 	c_base_combat_weapon*	m_last_active_weapon;
