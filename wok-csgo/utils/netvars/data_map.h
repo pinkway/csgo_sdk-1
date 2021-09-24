@@ -102,5 +102,5 @@ struct data_map_t {
 #define DATA_MAP(func, type, name) \
 	__forceinline type& func { \
 		static const auto offset = get_pred_desc_map()->find(FNV1A(name)); \
-		return *reinterpret_cast<type*>(reinterpret_cast<uintptr_t>(this) + offset ); \
+		return *reinterpret_cast<type*>(reinterpret_cast<uintptr_t>(this) + offset); \
 	}
