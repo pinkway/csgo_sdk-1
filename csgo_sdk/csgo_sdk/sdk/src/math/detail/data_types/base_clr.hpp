@@ -2,7 +2,8 @@
 
 namespace sdk::detail {
 	/* the basic funcs that each clr should have */
-	template < typename _value_t > requires std::_Is_any_of_v< _value_t, std::uint8_t, float >
+	template < typename _value_t >
+		requires std::_Is_any_of_v< _value_t, std::uint8_t, float >
 	struct clr_helper_t {
 	protected:
 		std::array< _value_t, 4u > m_elements{};
@@ -28,7 +29,8 @@ namespace sdk::detail {
 	};
 
 	/* std::uint8_t - argb | float - ahsv ( 360.f, 1.f, 1.f, 1.f ) */
-	template < typename _value_t > requires std::_Is_any_of_v< _value_t, std::uint8_t, float >
+	template < typename _value_t >
+		requires std::_Is_any_of_v< _value_t, std::uint8_t, float >
 	struct base_clr_t final : public clr_helper_t< _value_t > {
 	private:
 		using base_t = clr_helper_t< _value_t >;
@@ -49,7 +51,8 @@ namespace sdk::detail {
 		ALWAYS_INLINE constexpr base_clr_t( ) = default;
 
 		/* so that we can construct from int etc without casts */
-		template < typename _value_t > requires ( !std::is_same_v< _value_t, float > )
+		template < typename _value_t >
+			requires ( !std::is_same_v< _value_t, float > )
 		ALWAYS_INLINE constexpr base_clr_t(
 			const _value_t a, const _value_t r,
 			const _value_t g, const _value_t b
@@ -129,7 +132,8 @@ namespace sdk::detail {
 			const float s, const float v
 		) : base_t{ v, s, h, a } {}
 
-		template < typename _value_t > requires ( !std::is_same_v< _value_t, float > )
+		template < typename _value_t >
+			requires ( !std::is_same_v< _value_t, float > )
 		ALWAYS_INLINE constexpr base_clr_t(
 			const _value_t a, const _value_t r,
 			const _value_t g, const _value_t b

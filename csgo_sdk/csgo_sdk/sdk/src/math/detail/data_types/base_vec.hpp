@@ -2,14 +2,16 @@
 
 namespace sdk::detail {
 	/* the basic funcs that each vector should have */
-	template < typename _value_t, std::size_t _size, typename _derived_t > requires ( _size >= 2u )
+	template < typename _value_t, std::size_t _size, typename _derived_t >
+		requires ( _size >= 2u )
 	struct vec_helper_t : public array_wrapper_t< _value_t, _size, _derived_t > {
 	private:
 		using base_t = array_wrapper_t< _value_t, _size, _derived_t >;
 	public:
 		ALWAYS_INLINE constexpr vec_helper_t( ) = default;
 
-		template < typename... _args_t > requires ( sizeof...( _args_t ) <= _size )
+		template < typename... _args_t >
+			requires ( sizeof...( _args_t ) <= _size )
 		ALWAYS_INLINE constexpr vec_helper_t( const _args_t&... args ) : base_t{ args... } {}
 
 		template < std::size_t __size, typename __derived_t >
@@ -56,7 +58,8 @@ namespace sdk::detail {
 		}
 	};
 
-	template < typename _value_t, std::size_t _size > requires ( _size >= 2u )
+	template < typename _value_t, std::size_t _size >
+		requires ( _size >= 2u )
 	struct base_vec_t final
 		: public vec_helper_t< _value_t, _size, base_vec_t< _value_t, _size > > {
 	private:
@@ -64,7 +67,8 @@ namespace sdk::detail {
 	public:
 		ALWAYS_INLINE constexpr base_vec_t( ) = default;
 
-		template < typename... _args_t > requires ( sizeof...( _args_t ) <= _size )
+		template < typename... _args_t >
+			requires ( sizeof...( _args_t ) <= _size )
 		ALWAYS_INLINE constexpr base_vec_t( const _args_t&... args ) : base_t{ args... } {}
 	};
 

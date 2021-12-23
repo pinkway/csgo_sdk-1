@@ -1,7 +1,8 @@
 #pragma once
 
 namespace sdk::detail {
-	template < typename, std::size_t _size > requires ( _size >= 2u )
+	template < typename, std::size_t _size >
+		requires ( _size >= 2u )
 	struct base_vec_t;
 
 	template < typename _value_t, std::size_t _rows_count, std::size_t _columns_count >

@@ -1,16 +1,20 @@
 #pragma once
 
 namespace sdk {
-	template < typename _ret_t > requires std::is_floating_point_v< _ret_t >
+	template < typename _ret_t >
+		requires std::is_floating_point_v< _ret_t >
 	inline constexpr auto k_pi = static_cast< _ret_t >( 3.141592653589793 );
 
-	template < typename _ret_t > requires std::is_floating_point_v< _ret_t >
+	template < typename _ret_t >
+		requires std::is_floating_point_v< _ret_t >
 	inline constexpr auto k_pi2 = static_cast< _ret_t >( k_pi< double > * 2.0 );
 
-	template < typename _ret_t > requires std::is_floating_point_v< _ret_t >
+	template < typename _ret_t >
+		requires std::is_floating_point_v< _ret_t >
 	inline constexpr auto k_rad_pi = static_cast< _ret_t >( 180.0 / k_pi< double > );
 
-	template < typename _ret_t > requires std::is_floating_point_v< _ret_t >
+	template < typename _ret_t >
+		requires std::is_floating_point_v< _ret_t >
 	inline constexpr auto k_deg_pi = static_cast< _ret_t >( k_pi< double > / 180.0 );
 
 	template < typename _lhs_t, typename _rhs_t >
@@ -25,13 +29,16 @@ namespace sdk {
 	template < typename _lhs_t, typename _rhs_t >
 	concept is_dividable = requires ( const _lhs_t& lhs, const _rhs_t& rhs ) { lhs / rhs; };
 
-	template < typename _value_t > requires std::is_arithmetic_v< _value_t >
+	template < typename _value_t >
+		requires std::is_arithmetic_v< _value_t >
 	ALWAYS_INLINE constexpr auto to_deg( const _value_t rad );
 
-	template < typename _value_t > requires std::is_arithmetic_v< _value_t >
+	template < typename _value_t >
+		requires std::is_arithmetic_v< _value_t >
 	ALWAYS_INLINE constexpr auto to_rad( const _value_t deg );
 
-	template < typename _value_t > requires is_addable< _value_t, _value_t > && is_multipliable< _value_t, float >
+	template < typename _value_t >
+		requires is_addable< _value_t, _value_t > && is_multipliable< _value_t, float >
 	ALWAYS_INLINE constexpr _value_t lerp( const _value_t& from, const _value_t& to, const float amt );
 }
 

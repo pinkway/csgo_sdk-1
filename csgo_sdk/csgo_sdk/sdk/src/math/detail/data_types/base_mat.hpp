@@ -13,7 +13,8 @@ namespace sdk::detail {
 	public:
 		ALWAYS_INLINE constexpr mat_helper_t( ) = default;
 
-		template < typename... _args_t > requires ( sizeof...( _args_t ) <= ( _rows_count * _columns_count ) )
+		template < typename... _args_t >
+			requires ( sizeof...( _args_t ) <= ( _rows_count * _columns_count ) )
 		ALWAYS_INLINE constexpr mat_helper_t( const _args_t&... args ) : m_elements{ args... } {}
 
 		ALWAYS_INLINE constexpr _value_t& at( const std::size_t row, const std::size_t column ) {
@@ -48,7 +49,8 @@ namespace sdk::detail {
 			return static_cast< _derived_t& >( *this );
 		}
 
-		template < typename _rhs_t > requires std::is_arithmetic_v< _rhs_t >
+		template < typename _rhs_t >
+			requires std::is_arithmetic_v< _rhs_t >
 		ALWAYS_INLINE _derived_t& operator *=( const _rhs_t rhs ) {
 			for ( auto& element : m_elements )
 				element *= rhs;
@@ -74,21 +76,24 @@ namespace sdk::detail {
 			return static_cast< _derived_t& >( *this );
 		}
 
-		template < typename _rhs_t > requires std::is_arithmetic_v< _rhs_t >
+		template < typename _rhs_t >
+			requires std::is_arithmetic_v< _rhs_t >
 		ALWAYS_INLINE _derived_t operator -( const _rhs_t rhs ) const {
 			auto ret = *this;
 
 			return ret -= rhs;
 		}
 
-		template < typename _rhs_t > requires std::is_arithmetic_v< _rhs_t >
+		template < typename _rhs_t >
+			requires std::is_arithmetic_v< _rhs_t >
 		ALWAYS_INLINE _derived_t operator +( const _rhs_t rhs ) const {
 			auto ret = *this;
 
 			return ret += rhs;
 		}
 
-		template < typename _rhs_t > requires std::is_arithmetic_v< _rhs_t >
+		template < typename _rhs_t >
+			requires std::is_arithmetic_v< _rhs_t >
 		ALWAYS_INLINE _derived_t operator *( const _rhs_t rhs ) const {
 			auto ret = *this;
 
@@ -136,7 +141,8 @@ namespace sdk::detail {
 	public:
 		ALWAYS_INLINE constexpr base_mat_t( ) = default;
 
-		template < typename... _args_t > requires ( sizeof...( _args_t ) <= ( _rows_count * _columns_count ) )
+		template < typename... _args_t >
+			requires ( sizeof...( _args_t ) <= ( _rows_count * _columns_count ) )
 		ALWAYS_INLINE constexpr base_mat_t( const _args_t&... args ) : base_t{ args... } {}
 	};
 
@@ -148,7 +154,8 @@ namespace sdk::detail {
 	public:
 		ALWAYS_INLINE constexpr base_mat_t( ) = default;
 
-		template < typename... _args_t > requires ( sizeof...( _args_t ) <= 12u )
+		template < typename... _args_t >
+			requires ( sizeof...( _args_t ) <= 12u )
 		ALWAYS_INLINE constexpr base_mat_t( const _args_t&... args ) : base_t{ args... } {}
 
 		ALWAYS_INLINE constexpr base_mat_t< _value_t, 3u, 4u >& operator *=(

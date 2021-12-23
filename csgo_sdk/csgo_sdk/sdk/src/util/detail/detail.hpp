@@ -3,7 +3,7 @@
 namespace sdk::detail {
 	template < typename _value_t >
 	ALWAYS_INLINE _value_t load_from_reg( _value_t value ) {
-#if defined(__clang__) || defined(__GNUC__)
+#if defined( __clang__ ) || defined( __GNUC__ )
 		asm(
 			""
 			: "=r"( value )
@@ -19,7 +19,8 @@ namespace sdk::detail {
 #endif
 	}
 
-	template < std::size_t _size > requires ( _size >= 1u )
+	template < std::size_t _size >
+		requires ( _size >= 1u )
 	struct byte_seq_t {
 		static constexpr auto k_wildcard = '?';
 		static constexpr auto k_delimiter = ' ';
@@ -47,7 +48,8 @@ namespace sdk::detail {
 
 		using bytes_t = std::array< byte_t, _size >;
 
-		template < typename _value_t > requires ( !std::_Is_any_of_v< std::decay_t< _value_t >, std::string_view, const char* > )
+		template < typename _value_t >
+			requires ( !std::_Is_any_of_v< std::decay_t< _value_t >, std::string_view, const char* > )
 		static consteval std::size_t measure( const _value_t ) {
 			return _size;
 		}
@@ -119,7 +121,8 @@ namespace sdk::detail {
 
 		ALWAYS_INLINE consteval byte_seq_t( const bytes_t& bytes ) : m_bytes{ bytes } {}
 
-		template < typename _lambda_t, std::size_t... _indices > requires std::is_invocable_v< _lambda_t >
+		template < typename _lambda_t, std::size_t... _indices >
+			requires std::is_invocable_v< _lambda_t >
 		ALWAYS_INLINE byte_seq_t( const _lambda_t lambda, std::index_sequence< _indices... > ) {
 			if constexpr ( std::is_same_v< const char*, std::decay_t< std::invoke_result_t< _lambda_t > > > ) {
 				constexpr auto seq = parse( lambda( ) );

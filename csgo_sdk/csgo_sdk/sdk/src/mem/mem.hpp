@@ -77,7 +77,7 @@ namespace sdk {
         reserved0,
         max
     };
-    ENUM_UNDERLYING_OPERATOR( e_data_dir )
+    INSERT_ENUM_UNDERLYING_OPERATOR( e_data_dir );
 }
 
 #include "detail/detail.hpp"
@@ -98,7 +98,7 @@ namespace sdk {
         in_init_order,
         max
     };
-    ENUM_UNDERLYING_OPERATOR( e_ldr_data_table )
+    INSERT_ENUM_UNDERLYING_OPERATOR( e_ldr_data_table );
 
     struct rtl_balanced_node_t {
         rtl_balanced_node_t*    m_child[ 2u ]{},

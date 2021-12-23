@@ -2,7 +2,8 @@
 
 namespace sdk::detail {
 	/* wrapper for std::array which contains math operators to create vectors/angles etc */
-	template < typename _value_t, std::size_t _size, typename _derived_t > requires std::is_arithmetic_v< _value_t > && ( _size >= 2u )
+	template < typename _value_t, std::size_t _size, typename _derived_t >
+		requires std::is_arithmetic_v< _value_t > && ( _size >= 2u )
 	struct array_wrapper_t {
 	protected:
 		struct is_base_of_t {
@@ -20,14 +21,16 @@ namespace sdk::detail {
 	public:
 		ALWAYS_INLINE constexpr array_wrapper_t( ) = default;
 
-		template < typename... _args_t > requires ( sizeof...( _args_t ) <= _size )
+		template < typename... _args_t >
+			requires ( sizeof...( _args_t ) <= _size )
 		ALWAYS_INLINE constexpr array_wrapper_t( const _args_t&... args ) : m_elements{ args... } {}
 
 		ALWAYS_INLINE constexpr _value_t& at( const std::size_t i ) { return m_elements.at( i ); }
 
 		ALWAYS_INLINE constexpr _value_t at( const std::size_t i ) const { return m_elements.at( i ); }
 
-		template < typename _rhs_t > requires std::is_arithmetic_v< _rhs_t >
+		template < typename _rhs_t >
+			requires std::is_arithmetic_v< _rhs_t >
 		ALWAYS_INLINE _derived_t& operator -=( const _rhs_t rhs ) {
 			for ( auto& element : m_elements )
 				element -= rhs;
@@ -35,7 +38,8 @@ namespace sdk::detail {
 			return static_cast< _derived_t& >( *this );
 		}
 
-		template < typename _rhs_t > requires std::is_arithmetic_v< _rhs_t >
+		template < typename _rhs_t >
+			requires std::is_arithmetic_v< _rhs_t >
 		ALWAYS_INLINE _derived_t& operator +=( const _rhs_t rhs ) {
 			for ( auto& element : m_elements )
 				element += rhs;
@@ -43,7 +47,8 @@ namespace sdk::detail {
 			return static_cast< _derived_t& >( *this );
 		}
 
-		template < typename _rhs_t > requires std::is_arithmetic_v< _rhs_t >
+		template < typename _rhs_t >
+			requires std::is_arithmetic_v< _rhs_t >
 		ALWAYS_INLINE _derived_t& operator *=( const _rhs_t rhs ) {
 			for ( auto& element : m_elements )
 				element *= rhs;
@@ -51,7 +56,8 @@ namespace sdk::detail {
 			return static_cast< _derived_t& >( *this );
 		}
 
-		template < typename _rhs_t > requires std::is_arithmetic_v< _rhs_t >
+		template < typename _rhs_t >
+			requires std::is_arithmetic_v< _rhs_t >
 		ALWAYS_INLINE _derived_t& operator /=( const _rhs_t rhs ) {
 			for ( auto& element : m_elements )
 				element /= rhs;
@@ -107,28 +113,32 @@ namespace sdk::detail {
 			return static_cast< _derived_t& >( *this );
 		}
 
-		template < typename _rhs_t > requires std::is_arithmetic_v< _rhs_t > || is_base_of< _rhs_t >::value
+		template < typename _rhs_t >
+			requires std::is_arithmetic_v< _rhs_t > || is_base_of< _rhs_t >::value
 		ALWAYS_INLINE _derived_t operator -( const _rhs_t& rhs ) const {
 			auto ret = *this;
 
 			return ret -= rhs;
 		}
 
-		template < typename _rhs_t > requires std::is_arithmetic_v< _rhs_t > || is_base_of< _rhs_t >::value
+		template < typename _rhs_t >
+			requires std::is_arithmetic_v< _rhs_t > || is_base_of< _rhs_t >::value
 		ALWAYS_INLINE _derived_t operator +( const _rhs_t& rhs ) const {
 			auto ret = *this;
 
 			return ret += rhs;
 		}
 
-		template < typename _rhs_t > requires std::is_arithmetic_v< _rhs_t > || is_base_of< _rhs_t >::value
+		template < typename _rhs_t >
+			requires std::is_arithmetic_v< _rhs_t > || is_base_of< _rhs_t >::value
 		ALWAYS_INLINE _derived_t operator *( const _rhs_t& rhs ) const {
 			auto ret = *this;
 
 			return ret *= rhs;
 		}
 
-		template < typename _rhs_t > requires std::is_arithmetic_v< _rhs_t > || is_base_of< _rhs_t >::value
+		template < typename _rhs_t >
+			requires std::is_arithmetic_v< _rhs_t > || is_base_of< _rhs_t >::value
 		ALWAYS_INLINE _derived_t operator /( const _rhs_t& rhs ) const {
 			auto ret = *this;
 
