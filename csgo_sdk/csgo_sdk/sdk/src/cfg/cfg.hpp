@@ -31,18 +31,16 @@ namespace sdk {
 
 		std::vector< detail::base_cfg_var_t* > m_vars{};
 	public:
-		virtual ~c_cfg( ) = default;
+		void save( const std::string_view name ) const;
 
-		virtual void save( const std::string_view name ) const;
-
-		virtual void load( const std::string_view name );
+		void load( const std::string_view name );
 
 		ALWAYS_INLINE void add_var( detail::base_cfg_var_t* const var );
 
 		ALWAYS_INLINE detail::base_cfg_var_t* find_var( const hash_t hash ) const;
 	};
 
-	DYNAMIC_SERVER_OBJECT( c_cfg, g_cfg )
+	inline const auto g_cfg = std::make_unique< c_cfg >( );
 }
 
 #include "impl/cfg.inl"
