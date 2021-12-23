@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="debug|Win32">
+      <Configuration>debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="release|Win32">
+      <Configuration>release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{44c304cf-f031-47dc-bc63-47763f03b9ee}</ProjectGuid>
+    <RootNamespace>csgosdk</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)output\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)output\$(Configuration)\</IntDir>
+    <IncludePath>$(ProjectDir)thirdparty\;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)output\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)output\$(Configuration)\</IntDir>
+    <IncludePath>$(ProjectDir)thirdparty\;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <AdditionalOptions>/DSDK_CFG_ID_OBJECT="\"wok\"" %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies />
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <DebugInformationFormat>None</DebugInformationFormat>
+      <AdditionalOptions>/DSDK_CFG_ID_OBJECT="\"wok\"" %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <AdditionalDependencies />
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="csgo\ctx\impl\ctx.cpp" />
+    <ClCompile Include="sdk\src\cfg\impl\cfg.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="csgo\csgo.hpp" />
+    <ClInclude Include="csgo\ctx\ctx.hpp" />
+    <ClInclude Include="csgo\valve\entities\entities.hpp" />
+    <ClInclude Include="csgo\valve\valve.hpp" />
+    <ClInclude Include="sdk\sdk.hpp" />
+    <ClInclude Include="sdk\src\cfg\cfg.hpp" />
+    <ClInclude Include="sdk\src\cfg\detail\data_types\base_cfg_var.hpp" />
+    <ClInclude Include="sdk\src\cfg\detail\detail.hpp" />
+    <ClInclude Include="sdk\src\math\detail\data_types\array_wrapper.hpp" />
+    <ClInclude Include="sdk\src\math\detail\data_types\base_clr.hpp" />
+    <ClInclude Include="sdk\src\math\detail\data_types\base_mat.hpp" />
+    <ClInclude Include="sdk\src\math\detail\data_types\base_qang.hpp" />
+    <ClInclude Include="sdk\src\math\detail\data_types\base_rect.hpp" />
+    <ClInclude Include="sdk\src\math\detail\data_types\base_vec.hpp" />
+    <ClInclude Include="sdk\src\math\detail\detail.hpp" />
+    <ClInclude Include="sdk\src\math\math.hpp" />
+    <ClInclude Include="sdk\src\mem\detail\data_types\base_address.hpp" />
+    <ClInclude Include="sdk\src\mem\detail\data_types\base_stack_frame.hpp" />
+    <ClInclude Include="sdk\src\mem\detail\data_types\pe_format.hpp" />
+    <ClInclude Include="sdk\src\mem\detail\detail.hpp" />
+    <ClInclude Include="sdk\src\mem\mem.hpp" />
+    <ClInclude Include="sdk\src\util\detail\detail.hpp" />
+    <ClInclude Include="sdk\src\util\util.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="csgo\valve\entities\impl\entities.inl" />
+    <None Include="sdk\src\cfg\impl\cfg.inl" />
+    <None Include="sdk\src\math\impl\math.inl" />
+    <None Include="sdk\src\mem\impl\mem.inl" />
+    <None Include="sdk\src\util\impl\util.inl" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
