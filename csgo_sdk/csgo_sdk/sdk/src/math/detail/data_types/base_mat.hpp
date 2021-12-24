@@ -100,22 +100,22 @@ namespace sdk::detail {
 			return ret *= rhs;
 		}
 
-		template < std::size_t __columns_count >
-		ALWAYS_INLINE base_mat_t< _value_t, _rows_count, __columns_count > operator *(
-			const base_mat_t< _value_t, _columns_count, __columns_count >& rhs
+		template < std::size_t _rhs_columns_count >
+		ALWAYS_INLINE base_mat_t< _value_t, _rows_count, _rhs_columns_count > operator *(
+			const base_mat_t< _value_t, _columns_count, _rhs_columns_count >& rhs
 			) const {
-			if constexpr ( _columns_count == __columns_count ) {
+			if constexpr ( _columns_count == _rhs_columns_count ) {
 				auto ret = *this;
 
 				return ret *= rhs;
 			}
 
-			base_mat_t< _value_t, _rows_count, __columns_count > ret{};
+			base_mat_t< _value_t, _rows_count, _rhs_columns_count > ret{};
 
-			constexpr auto max = std::min( __columns_count, _columns_count );
+			constexpr auto max = std::min( _rhs_columns_count, _columns_count );
 
 			for ( std::size_t i{}; i < _rows_count; ++i )
-				for ( std::size_t j{}; j < __columns_count; ++j )
+				for ( std::size_t j{}; j < _rhs_columns_count; ++j )
 					for ( std::size_t k{}; k < max; ++k )
 						ret.at( i, j ) += at( i, k ) * rhs.at( k, j );
 
@@ -127,7 +127,7 @@ namespace sdk::detail {
 
 			constexpr auto max = std::min( _rows_count, _columns_count );
 			for ( std::size_t i{}; i < max; ++i )
-				ret.at( i, i ) = static_cast< _value_t >( 1 );
+				ret.at( i, i ) = static_cast< _value_t >( 1.0 );
 
 			return ret;
 		}
@@ -164,7 +164,7 @@ namespace sdk::detail {
 			auto lhs = *this;
 
 			for ( auto& element : base_t::m_elements )
-				element = static_cast< _value_t >( 0 );
+				element = static_cast< _value_t >( 0.0 );
 
 			for ( std::size_t i{}; i < 3u; ++i )
 				for ( std::size_t j{}; j < 4u; ++j ) {

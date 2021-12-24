@@ -49,6 +49,7 @@ namespace sdk::detail {
 	struct base_clr_t< std::uint8_t > final : public clr_helper_t< std::uint8_t > {
 	private:
 		using base_t = clr_helper_t< std::uint8_t >;
+
 		using value_t = base_t::value_t;
 	public:
 		ALWAYS_INLINE constexpr base_clr_t( ) = default;
@@ -140,6 +141,7 @@ namespace sdk::detail {
 	struct base_clr_t< float > final : public clr_helper_t< float > {
 	private:
 		using base_t = clr_helper_t< float >;
+
 		using value_t = base_t::value_t;
 	public:
 		ALWAYS_INLINE constexpr base_clr_t( ) = default;

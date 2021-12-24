@@ -10,8 +10,8 @@ namespace sdk::detail {
 			static constexpr std::false_type test( ... );
 
 			/* allow operations between 2 same _value_t containers */
-			template < std::size_t __size, typename __derived_t >
-			static constexpr std::true_type test( array_wrapper_t< _value_t, __size, __derived_t > );
+			template < std::size_t _test_size, typename _test_derived_t >
+			static constexpr std::true_type test( array_wrapper_t< _value_t, _test_size, _test_derived_t > );
 		};
 
 		template < typename _other_t >
@@ -65,11 +65,11 @@ namespace sdk::detail {
 			return static_cast< _derived_t& >( *this );
 		}
 
-		template < std::size_t __size, typename __derived_t >
+		template < std::size_t _rhs_size, typename _rhs_derived_t >
 		ALWAYS_INLINE _derived_t& operator -=(
-			const array_wrapper_t< _value_t, __size, __derived_t >& rhs
+			const array_wrapper_t< _value_t, _rhs_size, _rhs_derived_t >& rhs
 		) {
-			constexpr auto min_size = std::min( _size, __size );
+			constexpr auto min_size = std::min( _size, _rhs_size );
 
 			for ( std::size_t i{}; i < min_size; ++i )
 				at( i ) -= rhs.at( i );
@@ -77,11 +77,11 @@ namespace sdk::detail {
 			return static_cast< _derived_t& >( *this );
 		}
 
-		template < std::size_t __size, typename __derived_t >
+		template < std::size_t _rhs_size, typename _rhs_derived_t >
 		ALWAYS_INLINE _derived_t& operator +=(
-			const array_wrapper_t< _value_t, __size, __derived_t >& rhs
+			const array_wrapper_t< _value_t, _rhs_size, _rhs_derived_t >& rhs
 		) {
-			constexpr auto min_size = std::min( _size, __size );
+			constexpr auto min_size = std::min( _size, _rhs_size );
 
 			for ( std::size_t i{}; i < min_size; ++i )
 				at( i ) += rhs.at( i );
@@ -89,11 +89,11 @@ namespace sdk::detail {
 			return static_cast< _derived_t& >( *this );
 		}
 
-		template < std::size_t __size, typename __derived_t >
+		template < std::size_t _rhs_size, typename _rhs_derived_t >
 		ALWAYS_INLINE _derived_t& operator *=(
-			const array_wrapper_t< _value_t, __size, __derived_t >& rhs
+			const array_wrapper_t< _value_t, _rhs_size, _rhs_derived_t >& rhs
 		) {
-			constexpr auto min_size = std::min( _size, __size );
+			constexpr auto min_size = std::min( _size, _rhs_size );
 
 			for ( std::size_t i{}; i < min_size; ++i )
 				at( i ) *= rhs.at( i );
@@ -101,11 +101,11 @@ namespace sdk::detail {
 			return static_cast< _derived_t& >( *this );
 		}
 
-		template < std::size_t __size, typename __derived_t >
+		template < std::size_t _rhs_size, typename _rhs_derived_t >
 		ALWAYS_INLINE _derived_t& operator /=(
-			const array_wrapper_t< _value_t, __size, __derived_t >& rhs
+			const array_wrapper_t< _value_t, _rhs_size, _rhs_derived_t >& rhs
 		) {
-			constexpr auto min_size = std::min( _size, __size );
+			constexpr auto min_size = std::min( _size, _rhs_size );
 
 			for ( std::size_t i{}; i < min_size; ++i )
 				at( i ) /= rhs.at( i );
@@ -145,9 +145,9 @@ namespace sdk::detail {
 			return ret /= rhs;
 		}
 
-		template < typename __value_t >
+		template < typename _rhs_value_t >
 		ALWAYS_INLINE constexpr bool operator ==(
-			const array_wrapper_t< __value_t, _size, _derived_t >& rhs
+			const array_wrapper_t< _rhs_value_t, _size, _derived_t >& rhs
 		) const {
 			for ( std::size_t i{}; i < _size; ++i )
 				if ( at( i ) != rhs.at( i ) )
@@ -156,9 +156,9 @@ namespace sdk::detail {
 			return true;
 		}
 
-		template < typename __value_t >
-		ALWAYS_INLINE constexpr std::compare_three_way_result_t< _value_t, __value_t > operator <=>(
-			const array_wrapper_t< __value_t, _size, _derived_t >& rhs
+		template < typename _rhs_value_t >
+		ALWAYS_INLINE constexpr std::compare_three_way_result_t< _value_t, _rhs_value_t > operator <=>(
+			const array_wrapper_t< _rhs_value_t, _size, _derived_t >& rhs
 		) const {
 			return std::lexicographical_compare_three_way(
 				m_elements.begin( ), m_elements.end( ),

@@ -14,13 +14,13 @@ namespace sdk::detail {
 			requires ( sizeof...( _args_t ) <= _size )
 		ALWAYS_INLINE constexpr vec_helper_t( const _args_t&... args ) : base_t{ args... } {}
 
-		template < std::size_t __size, typename __derived_t >
+		template < std::size_t _rhs_size, typename _rhs_derived_t >
 		ALWAYS_INLINE constexpr _value_t dot(
-			const array_wrapper_t< _value_t, __size, __derived_t >& other
+			const array_wrapper_t< _value_t, _rhs_size, _rhs_derived_t >& other
 		) const {
 			_value_t ret{};
 
-			constexpr auto max = std::min( _size, __size );
+			constexpr auto max = std::min( _size, _rhs_size );
 			for ( std::size_t i{}; i < max; ++i )
 				ret += base_t::at( i ) * other.at( i );
 
