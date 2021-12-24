@@ -19,6 +19,9 @@
 		return offset.as< type >( )( this, __VA_ARGS__ ); \
 	} \
 
+#include "ctx/ctx.hpp"
+
 #include "valve/valve.hpp"
 
-#include "ctx/ctx.hpp"
+#include "hacks/hacks.hpp"
+#include "hooks/hooks.hpp"

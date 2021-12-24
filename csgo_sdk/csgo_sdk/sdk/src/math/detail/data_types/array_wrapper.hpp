@@ -70,7 +70,6 @@ namespace sdk::detail {
 			const array_wrapper_t< _value_t, _rhs_size, _rhs_derived_t >& rhs
 		) {
 			constexpr auto min_size = std::min( _size, _rhs_size );
-
 			for ( std::size_t i{}; i < min_size; ++i )
 				at( i ) -= rhs.at( i );
 
@@ -82,7 +81,6 @@ namespace sdk::detail {
 			const array_wrapper_t< _value_t, _rhs_size, _rhs_derived_t >& rhs
 		) {
 			constexpr auto min_size = std::min( _size, _rhs_size );
-
 			for ( std::size_t i{}; i < min_size; ++i )
 				at( i ) += rhs.at( i );
 
@@ -94,7 +92,6 @@ namespace sdk::detail {
 			const array_wrapper_t< _value_t, _rhs_size, _rhs_derived_t >& rhs
 		) {
 			constexpr auto min_size = std::min( _size, _rhs_size );
-
 			for ( std::size_t i{}; i < min_size; ++i )
 				at( i ) *= rhs.at( i );
 
@@ -106,7 +103,6 @@ namespace sdk::detail {
 			const array_wrapper_t< _value_t, _rhs_size, _rhs_derived_t >& rhs
 		) {
 			constexpr auto min_size = std::min( _size, _rhs_size );
-
 			for ( std::size_t i{}; i < min_size; ++i )
 				at( i ) /= rhs.at( i );
 

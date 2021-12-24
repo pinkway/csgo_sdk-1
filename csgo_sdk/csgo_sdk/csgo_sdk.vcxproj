@@ -99,7 +99,12 @@
   <ItemGroup>
     <ClInclude Include="csgo\csgo.hpp" />
     <ClInclude Include="csgo\ctx\ctx.hpp" />
+    <ClInclude Include="csgo\hacks\hacks.hpp" />
+    <ClInclude Include="csgo\hooks\hooks.hpp" />
     <ClInclude Include="csgo\valve\entities\entities.hpp" />
+    <ClInclude Include="csgo\valve\interfaces\interfaces.hpp" />
+    <ClInclude Include="csgo\valve\other\other.hpp" />
+    <ClInclude Include="csgo\valve\util\util.hpp" />
     <ClInclude Include="csgo\valve\valve.hpp" />
     <ClInclude Include="sdk\sdk.hpp" />
     <ClInclude Include="sdk\src\cfg\cfg.hpp" />
@@ -122,7 +127,9 @@
     <ClInclude Include="sdk\src\util\util.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="csgo\ctx\impl\ctx.inl" />
     <None Include="csgo\valve\entities\impl\entities.inl" />
+    <None Include="csgo\valve\other\impl\other.inl" />
     <None Include="sdk\src\cfg\impl\cfg.inl" />
     <None Include="sdk\src\math\impl\math.inl" />
     <None Include="sdk\src\mem\impl\mem.inl" />

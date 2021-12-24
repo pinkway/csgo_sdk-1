@@ -13,38 +13,38 @@ namespace __sdk_constant_holder { template < auto _value > inline constexpr auto
 
 #define CONSTANT( constant ) __sdk_constant_holder::k_value< constant >
 
-#define INSERT_ENUM_UNDERLYING_OPERATOR( enum_t ) \
+#define ENUM_UNDERLYING_OPERATOR( enum_t ) \
 	ALWAYS_INLINE constexpr auto operator -( const enum_t value ) { \
 		return static_cast< std::underlying_type_t< enum_t > >( value ); \
 	} \
 
-#define INSERT_ENUM_BIT_OPERATOR( enum_t, operand, ret_underlying ) \
-	ALWAYS_INLINE constexpr auto operator operand( const enum_t lhs, const enum_t rhs ) { \
+#define ENUM_BIT_OPERATOR( enum_t, op, ret_underlying ) \
+	ALWAYS_INLINE constexpr auto operator op( const enum_t lhs, const enum_t rhs ) { \
 		using underlying_t = std::underlying_type_t< enum_t >; \
 		\
 		using ret_t = std::conditional_t< ret_underlying, underlying_t, enum_t >; \
 		\
 		return static_cast< ret_t >( \
-			static_cast< underlying_t >( lhs ) operand static_cast< underlying_t >( rhs ) \
+			static_cast< underlying_t >( lhs ) op static_cast< underlying_t >( rhs ) \
 		); \
 	} \
 	\
-	ALWAYS_INLINE auto& operator operand##=( enum_t& lhs, const enum_t rhs ) { \
+	ALWAYS_INLINE auto& operator op##=( enum_t& lhs, const enum_t rhs ) { \
 		using underlying_t = std::underlying_type_t< enum_t >; \
 		\
 		using ret_t = std::conditional_t< ret_underlying, underlying_t, enum_t >; \
 		\
 		return reinterpret_cast< ret_t& >( \
-			reinterpret_cast< underlying_t& >( lhs ) operand##= static_cast< underlying_t >( rhs ) \
+			reinterpret_cast< underlying_t& >( lhs ) op##= static_cast< underlying_t >( rhs ) \
 		); \
 	} \
 
-#define INSERT_ENUM_BIT_OPERATORS( enum_t, ret_underlying ) \
-	INSERT_ENUM_BIT_OPERATOR( enum_t, |, ret_underlying ) \
+#define ENUM_BIT_OPERATORS( enum_t, ret_underlying ) \
+	ENUM_BIT_OPERATOR( enum_t, |, ret_underlying ) \
 	\
-	INSERT_ENUM_BIT_OPERATOR( enum_t, &, ret_underlying ) \
+	ENUM_BIT_OPERATOR( enum_t, &, ret_underlying ) \
 	\
-	INSERT_ENUM_BIT_OPERATOR( enum_t, ^, ret_underlying ) \
+	ENUM_BIT_OPERATOR( enum_t, ^, ret_underlying ) \
 	\
 	ALWAYS_INLINE constexpr auto operator ~( const enum_t value ) { \
 		using underlying_t = std::underlying_type_t< enum_t >; \
