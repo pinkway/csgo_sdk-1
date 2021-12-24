@@ -1,200 +1,184 @@
 #pragma once
 
 namespace sdk::detail {
-	/* the basic funcs that each clr should have */
-	template < typename _value_t >
-		requires std::_Is_any_of_v< _value_t, std::uint8_t, float >
-	struct clr_helper_t {
-	protected:
-		std::array< _value_t, 4u > m_elements{};
-	public:
-		using value_t = _value_t;
+	template < typename _value_t, std::size_t _hue_limit, std::size_t _limit >
+		requires ( _hue_limit <= std::numeric_limits< _value_t >::max( ) && _limit <= std::numeric_limits< _value_t >::max( ) )
+	struct base_ahsv_t;
 
-		ALWAYS_INLINE constexpr clr_helper_t( ) = default;
-
-		ALWAYS_INLINE constexpr clr_helper_t(
-			const _value_t v0, const _value_t v1,
-			const _value_t v2, const _value_t a
-		) : m_elements{ v0, v1, v2, a } {}
-
-		ALWAYS_INLINE constexpr _value_t& at( const std::size_t i ) {
-			return m_elements.at( i );
-		}
-
-		ALWAYS_INLINE constexpr _value_t at( const std::size_t i ) const {
-			return m_elements.at( i );
-		}
-
-		ALWAYS_INLINE constexpr _value_t& a( ) { return m_elements.at( 3u ); }
-
-		ALWAYS_INLINE constexpr _value_t a( ) const { return m_elements.at( 3u ); }
-	};
-
-	/* std::uint8_t - argb | float - ahsv ( 360.f, 1.f, 1.f, 1.f ) */
-	template < typename _value_t >
-		requires std::_Is_any_of_v< _value_t, std::uint8_t, float >
-	struct base_clr_t final : public clr_helper_t< _value_t > {
+	template < typename _value_t = std::uint8_t, std::size_t _limit = std::numeric_limits< _value_t >::max( ) >
+		requires ( _limit <= std::numeric_limits< _value_t >::max( ) )
+	struct base_argb_t final : public array_wrapper_t< _value_t, 4u, base_argb_t< _value_t, _limit > > {
 	private:
-		using base_t = clr_helper_t< _value_t >;
+		using base_t = array_wrapper_t< _value_t, 4u, base_argb_t< _value_t, _limit > >;
 	public:
-		ALWAYS_INLINE constexpr base_clr_t( ) = default;
+		ALWAYS_INLINE constexpr base_argb_t( ) = default;
 
-		ALWAYS_INLINE constexpr base_clr_t(
-			const _value_t v0, const _value_t v1,
-			const _value_t v2, const _value_t a
-		) : base_t{ v0, v1, v2, a } {}
-	};
-
-	template <>
-	struct base_clr_t< std::uint8_t > final : public clr_helper_t< std::uint8_t > {
-	private:
-		using base_t = clr_helper_t< std::uint8_t >;
-
-		using value_t = base_t::value_t;
-	public:
-		ALWAYS_INLINE constexpr base_clr_t( ) = default;
-
-		/* so that we can construct from int etc without casts 
-			note: it is probably bad practice to use float values to construct from the hsb value
-			and all other for rgb ctor
-			creating an additional function ( ex. conv::hsb_to_rgb ) should be the solution */
-		template < typename _ctor_t >
-			requires ( !std::is_same_v< _ctor_t, float > )
-		ALWAYS_INLINE constexpr base_clr_t(
-			const _ctor_t a, const _ctor_t r,
-			const _ctor_t g, const _ctor_t b
+		template < typename _arg_value_t >
+			requires std::is_arithmetic_v< _arg_value_t >
+		ALWAYS_INLINE constexpr base_argb_t(
+			const _arg_value_t a, const _arg_value_t r,
+			const _arg_value_t g, const _arg_value_t b
 		) : base_t{
-			static_cast< value_t >( b ),
-			static_cast< value_t >( g ),
-			static_cast< value_t >( r ),
-			static_cast< value_t >( a )
+			static_cast< _value_t >( b ),
+			static_cast< _value_t >( g ),
+			static_cast< _value_t >( r ),
+			static_cast< _value_t >( a )
 		} {}
 
-		ALWAYS_INLINE constexpr base_clr_t(
-			const float a, const float h,
-			const float s, const float v
+		template < typename _ahsv_value_t, std::size_t _ahsv_hue_limit, std::size_t _ahsv_limit >
+		ALWAYS_INLINE static constexpr base_argb_t< _value_t, _limit > from_ahsv(
+			const base_ahsv_t< _ahsv_value_t, _ahsv_hue_limit, _ahsv_limit > ahsv
 		) {
-			constexpr auto k_value_limit = std::numeric_limits< value_t >::max( );
+			base_argb_t< _value_t, _limit > argb{};
 
-			base_t::a( ) = static_cast< value_t >( a * k_value_limit );
+			argb.a( ) = static_cast< _value_t >( ( ahsv.a( ) / ahsv.limit( ) ) * argb.limit( ) );
 
-			const auto sextant = h >= 360.f ? 0.f : h / 60.f;
-			const auto intermediate_color_perc = sextant - static_cast< int >( sextant );
+			const auto h = ( ahsv.h( ) / ahsv.hue_limit( ) ) * 360.f;
+			const auto s = ahsv.s( ) / ahsv.limit( );
+			const auto v = ahsv.v( ) / ahsv.limit( );
+
+			const auto hue = h >= 360.f ? 0.f : h / 60.f;
+			const auto f = hue - static_cast< int >( hue );
 			const auto p = v * ( 1.f - s );
-			const auto q = v * ( 1.f - s * intermediate_color_perc );
-			const auto t = v * ( 1.f - ( s * ( 1.f - intermediate_color_perc ) ) );
+			const auto q = v * ( 1.f - s * f );
+			const auto t = v * ( 1.f - ( s * ( 1.f - f ) ) );
 
-			switch ( static_cast< int >( sextant ) ) {
-			case 0:
-				r( ) = static_cast< value_t >( v * k_value_limit );
-				g( ) = static_cast< value_t >( t * k_value_limit );
-				b( ) = static_cast< value_t >( p * k_value_limit );
-
-				break;
-			case 1:
-				r( ) = static_cast< value_t >( q * k_value_limit );
-				g( ) = static_cast< value_t >( v * k_value_limit );
-				b( ) = static_cast< value_t >( p * k_value_limit );
-
-				break;
-			case 2:
-				r( ) = static_cast< value_t >( p * k_value_limit );
-				g( ) = static_cast< value_t >( v * k_value_limit );
-				b( ) = static_cast< value_t >( t * k_value_limit );
-
-				break;
-			case 3:
-				r( ) = static_cast< value_t >( p * k_value_limit );
-				g( ) = static_cast< value_t >( q * k_value_limit );
-				b( ) = static_cast< value_t >( v * k_value_limit );
-
-				break;
-			case 4:
-				r( ) = static_cast< value_t >( t * k_value_limit );
-				g( ) = static_cast< value_t >( p * k_value_limit );
-				b( ) = static_cast< value_t >( v * k_value_limit );
-
-				break;
-			case 5:
-				r( ) = static_cast< value_t >( v * k_value_limit );
-				g( ) = static_cast< value_t >( p * k_value_limit );
-				b( ) = static_cast< value_t >( q * k_value_limit );
-
-				break;
+			if ( hue < 1.f ) {
+				argb.r( ) = static_cast< _value_t >( v * argb.limit( ) );
+				argb.g( ) = static_cast< _value_t >( t * argb.limit( ) );
+				argb.b( ) = static_cast< _value_t >( p * argb.limit( ) );
 			}
+			else if ( hue < 2.f ) {
+				argb.r( ) = static_cast< _value_t >( q * argb.limit( ) );
+				argb.g( ) = static_cast< _value_t >( v * argb.limit( ) );
+				argb.b( ) = static_cast< _value_t >( p * argb.limit( ) );
+			}
+			else if ( hue < 3.f ) {
+				argb.r( ) = static_cast< _value_t >( p * argb.limit( ) );
+				argb.g( ) = static_cast< _value_t >( v * argb.limit( ) );
+				argb.b( ) = static_cast< _value_t >( t * argb.limit( ) );
+			}
+			else if ( hue < 4.f ) {
+				argb.r( ) = static_cast< _value_t >( p * argb.limit( ) );
+				argb.g( ) = static_cast< _value_t >( q * argb.limit( ) );
+				argb.b( ) = static_cast< _value_t >( v * argb.limit( ) );
+			}
+			else if ( hue < 5.f ) {
+				argb.r( ) = static_cast< _value_t >( t * argb.limit( ) );
+				argb.g( ) = static_cast< _value_t >( p * argb.limit( ) );
+				argb.b( ) = static_cast< _value_t >( v * argb.limit( ) );
+			}
+			else {
+				argb.r( ) = static_cast< _value_t >( v * argb.limit( ) );
+				argb.g( ) = static_cast< _value_t >( p * argb.limit( ) );
+				argb.b( ) = static_cast< _value_t >( q * argb.limit( ) );
+			}
+
+			return argb;
 		}
 
-		ALWAYS_INLINE constexpr value_t& r( ) { return base_t::at( 2u ); }
+		ALWAYS_INLINE constexpr _value_t& a( ) { return base_t::at( 3u ); }
 
-		ALWAYS_INLINE constexpr value_t r( ) const { return base_t::at( 2u ); }
+		ALWAYS_INLINE constexpr _value_t a( ) const { return base_t::at( 3u ); }
 
-		ALWAYS_INLINE constexpr value_t& g( ) { return base_t::at( 1u ); }
+		ALWAYS_INLINE constexpr _value_t& r( ) { return base_t::at( 2u ); }
 
-		ALWAYS_INLINE constexpr value_t g( ) const { return base_t::at( 1u ); }
+		ALWAYS_INLINE constexpr _value_t r( ) const { return base_t::at( 2u ); }
 
-		ALWAYS_INLINE constexpr value_t& b( ) { return base_t::at( 0u ); }
+		ALWAYS_INLINE constexpr _value_t& g( ) { return base_t::at( 1u ); }
 
-		ALWAYS_INLINE constexpr value_t b( ) const { return base_t::at( 0u ); }
+		ALWAYS_INLINE constexpr _value_t g( ) const { return base_t::at( 1u ); }
+
+		ALWAYS_INLINE constexpr _value_t& b( ) { return base_t::at( 0u ); }
+
+		ALWAYS_INLINE constexpr _value_t b( ) const { return base_t::at( 0u ); }
+
+		ALWAYS_INLINE constexpr auto limit( ) const {
+			return static_cast< enough_float_t< _value_t > >( _limit );
+		}
 	};
 
-	template <>
-	struct base_clr_t< float > final : public clr_helper_t< float > {
+	template < typename _value_t = float, std::size_t _hue_limit = 360u, std::size_t _limit = 1u >
+		requires ( _hue_limit <= std::numeric_limits< _value_t >::max( ) && _limit <= std::numeric_limits< _value_t >::max( ) )
+	struct base_ahsv_t final : public array_wrapper_t< _value_t, 4u, base_ahsv_t< _value_t, _hue_limit, _limit > > {
 	private:
-		using base_t = clr_helper_t< float >;
-
-		using value_t = base_t::value_t;
+		using base_t = array_wrapper_t< _value_t, 4u, base_ahsv_t< _value_t, _hue_limit, _limit > >;
 	public:
-		ALWAYS_INLINE constexpr base_clr_t( ) = default;
+		ALWAYS_INLINE constexpr base_ahsv_t( ) = default;
 
-		ALWAYS_INLINE constexpr base_clr_t(
-			const float a, const float h,
-			const float s, const float v
-		) : base_t{ v, s, h, a } {}
+		template < typename _arg_value_t >
+			requires std::is_arithmetic_v< _arg_value_t >
+		ALWAYS_INLINE constexpr base_ahsv_t(
+			const _arg_value_t a, const _arg_value_t h,
+			const _arg_value_t s, const _arg_value_t v
+		) : base_t{
+			static_cast< _value_t >( v ),
+			static_cast< _value_t >( s ),
+			static_cast< _value_t >( h ),
+			static_cast< _value_t >( a )
+		} {}
 
-		template < typename _ctor_t >
-			requires ( !std::is_same_v< _ctor_t, float > )
-		ALWAYS_INLINE constexpr base_clr_t(
-			const _ctor_t a, const _ctor_t r,
-			const _ctor_t g, const _ctor_t b
+		template < typename _argb_value_t, std::size_t _argb_limit >
+		ALWAYS_INLINE static constexpr base_ahsv_t< _value_t, _limit > from_argb(
+			const base_argb_t< _argb_value_t, _argb_limit > argb
 		) {
-			constexpr auto k_def_channel_limit = std::numeric_limits< std::uint8_t >::max( );
+			base_ahsv_t< _value_t, _limit > ahsv{};
 
-			base_t::a( ) = a / static_cast< value_t >( k_def_channel_limit );
+			ahsv.a( ) = static_cast< _value_t >( ( argb.a( ) / argb.limit( ) ) * ahsv.limit( ) );
 
-			const auto r_frac = r / static_cast< value_t >( k_def_channel_limit );
-			const auto g_frac = g / static_cast< value_t >( k_def_channel_limit );
-			const auto b_frac = b / static_cast< value_t >( k_def_channel_limit );
+			const auto r_frac = argb.r( ) / argb.limit( );
+			const auto g_frac = argb.g( ) / argb.limit( );
+			const auto b_frac = argb.b( ) / argb.limit( );
 
+			const auto min = std::min( { r_frac, g_frac, b_frac } );
 			const auto max = std::max( { r_frac, g_frac, b_frac } );
-			const auto delta = max - std::min( { r_frac, g_frac, b_frac } );
 
+			const auto delta = max - min;
 			if ( delta == 0.f )
-				h( ) = 0.f;
+				ahsv.h( ) = static_cast< _value_t >( 0.f );
 			else {
-				if ( max == r_frac )
-					h( ) = ( g_frac - b_frac ) / delta;
-				else if ( max == g_frac )
-					h( ) = 2.f + ( b_frac - r_frac ) / delta;
-				else
-					h( ) = 4.f + ( r_frac - g_frac ) / delta;
+				constexpr auto k_unscaled_limit = 6.0;
 
-				h( ) *= 60.f;
+				enough_float_t< _value_t > unscaled_hue{};
+
+				if ( max == r_frac )
+					unscaled_hue = ( g_frac - b_frac ) / delta;
+				else if ( max == g_frac )
+					unscaled_hue = 2.f + ( b_frac - r_frac ) / delta;
+				else if ( max == b_frac )
+					unscaled_hue = 4.f + ( r_frac - g_frac ) / delta;
+
+				ahsv.h( ) = static_cast< _value_t >( ( unscaled_hue / k_unscaled_limit ) * ahsv.hue_limit( ) );
 			}
 
-			s( ) = ( max != 0.f ) ? delta / max : 0.f;
-			v( ) = max;
+			ahsv.s( ) = static_cast< _value_t >( ( max != 0.f ) ? ( delta / max ) * ahsv.limit( ) : 0.f );
+			ahsv.v( ) = static_cast< _value_t >( max * ahsv.limit( ) );
+
+			return ahsv;
 		}
 
-		ALWAYS_INLINE constexpr value_t& h( ) { return base_t::at( 2u ); }
+		ALWAYS_INLINE constexpr _value_t& a( ) { return base_t::at( 3u ); }
 
-		ALWAYS_INLINE constexpr value_t h( ) const { return base_t::at( 2u ); }
+		ALWAYS_INLINE constexpr _value_t a( ) const { return base_t::at( 3u ); }
 
-		ALWAYS_INLINE constexpr value_t& s( ) { return base_t::at( 1u ); }
+		ALWAYS_INLINE constexpr _value_t& h( ) { return base_t::at( 2u ); }
 
-		ALWAYS_INLINE constexpr value_t s( ) const { return base_t::at( 1u ); }
+		ALWAYS_INLINE constexpr _value_t h( ) const { return base_t::at( 2u ); }
 
-		ALWAYS_INLINE constexpr value_t& v( ) { return base_t::at( 0u ); }
+		ALWAYS_INLINE constexpr _value_t& s( ) { return base_t::at( 1u ); }
 
-		ALWAYS_INLINE constexpr value_t v( ) const { return base_t::at( 0u ); }
+		ALWAYS_INLINE constexpr _value_t s( ) const { return base_t::at( 1u ); }
+
+		ALWAYS_INLINE constexpr _value_t& v( ) { return base_t::at( 0u ); }
+
+		ALWAYS_INLINE constexpr _value_t v( ) const { return base_t::at( 0u ); }
+
+		ALWAYS_INLINE constexpr auto limit( ) const {
+			return static_cast< enough_float_t< _value_t > >( _limit );
+		}
+
+		ALWAYS_INLINE constexpr auto hue_limit( ) const {
+			return static_cast< enough_float_t< _value_t > >( _hue_limit );
+		}
 	};
 }

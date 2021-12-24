@@ -43,7 +43,7 @@ namespace sdk::detail {
 			const auto cos_x = std::cos( rad_x ), sin_x = std::sin( rad_x );
 			const auto cos_y = std::cos( rad_y ), sin_y = std::sin( rad_y );
 
-			std::remove_const_t< decltype( cos_x ) > cos_z{}, sin_z{};
+			enough_float_t< _value_t > cos_z{}, sin_z{};
 			if ( right
 				|| up ) {
 				const auto rad_z = to_rad( z( ) );

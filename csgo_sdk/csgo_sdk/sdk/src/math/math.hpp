@@ -65,9 +65,9 @@ namespace sdk {
 
 	using rect_t = detail::base_rect_t< float >;
 
-	using argb_t = detail::base_clr_t< std::uint8_t >;
+	using argb_t = detail::base_argb_t<>;
 
-	using ahsv_t = detail::base_clr_t< float >;
+	using ahsv_t = detail::base_ahsv_t<>;
 }
 
 #include "impl/math.inl"
