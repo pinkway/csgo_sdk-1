@@ -27,7 +27,7 @@ namespace sdk::detail {
 
 		template < typename _ahsv_value_t, std::size_t _ahsv_hue_limit, std::size_t _ahsv_limit >
 		ALWAYS_INLINE static constexpr base_argb_t< _value_t, _limit > from_ahsv(
-			const base_ahsv_t< _ahsv_value_t, _ahsv_hue_limit, _ahsv_limit > ahsv
+			const base_ahsv_t< _ahsv_value_t, _ahsv_hue_limit, _ahsv_limit >& ahsv
 		) {
 			base_argb_t< _value_t, _limit > argb{};
 
@@ -120,7 +120,7 @@ namespace sdk::detail {
 
 		template < typename _argb_value_t, std::size_t _argb_limit >
 		ALWAYS_INLINE static constexpr base_ahsv_t< _value_t, _hue_limit, _limit > from_argb(
-			const base_argb_t< _argb_value_t, _argb_limit > argb
+			const base_argb_t< _argb_value_t, _argb_limit >& argb
 		) {
 			base_ahsv_t< _value_t, _hue_limit, _limit > ahsv{};
 

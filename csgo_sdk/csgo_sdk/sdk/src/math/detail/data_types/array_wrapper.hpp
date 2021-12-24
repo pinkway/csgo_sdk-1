@@ -29,6 +29,14 @@ namespace sdk::detail {
 
 		ALWAYS_INLINE constexpr _value_t at( const std::size_t i ) const { return m_elements.at( i ); }
 
+		ALWAYS_INLINE constexpr auto begin( ) { return m_elements.begin( ); }
+
+		ALWAYS_INLINE constexpr auto begin( ) const { return m_elements.begin( ); }
+
+		ALWAYS_INLINE constexpr auto end( ) { return m_elements.end( ); }
+
+		ALWAYS_INLINE constexpr auto end( ) const { return m_elements.end( ); }
+
 		template < typename _rhs_t >
 			requires std::is_arithmetic_v< _rhs_t >
 		ALWAYS_INLINE _derived_t& operator -=( const _rhs_t rhs ) {

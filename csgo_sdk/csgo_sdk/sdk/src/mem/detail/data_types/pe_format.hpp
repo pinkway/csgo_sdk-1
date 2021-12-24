@@ -3,7 +3,7 @@
 namespace sdk::detail {
 #pragma pack( push, 1 )
     union version_t {
-        std::uint16_t   m_id{};
+        std::uint16_t m_id{};
 
         struct {
             std::uint8_t m_major, m_minor;
@@ -11,7 +11,7 @@ namespace sdk::detail {
     };
 
     union ex_version_t {
-        std::uint32_t m_id;
+        std::uint32_t m_id{};
 
         struct {
             std::uint16_t m_major, m_minor;
@@ -222,20 +222,20 @@ namespace sdk::detail {
 
 	template < bool _x64 >
 	struct nt_hdrs_t {
-		std::uint32_t		m_sig{};
+		std::uint32_t     m_sig{};
 
-        file_hdr_t		    m_file_hdr{};
-		opt_hdr_t< _x64 >	m_opt_hdr{};
+      file_hdr_t        m_file_hdr{};
+		opt_hdr_t< _x64 > m_opt_hdr{};
 	};
 
 	struct dos_hdr_t {
 		std::uint16_t	e_magic{}, e_cblp{},
 						e_cp{}, e_crlc{}, e_cparhdr{},
-						e_minalloc{}, e_maxalloc{},
+						e_min_alloc{}, e_max_alloc{},
 						e_ss{}, e_sp{}, e_csum{},
 						e_ip{}, e_cs{}, e_lfarlc{},
-						e_ovno{}, e_res[ 4u ]{}, e_oemid{},
-						e_oeminfo{}, e_res2[ 10u ]{};
+						e_ovno{}, e_res[ 4u ]{}, e_oem_id{},
+						e_oem_info{}, e_res2[ 10u ]{};
 
 		std::uint32_t	e_lfanew{};
 	};
