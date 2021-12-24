@@ -13,11 +13,11 @@ namespace sdk::detail {
 	public:
 		ALWAYS_INLINE constexpr base_argb_t( ) = default;
 
-		template < typename _arg_value_t >
-			requires std::is_arithmetic_v< _arg_value_t >
+		template < typename _arg_t >
+			requires std::is_arithmetic_v< _arg_t >
 		ALWAYS_INLINE constexpr base_argb_t(
-			const _arg_value_t a, const _arg_value_t r,
-			const _arg_value_t g, const _arg_value_t b
+			const _arg_t a, const _arg_t r,
+			const _arg_t g, const _arg_t b
 		) : base_t{
 			static_cast< _value_t >( b ),
 			static_cast< _value_t >( g ),
@@ -106,11 +106,11 @@ namespace sdk::detail {
 	public:
 		ALWAYS_INLINE constexpr base_ahsv_t( ) = default;
 
-		template < typename _arg_value_t >
-			requires std::is_arithmetic_v< _arg_value_t >
+		template < typename _arg_t >
+			requires std::is_arithmetic_v< _arg_t >
 		ALWAYS_INLINE constexpr base_ahsv_t(
-			const _arg_value_t a, const _arg_value_t h,
-			const _arg_value_t s, const _arg_value_t v
+			const _arg_t a, const _arg_t h,
+			const _arg_t s, const _arg_t v
 		) : base_t{
 			static_cast< _value_t >( v ),
 			static_cast< _value_t >( s ),
@@ -119,10 +119,10 @@ namespace sdk::detail {
 		} {}
 
 		template < typename _argb_value_t, std::size_t _argb_limit >
-		ALWAYS_INLINE static constexpr base_ahsv_t< _value_t, _limit > from_argb(
+		ALWAYS_INLINE static constexpr base_ahsv_t< _value_t, _hue_limit, _limit > from_argb(
 			const base_argb_t< _argb_value_t, _argb_limit > argb
 		) {
-			base_ahsv_t< _value_t, _limit > ahsv{};
+			base_ahsv_t< _value_t, _hue_limit, _limit > ahsv{};
 
 			ahsv.a( ) = static_cast< _value_t >( ( argb.a( ) / argb.limit( ) ) * ahsv.limit( ) );
 
