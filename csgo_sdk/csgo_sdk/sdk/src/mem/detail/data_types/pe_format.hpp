@@ -224,12 +224,12 @@ namespace sdk::detail {
 	struct nt_hdrs_t {
 		std::uint32_t     m_sig{};
 
-      file_hdr_t        m_file_hdr{};
-		opt_hdr_t< _x64 > m_opt_hdr{};
+        file_hdr_t        m_file_hdr{};
+	    opt_hdr_t< _x64 > m_opt_hdr{};
 	};
 
 	struct dos_hdr_t {
-		std::uint16_t	e_magic{}, e_cblp{},
+		std::uint16_t   e_magic{}, e_cblp{},
 						e_cp{}, e_crlc{}, e_cparhdr{},
 						e_min_alloc{}, e_max_alloc{},
 						e_ss{}, e_sp{}, e_csum{},

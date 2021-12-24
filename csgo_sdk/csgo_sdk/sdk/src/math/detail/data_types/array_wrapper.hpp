@@ -149,9 +149,8 @@ namespace sdk::detail {
 			return ret /= rhs;
 		}
 
-		template < typename _rhs_value_t >
 		ALWAYS_INLINE constexpr bool operator ==(
-			const array_wrapper_t< _rhs_value_t, _size, _derived_t >& rhs
+			const array_wrapper_t< _value_t, _size, _derived_t >& rhs
 		) const {
 			for ( std::size_t i{}; i < _size; ++i )
 				if ( at( i ) != rhs.at( i ) )
@@ -160,9 +159,8 @@ namespace sdk::detail {
 			return true;
 		}
 
-		template < typename _rhs_value_t >
-		ALWAYS_INLINE constexpr std::compare_three_way_result_t< _value_t, _rhs_value_t > operator <=>(
-			const array_wrapper_t< _rhs_value_t, _size, _derived_t >& rhs
+		ALWAYS_INLINE constexpr std::compare_three_way_result_t< _value_t, _value_t > operator <=>(
+			const array_wrapper_t< _value_t, _size, _derived_t >& rhs
 		) const {
 			return std::lexicographical_compare_three_way(
 				m_elements.begin( ), m_elements.end( ),

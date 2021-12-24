@@ -85,5 +85,20 @@ namespace sdk::detail {
 				-sin_x, sin_z * cos_x, cos_z * cos_x, 0.f
 			};
 		}
+
+		ALWAYS_INLINE base_qang_t< _value_t >& normalize( ) {
+			for ( auto& element : base_t::m_elements )
+				element = static_cast< _value_t >(
+					std::remainder( element, static_cast< _value_t >( 360 ) )
+				);
+
+			return *this;
+		}
+
+		ALWAYS_INLINE base_qang_t< _value_t > normalized( ) const {
+			auto ret = *this;
+
+			return ret.normalize( );
+		}
 	};
 }
