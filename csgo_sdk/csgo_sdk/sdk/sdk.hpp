@@ -19,7 +19,9 @@ namespace __sdk_constant_holder { template < auto _value > inline constexpr auto
 	} \
 
 #define ENUM_BIT_OPERATOR( enum_t, op, ret_underlying ) \
-	ALWAYS_INLINE constexpr auto operator op( const enum_t lhs, const enum_t rhs ) { \
+	template < typename _value_t > \
+		requires std::_Is_any_of_v< _value_t, enum_t, std::underlying_type_t< enum_t > > \
+	ALWAYS_INLINE constexpr auto operator op( const enum_t lhs, const _value_t rhs ) { \
 		using underlying_t = std::underlying_type_t< enum_t >; \
 		\
 		using ret_t = std::conditional_t< ret_underlying, underlying_t, enum_t >; \
@@ -29,7 +31,9 @@ namespace __sdk_constant_holder { template < auto _value > inline constexpr auto
 		); \
 	} \
 	\
-	ALWAYS_INLINE auto& operator op##=( enum_t& lhs, const enum_t rhs ) { \
+	template < typename _value_t > \
+		requires std::_Is_any_of_v< _value_t, enum_t, std::underlying_type_t< enum_t > > \
+	ALWAYS_INLINE auto& operator op##=( enum_t& lhs, const _value_t rhs ) { \
 		using underlying_t = std::underlying_type_t< enum_t >; \
 		\
 		using ret_t = std::conditional_t< ret_underlying, underlying_t, enum_t >; \

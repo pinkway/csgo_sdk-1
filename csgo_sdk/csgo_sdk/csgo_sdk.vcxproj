@@ -100,6 +100,7 @@
     <ClInclude Include="csgo\csgo.hpp" />
     <ClInclude Include="csgo\ctx\ctx.hpp" />
     <ClInclude Include="csgo\hacks\hacks.hpp" />
+    <ClInclude Include="csgo\hacks\move\move.hpp" />
     <ClInclude Include="csgo\hooks\hooks.hpp" />
     <ClInclude Include="csgo\valve\entities\entities.hpp" />
     <ClInclude Include="csgo\valve\interfaces\interfaces.hpp" />

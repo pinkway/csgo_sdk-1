@@ -1,5 +1,3 @@
 #pragma once
 
-namespace csgo::hacks {
-
-}
+#include "move/move.hpp"

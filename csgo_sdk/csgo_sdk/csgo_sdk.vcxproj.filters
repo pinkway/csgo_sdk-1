@@ -33,6 +33,7 @@
     <ClInclude Include="csgo\valve\interfaces\interfaces.hpp" />
     <ClInclude Include="csgo\valve\other\other.hpp" />
     <ClInclude Include="csgo\valve\util\util.hpp" />
+    <ClInclude Include="csgo\hacks\move\move.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="sdk\src\cfg\impl\cfg.inl" />
