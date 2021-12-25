@@ -77,8 +77,8 @@ namespace sdk::detail {
 		ALWAYS_INLINE _derived_t& operator -=(
 			const array_wrapper_t< _value_t, _rhs_size, _rhs_derived_t >& rhs
 		) {
-			constexpr auto min_size = std::min( _size, _rhs_size );
-			for ( std::size_t i{}; i < min_size; ++i )
+			constexpr auto k_final_size = std::min( _size, _rhs_size );
+			for ( std::size_t i{}; i < k_final_size; ++i )
 				at( i ) -= rhs.at( i );
 
 			return static_cast< _derived_t& >( *this );
@@ -88,8 +88,8 @@ namespace sdk::detail {
 		ALWAYS_INLINE _derived_t& operator +=(
 			const array_wrapper_t< _value_t, _rhs_size, _rhs_derived_t >& rhs
 		) {
-			constexpr auto min_size = std::min( _size, _rhs_size );
-			for ( std::size_t i{}; i < min_size; ++i )
+			constexpr auto k_final_size = std::min( _size, _rhs_size );
+			for ( std::size_t i{}; i < k_final_size; ++i )
 				at( i ) += rhs.at( i );
 
 			return static_cast< _derived_t& >( *this );
@@ -99,8 +99,8 @@ namespace sdk::detail {
 		ALWAYS_INLINE _derived_t& operator *=(
 			const array_wrapper_t< _value_t, _rhs_size, _rhs_derived_t >& rhs
 		) {
-			constexpr auto min_size = std::min( _size, _rhs_size );
-			for ( std::size_t i{}; i < min_size; ++i )
+			constexpr auto k_final_size = std::min( _size, _rhs_size );
+			for ( std::size_t i{}; i < k_final_size; ++i )
 				at( i ) *= rhs.at( i );
 
 			return static_cast< _derived_t& >( *this );
@@ -110,8 +110,8 @@ namespace sdk::detail {
 		ALWAYS_INLINE _derived_t& operator /=(
 			const array_wrapper_t< _value_t, _rhs_size, _rhs_derived_t >& rhs
 		) {
-			constexpr auto min_size = std::min( _size, _rhs_size );
-			for ( std::size_t i{}; i < min_size; ++i )
+			constexpr auto k_final_size = std::min( _size, _rhs_size );
+			for ( std::size_t i{}; i < k_final_size; ++i )
 				at( i ) /= rhs.at( i );
 
 			return static_cast< _derived_t& >( *this );

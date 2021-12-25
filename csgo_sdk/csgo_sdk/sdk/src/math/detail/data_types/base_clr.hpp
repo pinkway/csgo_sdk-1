@@ -137,7 +137,7 @@ namespace sdk::detail {
 			if ( delta == 0.f )
 				ahsv.h( ) = static_cast< _value_t >( 0.f );
 			else {
-				constexpr auto k_unscaled_limit = 6.0;
+				constexpr auto k_unscaled_limit = 6.f;
 
 				enough_float_t< _value_t > unscaled_hue{};
 

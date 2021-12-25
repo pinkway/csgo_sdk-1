@@ -20,8 +20,8 @@ namespace sdk::detail {
 		) const {
 			_value_t ret{};
 
-			constexpr auto max = std::min( _size, _rhs_size );
-			for ( std::size_t i{}; i < max; ++i )
+			constexpr auto k_final_size = std::min( _size, _rhs_size );
+			for ( std::size_t i{}; i < k_final_size; ++i )
 				ret += base_t::at( i ) * other.at( i );
 
 			return ret;
