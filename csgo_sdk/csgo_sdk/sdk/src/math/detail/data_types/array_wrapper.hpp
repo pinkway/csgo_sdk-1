@@ -10,8 +10,8 @@ namespace sdk::detail {
 			static constexpr std::false_type test( ... );
 
 			/* allow operations between 2 same _value_t containers */
-			template < std::size_t _test_size, typename _test_derived_t >
-			static constexpr std::true_type test( array_wrapper_t< _value_t, _test_size, _test_derived_t > );
+			template < std::size_t _other_size, typename _other_derived_t >
+			static constexpr std::true_type test( array_wrapper_t< _value_t, _other_size, _other_derived_t > );
 		};
 
 		template < typename _other_t >
@@ -77,8 +77,8 @@ namespace sdk::detail {
 		ALWAYS_INLINE _derived_t& operator -=(
 			const array_wrapper_t< _value_t, _rhs_size, _rhs_derived_t >& rhs
 		) {
-			constexpr auto k_final_size = std::min( _size, _rhs_size );
-			for ( std::size_t i{}; i < k_final_size; ++i )
+			constexpr auto k_min_size = std::min( _size, _rhs_size );
+			for ( std::size_t i{}; i < k_min_size; ++i )
 				at( i ) -= rhs.at( i );
 
 			return static_cast< _derived_t& >( *this );
@@ -88,8 +88,8 @@ namespace sdk::detail {
 		ALWAYS_INLINE _derived_t& operator +=(
 			const array_wrapper_t< _value_t, _rhs_size, _rhs_derived_t >& rhs
 		) {
-			constexpr auto k_final_size = std::min( _size, _rhs_size );
-			for ( std::size_t i{}; i < k_final_size; ++i )
+			constexpr auto k_min_size = std::min( _size, _rhs_size );
+			for ( std::size_t i{}; i < k_min_size; ++i )
 				at( i ) += rhs.at( i );
 
 			return static_cast< _derived_t& >( *this );
@@ -99,8 +99,8 @@ namespace sdk::detail {
 		ALWAYS_INLINE _derived_t& operator *=(
 			const array_wrapper_t< _value_t, _rhs_size, _rhs_derived_t >& rhs
 		) {
-			constexpr auto k_final_size = std::min( _size, _rhs_size );
-			for ( std::size_t i{}; i < k_final_size; ++i )
+			constexpr auto k_min_size = std::min( _size, _rhs_size );
+			for ( std::size_t i{}; i < k_min_size; ++i )
 				at( i ) *= rhs.at( i );
 
 			return static_cast< _derived_t& >( *this );
@@ -110,8 +110,8 @@ namespace sdk::detail {
 		ALWAYS_INLINE _derived_t& operator /=(
 			const array_wrapper_t< _value_t, _rhs_size, _rhs_derived_t >& rhs
 		) {
-			constexpr auto k_final_size = std::min( _size, _rhs_size );
-			for ( std::size_t i{}; i < k_final_size; ++i )
+			constexpr auto k_min_size = std::min( _size, _rhs_size );
+			for ( std::size_t i{}; i < k_min_size; ++i )
 				at( i ) /= rhs.at( i );
 
 			return static_cast< _derived_t& >( *this );

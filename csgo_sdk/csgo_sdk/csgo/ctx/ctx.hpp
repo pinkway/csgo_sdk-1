@@ -1,6 +1,8 @@
 #pragma once
 
 namespace csgo {
+	namespace valve { struct cvar_t; }
+
 	class c_ctx {
 	private:
 		struct {
@@ -8,7 +10,9 @@ namespace csgo {
 		} m_offsets{};
 
 		struct {
-
+			valve::cvar_t*	m_cl_forwardspeed{},
+							*m_cl_sidespeed{}, *m_cl_upspeed{},
+							*m_cl_pitchdown{}, *m_cl_pitchup{};
 		} m_cvars{};
 	public:
 		void init( );

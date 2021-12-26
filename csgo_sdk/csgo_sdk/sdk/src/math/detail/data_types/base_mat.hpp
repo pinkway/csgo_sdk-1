@@ -35,6 +35,24 @@ namespace sdk::detail {
 
 		template < typename _rhs_t >
 			requires std::is_arithmetic_v< _rhs_t >
+		ALWAYS_INLINE _derived_t& operator -=( const _rhs_t rhs ) {
+			for ( auto& element : m_elements )
+				element -= rhs;
+
+			return static_cast< _derived_t& >( *this );
+		}
+
+		template < typename _rhs_t >
+			requires std::is_arithmetic_v< _rhs_t >
+		ALWAYS_INLINE _derived_t& operator +=( const _rhs_t rhs ) {
+			for ( auto& element : m_elements )
+				element += rhs;
+
+			return static_cast< _derived_t& >( *this );
+		}
+
+		template < typename _rhs_t >
+			requires std::is_arithmetic_v< _rhs_t >
 		ALWAYS_INLINE _derived_t& operator *=( const _rhs_t rhs ) {
 			for ( auto& element : m_elements )
 				element *= rhs;
@@ -66,14 +84,30 @@ namespace sdk::detail {
 			for ( auto& element : m_elements )
 				element = static_cast< _value_t >( 0 );
 
-			constexpr auto k_element_size = std::min( _rows_count, _columns_count );
+			constexpr auto k_min_size = std::min( _rows_count, _columns_count );
 
 			for ( std::size_t i{}; i < _rows_count; ++i )
 				for ( std::size_t j{}; j < _columns_count; ++j )
-					for ( std::size_t k{}; k < k_element_size; ++k )
+					for ( std::size_t k{}; k < k_min_size; ++k )
 						at( i, j ) += lhs.at( i, k ) * rhs.at( k, j );
 
 			return static_cast< _derived_t& >( *this );
+		}
+
+		template < typename _rhs_t >
+			requires std::is_arithmetic_v< _rhs_t >
+		ALWAYS_INLINE _derived_t operator -( const _rhs_t rhs ) const {
+			auto ret = *this;
+
+			return ret -= rhs;
+		}
+
+		template < typename _rhs_t >
+			requires std::is_arithmetic_v< _rhs_t >
+		ALWAYS_INLINE _derived_t operator +( const _rhs_t rhs ) const {
+			auto ret = *this;
+
+			return ret += rhs;
 		}
 
 		template < typename _rhs_t >
@@ -82,18 +116,6 @@ namespace sdk::detail {
 			auto ret = *this;
 
 			return ret *= rhs;
-		}
-
-		ALWAYS_INLINE _derived_t operator -( const _derived_t& rhs ) const {
-			auto ret = *this;
-
-			return ret -= rhs;
-		}
-
-		ALWAYS_INLINE _derived_t operator +( const _derived_t& rhs ) const {
-			auto ret = *this;
-
-			return ret += rhs;
 		}
 
 		template < std::size_t _rhs_columns_count >
@@ -108,11 +130,11 @@ namespace sdk::detail {
 
 			base_mat_t< _value_t, _rows_count, _rhs_columns_count > ret{};
 
-			constexpr auto k_element_size = std::min( _rhs_columns_count, _columns_count );
+			constexpr auto k_min_size = std::min( _rhs_columns_count, _columns_count );
 
 			for ( std::size_t i{}; i < _rows_count; ++i )
 				for ( std::size_t j{}; j < _rhs_columns_count; ++j )
-					for ( std::size_t k{}; k < k_element_size; ++k )
+					for ( std::size_t k{}; k < k_min_size; ++k )
 						ret.at( i, j ) += at( i, k ) * rhs.at( k, j );
 
 			return ret;
@@ -121,8 +143,8 @@ namespace sdk::detail {
 		ALWAYS_INLINE static constexpr _derived_t identity( ) {
 			_derived_t ret{};
 
-			constexpr auto k_final_size = std::min( _rows_count, _columns_count );
-			for ( std::size_t i{}; i < k_final_size; ++i )
+			constexpr auto k_min_size = std::min( _rows_count, _columns_count );
+			for ( std::size_t i{}; i < k_min_size; ++i )
 				ret.at( i, i ) = static_cast< _value_t >( 1 );
 
 			return ret;
@@ -146,17 +168,17 @@ namespace sdk::detail {
 	struct base_mat_t< _value_t, 3u, 4u > final
 		: public mat_helper_t< _value_t, 3u, 4u, base_mat_t< _value_t, 3u, 4u > > {
 	private:
-		using derived_t = base_mat_t< _value_t, 3u, 4u >;
-
-		using base_t = mat_helper_t< _value_t, 3u, 4u, derived_t >;
+		using base_t = mat_helper_t< _value_t, 3u, 4u, base_mat_t< _value_t, 3u, 4u > >;
 	public:
 		ALWAYS_INLINE constexpr base_mat_t( ) = default;
 
 		template < typename... _args_t >
-			requires ( sizeof...( _args_t ) <= ( 3u * 4u ) )
+			requires ( sizeof...( _args_t ) <= 12u )
 		ALWAYS_INLINE constexpr base_mat_t( const _args_t&... args ) : base_t{ args... } {}
 
-		ALWAYS_INLINE constexpr derived_t& operator *=( const derived_t& rhs ) {
+		ALWAYS_INLINE constexpr base_mat_t< _value_t, 3u, 4u >& operator *=(
+			const base_mat_t< _value_t, 3u, 4u >& rhs
+		) {
 			auto lhs = *this;
 
 			for ( auto& element : base_t::m_elements )
@@ -174,7 +196,9 @@ namespace sdk::detail {
 			return *this;
 		}
 
-		ALWAYS_INLINE constexpr derived_t operator *( const derived_t& rhs ) const {
+		ALWAYS_INLINE constexpr base_mat_t< _value_t, 3u, 4u > operator *(
+			const base_mat_t< _value_t, 3u, 4u >& rhs
+		) {
 			auto ret = *this;
 
 			return ret *= rhs;

@@ -14,14 +14,14 @@ namespace sdk::detail {
 			requires ( sizeof...( _args_t ) <= _size )
 		ALWAYS_INLINE constexpr vec_helper_t( const _args_t&... args ) : base_t{ args... } {}
 
-		template < std::size_t _rhs_size, typename _rhs_derived_t >
+		template < std::size_t _other_size, typename _other_derived_t >
 		ALWAYS_INLINE constexpr _value_t dot(
-			const array_wrapper_t< _value_t, _rhs_size, _rhs_derived_t >& other
+			const array_wrapper_t< _value_t, _other_size, _other_derived_t >& other
 		) const {
 			_value_t ret{};
 
-			constexpr auto k_final_size = std::min( _size, _rhs_size );
-			for ( std::size_t i{}; i < k_final_size; ++i )
+			constexpr auto k_min_size = std::min( _size, _other_size );
+			for ( std::size_t i{}; i < k_min_size; ++i )
 				ret += base_t::at( i ) * other.at( i );
 
 			return ret;
@@ -30,15 +30,15 @@ namespace sdk::detail {
 		ALWAYS_INLINE constexpr _value_t length_sqr( const std::size_t size = _size ) const {
 			_value_t ret{};
 
-			const auto max = std::clamp( size, 2u, _size );
-			for ( std::size_t i{}; i < max; ++i )
+			const auto min_size = std::clamp( size, 2u, _size );
+			for ( std::size_t i{}; i < min_size; ++i )
 				ret += base_t::at( i ) * base_t::at( i );
 
 			return ret;
 		}
 
 		ALWAYS_INLINE _value_t length( const std::size_t size = _size ) const {
-			return std::sqrt( length_sqr( size ) ); 
+			return std::sqrt( length_sqr( size ) );
 		}
 
 		ALWAYS_INLINE _value_t normalize( ) {
@@ -124,12 +124,12 @@ namespace sdk::detail {
 		ALWAYS_INLINE constexpr _value_t z( ) const { return base_t::at( 2u ); }
 
 		ALWAYS_INLINE constexpr base_vec_t< _value_t, 3u > cross(
-			const base_vec_t< _value_t, 3u >& rhs
+			const base_vec_t< _value_t, 3u >& other
 		) const {
 			return {
-				y( ) * rhs.z( ) - z( ) * rhs.y( ),
-				z( ) * rhs.x( ) - x( ) * rhs.z( ),
-				x( ) * rhs.y( ) - y( ) * rhs.x( )
+				y( ) * other.z( ) - z( ) * other.y( ),
+				z( ) * other.x( ) - x( ) * other.z( ),
+				x( ) * other.y( ) - y( ) * other.x( )
 			};
 		}
 
@@ -139,7 +139,7 @@ namespace sdk::detail {
 			base_qang_t< _value_t > ret{};
 
 			const auto len_2d = base_t::length( 2u );
-			if ( up && len_2d > .001f ) {
+			if ( up && len_2d > 0.001f ) {
 				ret.x( ) = to_deg( std::atan2( -z( ), len_2d ) );
 				ret.y( ) = to_deg( std::atan2( y( ), x( ) ) );
 
@@ -151,12 +151,14 @@ namespace sdk::detail {
 
 				ret.z( ) = to_deg( std::atan2( left.z( ), up_z ) );
 			}
-			else if ( len_2d > 0.f ) {
-				ret.x( ) = to_deg( std::atan2( -z( ), len_2d ) );
-				ret.y( ) = to_deg( std::atan2( y( ), x( ) ) );
+			else {
+				if ( len_2d > 0.f ) {
+					ret.x( ) = to_deg( std::atan2( -z( ), len_2d ) );
+					ret.y( ) = to_deg( std::atan2( y( ), x( ) ) );
+				}
+				else
+					ret.x( ) = z( ) > 0.f ? -90.f : 90.f;
 			}
-			else
-				ret.x( ) = z( ) > 0.f ? -90.f : 90.f;
 
 			return ret;
 		}
@@ -165,9 +167,9 @@ namespace sdk::detail {
 			const base_mat_t< _value_t, 3u, 4u >& matrix
 		) const {
 			return {
-				base_t::dot( matrix.row( 0u ) ) + matrix.row( 0u ).at( 3u ),
-				base_t::dot( matrix.row( 1u ) ) + matrix.row( 1u ).at( 3u ),
-				base_t::dot( matrix.row( 2u ) ) + matrix.row( 2u ).at( 3u )
+				dot( matrix.row( 0u ) ) + matrix.row( 0u ).at( 3u ),
+				dot( matrix.row( 1u ) ) + matrix.row( 1u ).at( 3u ),
+				dot( matrix.row( 2u ) ) + matrix.row( 2u ).at( 3u )
 			};
 		}
 
@@ -188,7 +190,7 @@ namespace sdk::detail {
 		ALWAYS_INLINE constexpr base_vec_t< _value_t, 3u > rotate(
 			const base_mat_t< _value_t, 3u, 4u >& matrix
 		) const {
-			return { base_t::dot( matrix.row( 0u ) ), base_t::dot( matrix.row( 1u ) ), base_t::dot( matrix.row( 2u ) ) };
+			return { dot( matrix.row( 0u ) ), dot( matrix.row( 1u ) ), dot( matrix.row( 2u ) ) };
 		}
 
 		ALWAYS_INLINE constexpr base_vec_t< _value_t, 3u > i_rotate(

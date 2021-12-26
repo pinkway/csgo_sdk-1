@@ -35,8 +35,9 @@ namespace sdk::detail {
 
 		ALWAYS_INLINE constexpr _value_t z( ) const { return base_t::at( 2u ); }
 
-		ALWAYS_INLINE base_vec_t< _value_t, 3u > vectors(
-			base_vec_t< _value_t, 3u >* const ret_right = nullptr, base_vec_t< _value_t, 3u >* const ret_up = nullptr
+		ALWAYS_INLINE constexpr base_vec_t< _value_t, 3u > vectors(
+			base_vec_t< _value_t, 3u >* const right = nullptr,
+			base_vec_t< _value_t, 3u >* const up = nullptr
 		) const {
 			const auto rad_x = to_rad( x( ) ), rad_y = to_rad( y( ) );
 
@@ -44,32 +45,32 @@ namespace sdk::detail {
 			const auto cos_y = std::cos( rad_y ), sin_y = std::sin( rad_y );
 
 			enough_float_t< _value_t > cos_z{}, sin_z{};
-			if ( ret_right
-				|| ret_up ) {
+			if ( right
+				|| up ) {
 				const auto rad_z = to_rad( z( ) );
 
 				cos_z = std::cos( rad_z );
 				sin_z = std::sin( rad_z );
 			}
 
-			if ( ret_right )
-				*ret_right = {
+			if ( right )
+				( *right ) = {
 					-sin_z * sin_x * cos_y + cos_z * sin_y,
 					-sin_z * sin_x * sin_y + -cos_z * cos_y,
 					-sin_z * cos_x
-				};
+			};
 
-			if ( ret_up )
-				*ret_up = {
+			if ( up )
+				( *up ) = {
 					cos_z * sin_x * cos_y + sin_z * sin_y,
-					cos_z * sin_x* sin_y + -sin_z * cos_y,
+					cos_z * sin_x * sin_y + -sin_z * cos_y,
 					cos_z * cos_x
-				};
+			};
 
 			return { cos_x * cos_y, cos_x * sin_y, -sin_x };
 		}
 
-		ALWAYS_INLINE base_mat_t< _value_t, 3u, 4u > matrix( ) const {
+		ALWAYS_INLINE constexpr base_mat_t< _value_t, 3u, 4u > matrix( ) const {
 			const auto rad_x = to_rad( x( ) ), rad_y = to_rad( y( ) ), rad_z = to_rad( z( ) );
 
 			const auto cos_x = std::cos( rad_x ), sin_x = std::sin( rad_x );
@@ -89,10 +90,12 @@ namespace sdk::detail {
 		}
 
 		ALWAYS_INLINE base_qang_t< _value_t >& normalize( ) {
+			using float_t = enough_float_t< _value_t >;
+
 			for ( auto& element : base_t::m_elements )
-				element = static_cast< _value_t >(
-					std::remainder( element, static_cast< _value_t >( 360 ) )
-				);
+				element = static_cast< _value_t >( std::remainder(
+					static_cast< float_t >( element ), static_cast< float_t >( 360 )
+				) );
 
 			return *this;
 		}

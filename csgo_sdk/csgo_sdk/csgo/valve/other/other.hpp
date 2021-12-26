@@ -50,6 +50,37 @@ namespace csgo::valve {
 		sdk::qang_t		m_head_angles{};
 		sdk::vec3_t		m_head_offset{};
 	};
+
+	struct cvar_t {
+		using callback_t = void( __cdecl* )( );
+
+		using change_callback_t = void( __cdecl* )( void*, const char* const, const float );
+
+		std::uint8_t					pad0[ 4u ]{};
+
+		cvar_t*							m_next{};
+		bool							m_registered{};
+
+		const char*						m_name{}, *m_help{};
+		int								m_flags{};
+
+		callback_t						m_callback{};
+		cvar_t*							m_parent{};
+
+		const char*						m_def_value{}, *m_str{};
+		int								m_str_len{};
+
+		float							m_float{};
+		int								m_int{};
+
+		bool							m_has_min{};
+		float							m_min{};
+
+		bool							m_has_max{};
+		float							m_max{};
+
+		utl_vec_t< change_callback_t >	m_change_callbacks{};
+	};
 }
 
 #include "impl/other.inl"
