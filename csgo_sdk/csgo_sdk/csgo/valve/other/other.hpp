@@ -34,7 +34,7 @@ namespace csgo::valve {
 	ENUM_BIT_OPERATORS( e_buttons, true );
 
 	struct user_cmd_t {
-		ALWAYS_INLINE void clamp( );
+		ALWAYS_INLINE void sanitize( );
 
 		std::uint8_t	pad0[ 4u ]{};
 		int				m_number{}, m_tick{};
@@ -55,6 +55,18 @@ namespace csgo::valve {
 		using callback_t = void( __cdecl* )( );
 
 		using change_callback_t = void( __cdecl* )( void*, const char* const, const float );
+
+		VFUNC( const char*( __thiscall* )( decltype( this ) ), get_str( ), 11u );
+
+		VFUNC( float( __thiscall* )( decltype( this ) ), get_float( ), 12u );
+
+		VFUNC( int( __thiscall* )( decltype( this ) ), get_int( ), 13u );
+
+		VFUNC( void( __thiscall* )( decltype( this ), const char* ), set_str( const char* value ), 14u, value );
+
+		VFUNC( void( __thiscall* )( decltype( this ), float ), set_float( const float value ), 15u, value );
+
+		VFUNC( void( __thiscall* )( decltype( this ), int ), set_int( const int value ), 16u, value );
 
 		std::uint8_t					pad0[ 4u ]{};
 

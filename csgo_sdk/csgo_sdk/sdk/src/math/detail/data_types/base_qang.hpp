@@ -35,7 +35,7 @@ namespace sdk::detail {
 
 		ALWAYS_INLINE constexpr _value_t z( ) const { return base_t::at( 2u ); }
 
-		ALWAYS_INLINE constexpr base_vec_t< _value_t, 3u > vectors(
+		ALWAYS_INLINE base_vec_t< _value_t, 3u > vectors(
 			base_vec_t< _value_t, 3u >* const right = nullptr,
 			base_vec_t< _value_t, 3u >* const up = nullptr
 		) const {
@@ -54,14 +54,14 @@ namespace sdk::detail {
 			}
 
 			if ( right )
-				( *right ) = {
+				*right = {
 					-sin_z * sin_x * cos_y + cos_z * sin_y,
 					-sin_z * sin_x * sin_y + -cos_z * cos_y,
 					-sin_z * cos_x
 			};
 
 			if ( up )
-				( *up ) = {
+				*up = {
 					cos_z * sin_x * cos_y + sin_z * sin_y,
 					cos_z * sin_x * sin_y + -sin_z * cos_y,
 					cos_z * cos_x
@@ -70,7 +70,7 @@ namespace sdk::detail {
 			return { cos_x * cos_y, cos_x * sin_y, -sin_x };
 		}
 
-		ALWAYS_INLINE constexpr base_mat_t< _value_t, 3u, 4u > matrix( ) const {
+		ALWAYS_INLINE base_mat_t< _value_t, 3u, 4u > matrix( ) const {
 			const auto rad_x = to_rad( x( ) ), rad_y = to_rad( y( ) ), rad_z = to_rad( z( ) );
 
 			const auto cos_x = std::cos( rad_x ), sin_x = std::sin( rad_x );

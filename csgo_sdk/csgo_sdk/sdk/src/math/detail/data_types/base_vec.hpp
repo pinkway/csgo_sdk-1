@@ -133,7 +133,7 @@ namespace sdk::detail {
 			};
 		}
 
-		ALWAYS_INLINE constexpr base_qang_t< _value_t > angles(
+		ALWAYS_INLINE base_qang_t< _value_t > angles(
 			base_vec_t< _value_t, 3u >* const up = nullptr
 		) const {
 			base_qang_t< _value_t > ret{};
