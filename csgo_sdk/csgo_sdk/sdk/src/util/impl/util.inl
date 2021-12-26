@@ -45,7 +45,8 @@ namespace sdk {
         return wstr;
     }
 
-    ALWAYS_INLINE constexpr hash_t hash( const std::string_view str ) {
+    template < typename _chr_t >
+    ALWAYS_INLINE constexpr hash_t hash( const std::basic_string_view< _chr_t > str ) {
 #if defined( _M_IX86 ) || defined( __i386__ ) || defined( _M_ARM ) || defined( __arm__ )
         constexpr auto k_basis = 0x811c9dc5u;
         constexpr auto k_prime = 0x1000193u;
