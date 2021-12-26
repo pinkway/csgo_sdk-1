@@ -134,16 +134,16 @@ namespace sdk::detail {
 		}
 
 		ALWAYS_INLINE constexpr base_qang_t< _value_t > angles(
-			base_vec_t< _value_t, 3u >* const ret_up = nullptr
+			base_vec_t< _value_t, 3u >* const up = nullptr
 		) const {
 			base_qang_t< _value_t > ret{};
 
 			const auto len_2d = base_t::length( 2u );
-			if ( ret_up && len_2d > .001f ) {
+			if ( up && len_2d > .001f ) {
 				ret.x( ) = to_deg( std::atan2( -z( ), len_2d ) );
 				ret.y( ) = to_deg( std::atan2( y( ), x( ) ) );
 
-				auto left = ( *ret_up ).cross( *this );
+				auto left = ( *up ).cross( *this );
 
 				left.normalize( );
 
@@ -165,9 +165,9 @@ namespace sdk::detail {
 			const base_mat_t< _value_t, 3u, 4u >& matrix
 		) const {
 			return {
-				dot( matrix.row( 0u ) ) + matrix.row( 0u ).at( 4u ),
-				dot( matrix.row( 1u ) ) + matrix.row( 1u ).at( 4u ),
-				dot( matrix.row( 2u ) ) + matrix.row( 2u ).at( 4u )
+				base_t::dot( matrix.row( 0u ) ) + matrix.row( 0u ).at( 3u ),
+				base_t::dot( matrix.row( 1u ) ) + matrix.row( 1u ).at( 3u ),
+				base_t::dot( matrix.row( 2u ) ) + matrix.row( 2u ).at( 3u )
 			};
 		}
 
@@ -179,16 +179,16 @@ namespace sdk::detail {
 			const auto& row2 = matrix.row( 2u );
 
 			return {
-				( x( ) - row0.at( 4u ) ) * row0.at( 0u ) + ( y( ) - row1.at( 4u ) ) * row1.at( 0u ) + ( z( ) - row2.at( 4u ) ) * row2.at( 0u ),
-				( x( ) - row0.at( 4u ) ) * row0.at( 1u ) + ( y( ) - row1.at( 4u ) ) * row1.at( 1u ) + ( z( ) - row2.at( 4u ) ) * row2.at( 1u ),
-				( x( ) - row0.at( 4u ) ) * row0.at( 2u ) + ( y( ) - row1.at( 4u ) ) * row1.at( 2u ) + ( z( ) - row2.at( 4u ) ) * row2.at( 2u )
+				( x( ) - row0.at( 3u ) ) * row0.at( 0u ) + ( y( ) - row1.at( 3u ) ) * row1.at( 0u ) + ( z( ) - row2.at( 3u ) ) * row2.at( 0u ),
+				( x( ) - row0.at( 3u ) ) * row0.at( 1u ) + ( y( ) - row1.at( 3u ) ) * row1.at( 1u ) + ( z( ) - row2.at( 3u ) ) * row2.at( 1u ),
+				( x( ) - row0.at( 3u ) ) * row0.at( 2u ) + ( y( ) - row1.at( 3u ) ) * row1.at( 2u ) + ( z( ) - row2.at( 3u ) ) * row2.at( 2u )
 			};
 		}
 
 		ALWAYS_INLINE constexpr base_vec_t< _value_t, 3u > rotate(
 			const base_mat_t< _value_t, 3u, 4u >& matrix
 		) const {
-			return { dot( matrix.row( 0u ) ), dot( matrix.row( 1u ) ), dot( matrix.row( 2u ) ) };
+			return { base_t::dot( matrix.row( 0u ) ), base_t::dot( matrix.row( 1u ) ), base_t::dot( matrix.row( 2u ) ) };
 		}
 
 		ALWAYS_INLINE constexpr base_vec_t< _value_t, 3u > i_rotate(
