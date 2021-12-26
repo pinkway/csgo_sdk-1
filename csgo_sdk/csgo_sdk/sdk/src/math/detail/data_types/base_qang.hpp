@@ -35,8 +35,8 @@ namespace sdk::detail {
 
 		ALWAYS_INLINE constexpr _value_t z( ) const { return base_t::at( 2u ); }
 
-		ALWAYS_INLINE constexpr base_vec_t< _value_t, 3u > vectors(
-			base_vec_t< _value_t, 3u >* const right, base_vec_t< _value_t, 3u >* const up
+		ALWAYS_INLINE base_vec_t< _value_t, 3u > vectors(
+			base_vec_t< _value_t, 3u >* const ret_right = nullptr, base_vec_t< _value_t, 3u >* const ret_up = nullptr
 		) const {
 			const auto rad_x = to_rad( x( ) ), rad_y = to_rad( y( ) );
 
@@ -44,30 +44,32 @@ namespace sdk::detail {
 			const auto cos_y = std::cos( rad_y ), sin_y = std::sin( rad_y );
 
 			enough_float_t< _value_t > cos_z{}, sin_z{};
-			if ( right
-				|| up ) {
+			if ( ret_right
+				|| ret_up ) {
 				const auto rad_z = to_rad( z( ) );
 
 				cos_z = std::cos( rad_z );
 				sin_z = std::sin( rad_z );
 			}
 
-			if ( right ) {
-				right->x( ) = -sin_z * sin_x * cos_y + cos_z * sin_y;
-				right->y( ) = -sin_z * sin_x * sin_y + -cos_z * cos_y;
-				right->z( ) = -sin_z * cos_x;
-			}
+			if ( ret_right )
+				*ret_right = {
+					-sin_z * sin_x * cos_y + cos_z * sin_y,
+					-sin_z * sin_x * sin_y + -cos_z * cos_y,
+					-sin_z * cos_x
+				};
 
-			if ( up ) {
-				up->x( ) = cos_z * sin_x * cos_y + sin_z * sin_y;
-				up->y( ) = cos_z * sin_x * sin_y + -sin_z * cos_y;
-				up->z( ) = cos_z * cos_x;
-			}
+			if ( ret_up )
+				*ret_up = {
+					cos_z * sin_x * cos_y + sin_z * sin_y,
+					cos_z * sin_x* sin_y + -sin_z * cos_y,
+					cos_z * cos_x
+				};
 
 			return { cos_x * cos_y, cos_x * sin_y, -sin_x };
 		}
 
-		ALWAYS_INLINE constexpr base_mat_t< _value_t, 3u, 4u > matrix( ) const {
+		ALWAYS_INLINE base_mat_t< _value_t, 3u, 4u > matrix( ) const {
 			const auto rad_x = to_rad( x( ) ), rad_y = to_rad( y( ) ), rad_z = to_rad( z( ) );
 
 			const auto cos_x = std::cos( rad_x ), sin_x = std::sin( rad_x );

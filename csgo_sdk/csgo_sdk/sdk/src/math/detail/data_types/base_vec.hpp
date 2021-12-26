@@ -124,43 +124,41 @@ namespace sdk::detail {
 		ALWAYS_INLINE constexpr _value_t z( ) const { return base_t::at( 2u ); }
 
 		ALWAYS_INLINE constexpr base_vec_t< _value_t, 3u > cross(
-			const base_vec_t< _value_t, 3u >& other
+			const base_vec_t< _value_t, 3u >& rhs
 		) const {
 			return {
-				y( ) * other.z( ) - z( ) * other.y( ),
-				z( ) * other.x( ) - x( ) * other.z( ),
-				x( ) * other.y( ) - y( ) * other.x( )
+				y( ) * rhs.z( ) - z( ) * rhs.y( ),
+				z( ) * rhs.x( ) - x( ) * rhs.z( ),
+				x( ) * rhs.y( ) - y( ) * rhs.x( )
 			};
 		}
 
 		ALWAYS_INLINE constexpr base_qang_t< _value_t > angles(
-			base_vec_t< _value_t, 3u >* const up = nullptr
+			base_vec_t< _value_t, 3u >* const ret_up = nullptr
 		) const {
-			base_qang_t< _value_t > angles{};
+			base_qang_t< _value_t > ret{};
 
 			const auto len_2d = base_t::length( 2u );
-			if ( up && len_2d > 0.001f ) {
-				angles.x( ) = to_deg( std::atan2( -z( ), len_2d ) );
-				angles.y( ) = to_deg( std::atan2( y( ), x( ) ) );
+			if ( ret_up && len_2d > .001f ) {
+				ret.x( ) = to_deg( std::atan2( -z( ), len_2d ) );
+				ret.y( ) = to_deg( std::atan2( y( ), x( ) ) );
 
-				auto left = ( *up ).cross( *this );
+				auto left = ( *ret_up ).cross( *this );
 
 				left.normalize( );
 
 				const auto up_z = ( left.y( ) * x( ) ) - ( left.x( ) * y( ) );
 
-				angles.z( ) = to_deg( std::atan2( left.z( ), up_z ) );
+				ret.z( ) = to_deg( std::atan2( left.z( ), up_z ) );
 			}
-			else {
-				if ( len_2d > 0.f ) {
-					angles.x( ) = to_deg( std::atan2( -z( ), len_2d ) );
-					angles.y( ) = to_deg( std::atan2( y( ), x( ) ) );
-				}
-				else
-					angles.x( ) = z( ) > 0.f ? -90.f : 90.f;
+			else if ( len_2d > 0.f ) {
+				ret.x( ) = to_deg( std::atan2( -z( ), len_2d ) );
+				ret.y( ) = to_deg( std::atan2( y( ), x( ) ) );
 			}
+			else
+				ret.x( ) = z( ) > 0.f ? -90.f : 90.f;
 
-			return angles;
+			return ret;
 		}
 
 		ALWAYS_INLINE constexpr base_vec_t< _value_t, 3u > transform(

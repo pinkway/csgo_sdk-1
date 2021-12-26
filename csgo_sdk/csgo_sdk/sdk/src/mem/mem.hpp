@@ -2,7 +2,7 @@
 
 namespace sdk {
     inline constexpr auto k_dos_hdr_magic = 0x5a4du;
-    inline constexpr auto k_nt_hdrs_magic = 0x00004550u;
+    inline constexpr auto k_nt_hdrs_magic = 0x4550u;
 
     enum struct e_machine : std::uint16_t {
         unknown,
@@ -74,7 +74,7 @@ namespace sdk {
         entry_iat,
         entry_delay_import,
         entry_com_descriptor,
-        reserved0,
+        res0,
         max
     };
     ENUM_UNDERLYING_OPERATOR( e_data_dir );
@@ -127,7 +127,7 @@ namespace sdk {
         std::uint32_t   m_con_flags{};
 
         address_t       m_standard_input{},
-                        m_standard_outout{},
+                        m_standard_output{},
                         m_standard_error{};
 
         struct {
@@ -249,7 +249,7 @@ namespace sdk {
         std::uint8_t                pad0[ 4u ]{};
         address_t                   m_kernel_callback_table{},
                                     m_user_shared_info{};
-        std::uint32_t               m_reserved0{},
+        std::uint32_t               m_res0{},
                                     m_atl_thunks_list32{};
         address_t                   m_api_set_map{};
         std::uint32_t               m_tls_expansion_cnt{};

@@ -34,9 +34,9 @@ namespace sdk::detail {
             return *this;
         }
 
-        ALWAYS_INLINE base_address_t< _addr_t >& self_rel( const std::ptrdiff_t offset, const bool __long ) {
+        ALWAYS_INLINE base_address_t< _addr_t >& self_rel( const std::ptrdiff_t offset, const bool is_long ) {
             m_addr +=
-                __long
+                is_long
                 ? offset + sizeof( std::uint32_t ) + *reinterpret_cast< std::int32_t* >( m_addr + offset )
                 : offset + sizeof( std::uint8_t ) + *reinterpret_cast< std::int8_t* >( m_addr + offset );
 
@@ -70,10 +70,10 @@ namespace sdk::detail {
             return ret.self_deref( count );
         }
 
-        ALWAYS_INLINE base_address_t< _addr_t > rel( const std::ptrdiff_t offset, const bool __long ) const {
+        ALWAYS_INLINE base_address_t< _addr_t > rel( const std::ptrdiff_t offset, const bool is_long ) const {
             auto ret = *this;
 
-            return ret.self_rel( offset, __long );
+            return ret.self_rel( offset, is_long );
         }
 
         ALWAYS_INLINE base_address_t< _addr_t > find_byte(
