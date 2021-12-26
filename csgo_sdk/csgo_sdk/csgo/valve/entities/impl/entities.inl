@@ -3,5 +3,5 @@
 #include "../entities.hpp"
 
 namespace csgo::valve {
-	
+    
 }

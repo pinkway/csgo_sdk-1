@@ -12,13 +12,13 @@ namespace sdk::detail {
         ALWAYS_INLINE constexpr base_address_t( const _addr_t addr ) : m_addr{ addr } {}
 
         template < typename _ptr_t >
-           requires std::is_pointer_v< _ptr_t >
+            requires std::is_pointer_v< _ptr_t >
         ALWAYS_INLINE base_address_t( const _ptr_t ptr ) : m_addr{ reinterpret_cast< _addr_t >( ptr ) } {}
 
         ALWAYS_INLINE constexpr operator _addr_t( ) const { return m_addr; }
 
         template < typename _ret_t >
-           requires std::is_pointer_v< _ret_t >
+            requires std::is_pointer_v< _ret_t >
         ALWAYS_INLINE _ret_t as( ) const { return reinterpret_cast< _ret_t >( m_addr ); }
 
         ALWAYS_INLINE constexpr base_address_t< _addr_t >& self_offset( const std::ptrdiff_t offset ) {

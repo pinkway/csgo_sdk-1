@@ -1,12 +1,12 @@
 #pragma once
 
 namespace csgo::hacks {
-	class c_move {
-	private:
+    class c_move {
+    private:
 
-	public:
+    public:
 
-	};
+    };
 
-	inline const auto g_move = std::make_unique< c_move >( );
+    inline const auto g_move = std::make_unique< c_move >( );
 }

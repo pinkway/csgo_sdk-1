@@ -114,7 +114,7 @@ namespace sdk::detail {
         };
     };
 
-	struct file_hdr_t {
+    struct file_hdr_t {
         e_machine               m_machine{};
         std::uint16_t           m_sections_count{};
         std::uint32_t           m_timedate_stamp{},
@@ -122,7 +122,7 @@ namespace sdk::detail {
         std::uint16_t           m_opt_hdr_size{};
 
         file_characteristics_t  m_characteristics{};
-	};
+    };
 
     union dll_characteristics_t {
         std::uint16_t m_flags{};
@@ -181,7 +181,7 @@ namespace sdk::detail {
         x64_data_dirs_t         m_data_dirs{};
     };
 
-	struct x86_opt_hdr_t {
+    struct x86_opt_hdr_t {
         std::uint16_t           m_magic{};
         version_t               m_linker_ver{};
 
@@ -215,33 +215,33 @@ namespace sdk::detail {
                                 m_data_dirs_count{};
         
         x86_data_dirs_t         m_data_dirs{};
-	};
+    };
 
     template < bool _x64 >
     using opt_hdr_t = std::conditional_t< _x64, x64_opt_hdr_t, x86_opt_hdr_t >;
 
-	template < bool _x64 >
-	struct nt_hdrs_t {
-		std::uint32_t		m_sig{};
+    template < bool _x64 >
+    struct nt_hdrs_t {
+        std::uint32_t       m_sig{};
 
-        file_hdr_t		    m_file_hdr{};
-		opt_hdr_t< _x64 >	m_opt_hdr{};
-	};
+        file_hdr_t          m_file_hdr{};
+        opt_hdr_t< _x64 >   m_opt_hdr{};
+    };
 
-	struct dos_hdr_t {
-		std::uint16_t	e_magic{}, e_cblp{},
-						e_cp{}, e_crlc{}, e_cparhdr{},
-						e_minalloc{}, e_maxalloc{},
-						e_ss{}, e_sp{}, e_csum{},
-						e_ip{}, e_cs{}, e_lfarlc{},
-						e_ovno{}, e_res[ 4u ]{}, e_oemid{},
-						e_oeminfo{}, e_res2[ 10u ]{};
+    struct dos_hdr_t {
+        std::uint16_t   e_magic{}, e_cblp{},
+                        e_cp{}, e_crlc{}, e_cparhdr{},
+                        e_minalloc{}, e_maxalloc{},
+                        e_ss{}, e_sp{}, e_csum{},
+                        e_ip{}, e_cs{}, e_lfarlc{},
+                        e_ovno{}, e_res[ 4u ]{}, e_oemid{},
+                        e_oeminfo{}, e_res2[ 10u ]{};
 
-		std::uint32_t	e_lfanew{};
-	};
+        std::uint32_t   e_lfanew{};
+    };
 
-	template < bool _x64 >
-	struct pe_image_t {
+    template < bool _x64 >
+    struct pe_image_t {
         using addr_t = base_address_t< std::conditional_t< _x64, std::uint64_t, std::uint32_t > >;
 
         dos_hdr_t m_dos_hdr{};
@@ -281,7 +281,7 @@ namespace sdk::detail {
 
             return true;
         }
-	};
+    };
 
 #pragma pack( pop )
 }

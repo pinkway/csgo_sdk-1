@@ -2,7 +2,7 @@
 
 namespace sdk::detail {
     template < typename _addr_t >
-       requires std::is_unsigned_v< _addr_t >
+        requires std::is_unsigned_v< _addr_t >
     struct base_stack_frame_t final : public base_address_t< _addr_t > {
         private:
             using base_t = base_address_t< _addr_t >;

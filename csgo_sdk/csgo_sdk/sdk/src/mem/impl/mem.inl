@@ -19,7 +19,7 @@ namespace sdk {
         }
     }
 
-	ALWAYS_INLINE peb_t* peb( ) {
+    ALWAYS_INLINE peb_t* peb( ) {
 #if defined( _M_X64 ) || defined( __amd64__ )
         return reinterpret_cast< peb_t* >( __readgsqword( 0x60ul ) );
 #elif defined( _M_IX86 ) || defined( __i386__ )
@@ -39,6 +39,6 @@ namespace sdk {
 #else
 #error "unsupported architecture"
 #endif
-	}
+    }
 #endif
 }

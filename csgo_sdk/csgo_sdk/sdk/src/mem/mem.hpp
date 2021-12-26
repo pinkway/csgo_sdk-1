@@ -83,13 +83,13 @@ namespace sdk {
 #include "detail/detail.hpp"
 
 namespace sdk {
-	using address_t = detail::base_address_t< std::uintptr_t >;
+    using address_t = detail::base_address_t< std::uintptr_t >;
 
-	using stack_frame_t = detail::base_stack_frame_t< std::uintptr_t >;
+    using stack_frame_t = detail::base_stack_frame_t< std::uintptr_t >;
 
-	using x64_pe_image_t = detail::pe_image_t< true >;
+    using x64_pe_image_t = detail::pe_image_t< true >;
 
-	using x86_pe_image_t = detail::pe_image_t< false >;
+    using x86_pe_image_t = detail::pe_image_t< false >;
 
 #if defined( _WIN32 ) || defined( _WIN64 )
     enum struct e_ldr_data_table : std::uint8_t {
@@ -111,7 +111,7 @@ namespace sdk {
     struct rtl_str_t {
         using char_t = std::conditional_t< _wide, wchar_t, char >;
 
-        std::uint16_t	m_len{},
+        std::uint16_t    m_len{},
                         m_max_len{};
 
         char_t*         m_buffer{};
