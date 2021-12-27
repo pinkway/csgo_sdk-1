@@ -26,6 +26,8 @@ namespace csgo::valve {
         int                         m_size{};
         _value_t*                   m_elements{};
     public:
+        ALWAYS_INLINE constexpr utl_vec_t( ) = default;
+
         ALWAYS_INLINE _value_t& at( const int i );
 
         ALWAYS_INLINE const _value_t& at( const int i ) const;

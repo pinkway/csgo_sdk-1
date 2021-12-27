@@ -85,7 +85,7 @@ namespace sdk::detail {
                             m_iat,
                             m_delay_import,
                             m_com_desc,
-                            m_reserved0;
+                            m_resverved0;
         };
 
         data_dir_t m_entries[ -e_data_dir::max ]{};
