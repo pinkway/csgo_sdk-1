@@ -20,7 +20,7 @@ namespace sdk {
 
     ALWAYS_INLINE std::wstring to_wide_char( const std::string_view str );
 
-    template < typename _chr_t = char >
+    template < typename _chr_t >
     ALWAYS_INLINE constexpr hash_t hash( const std::basic_string_view< _chr_t > str );
 
     template < typename _enum_t >
