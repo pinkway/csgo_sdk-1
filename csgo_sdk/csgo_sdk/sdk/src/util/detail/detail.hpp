@@ -22,10 +22,11 @@ namespace sdk::detail {
     template < std::size_t _size >
         requires ( _size >= 1u )
     struct byte_seq_t {
+    private:
         static constexpr auto k_wildcard = '?';
         static constexpr auto k_delimiter = ' ';
         static constexpr auto k_not = '!';
-
+    public:
         struct byte_t {
             enum struct e_type : std::uint8_t {
                 invalid,

@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 namespace sdk::detail {
     template < typename _value_t, std::size_t _hue_limit, std::size_t _limit >
@@ -29,50 +29,37 @@ namespace sdk::detail {
         ALWAYS_INLINE static constexpr base_argb_t< _value_t, _limit > from_ahsv(
             const base_ahsv_t< _ahsv_value_t, _ahsv_hue_limit, _ahsv_limit >& ahsv
         ) {
+            /* note: y and z values always have an error ( = 1 ),
+               probably missing a cast somewhere... */
+            constexpr auto k_col_chans = 3u;
+
             base_argb_t< _value_t, _limit > argb{};
 
             argb.a( ) = static_cast< _value_t >( ( ahsv.a( ) / ahsv.limit( ) ) * argb.limit( ) );
 
-            const auto h = ( ahsv.h( ) / ahsv.hue_limit( ) ) * 360.f;
+            const auto h = ( ahsv.h( ) / ahsv.hue_limit( ) ) * 6.f;
             const auto s = ahsv.s( ) / ahsv.limit( );
             const auto v = ahsv.v( ) / ahsv.limit( );
 
-            const auto hue = h >= 360.f ? 0.f : h / 60.f;
-            const auto f = hue - static_cast< int >( hue );
-            const auto p = v * ( 1.f - s );
-            const auto q = v * ( 1.f - s * f );
-            const auto t = v * ( 1.f - ( s * ( 1.f - f ) ) );
+            const auto hue_seg = static_cast< int >( h );
+            const auto rem = h - hue_seg;
 
-            if ( hue < 1.f ) {
-                argb.r( ) = static_cast< _value_t >( v * argb.limit( ) );
-                argb.g( ) = static_cast< _value_t >( t * argb.limit( ) );
-                argb.b( ) = static_cast< _value_t >( p * argb.limit( ) );
-            }
-            else if ( hue < 2.f ) {
-                argb.r( ) = static_cast< _value_t >( q * argb.limit( ) );
-                argb.g( ) = static_cast< _value_t >( v * argb.limit( ) );
-                argb.b( ) = static_cast< _value_t >( p * argb.limit( ) );
-            }
-            else if ( hue < 3.f ) {
-                argb.r( ) = static_cast< _value_t >( p * argb.limit( ) );
-                argb.g( ) = static_cast< _value_t >( v * argb.limit( ) );
-                argb.b( ) = static_cast< _value_t >( t * argb.limit( ) );
-            }
-            else if ( hue < 4.f ) {
-                argb.r( ) = static_cast< _value_t >( p * argb.limit( ) );
-                argb.g( ) = static_cast< _value_t >( q * argb.limit( ) );
-                argb.b( ) = static_cast< _value_t >( v * argb.limit( ) );
-            }
-            else if ( hue < 5.f ) {
-                argb.r( ) = static_cast< _value_t >( t * argb.limit( ) );
-                argb.g( ) = static_cast< _value_t >( p * argb.limit( ) );
-                argb.b( ) = static_cast< _value_t >( v * argb.limit( ) );
-            }
-            else {
-                argb.r( ) = static_cast< _value_t >( v * argb.limit( ) );
-                argb.g( ) = static_cast< _value_t >( p * argb.limit( ) );
-                argb.b( ) = static_cast< _value_t >( q * argb.limit( ) );
-            }
+            const auto x = 1.f - s;
+            const auto y = 1.f - s * rem;
+            const auto z = 1.f - s * ( 1.f - rem );
+
+            /* don't ask */
+            const auto lim_pos = ( ( hue_seg + 1u ) / 2u ) % k_col_chans;
+            const auto x_pos = ( hue_seg / 2u + 2u ) % k_col_chans;
+            const auto yz_pos = ( k_col_chans - 1u ) - ( hue_seg + 1u ) % k_col_chans;
+
+            const auto scale = v * argb.limit( );
+
+            /* note: k_col_chans - 1u is color indices mapping,
+               original placement was rgba, current - abgr */
+            argb.at( k_col_chans - 1u - lim_pos ) = static_cast< _value_t >( 1.f * scale );
+            argb.at( k_col_chans - 1u - x_pos ) = static_cast< _value_t >( x * scale );
+            argb.at( k_col_chans - 1u - yz_pos ) = static_cast< _value_t >( ( hue_seg % 2u != 0u ) ? ( y * scale ) : ( z * scale ) );
 
             return argb;
         }
