@@ -70,7 +70,7 @@ namespace __sdk_constant_holder { template < auto _value > inline constexpr auto
 #include <fstream>
 #include <array>
 #include <vector>
-#include <deque> /* fuck these no ptr stable niggers */
+#include <deque>
 #include <thread>
 #include <algorithm>
 #include <functional>
