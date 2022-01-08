@@ -63,7 +63,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <AdditionalOptions>/DSDK_CFG_ID_OBJECT="\"wok\"" %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
@@ -81,7 +81,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <DebugInformationFormat>None</DebugInformationFormat>
       <AdditionalOptions>/DSDK_CFG_ID_OBJECT="\"wok\"" %(AdditionalOptions)</AdditionalOptions>
@@ -99,6 +99,7 @@
     <ClCompile Include="csgo\hacks\move\move.cpp" />
     <ClCompile Include="csgo\hooks\impl\hooks.cpp" />
     <ClCompile Include="csgo\local_player\impl\local_player.cpp" />
+    <ClCompile Include="csgo\valve\util\impl\util.cpp" />
     <ClCompile Include="sdk\src\cfg\impl\cfg.cpp" />
     <ClCompile Include="thirdparty\include\imgui\imgui.cpp" />
     <ClCompile Include="thirdparty\include\imgui\imgui_draw.cpp" />

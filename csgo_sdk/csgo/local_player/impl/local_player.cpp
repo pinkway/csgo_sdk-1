@@ -25,7 +25,6 @@ namespace csgo {
                 m_weapon_info = m_weapon->info( );
             else
                 m_weapon_info = nullptr;
-
         }
 
         hacks::g_move->rotate( cmd, old_angles );

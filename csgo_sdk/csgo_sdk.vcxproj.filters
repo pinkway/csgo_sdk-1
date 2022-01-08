@@ -12,6 +12,7 @@
     <ClCompile Include="thirdparty\include\imgui\imgui_impl_dx9.cpp" />
     <ClCompile Include="csgo\hacks\move\move.cpp" />
     <ClCompile Include="csgo\local_player\impl\local_player.cpp" />
+    <ClCompile Include="csgo\valve\util\impl\util.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="csgo\ctx\ctx.hpp" />

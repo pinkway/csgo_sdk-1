@@ -40,6 +40,30 @@ namespace csgo::valve {
 
         ALWAYS_INLINE utl_vec_t< _value_t >& operator =( const utl_vec_t< _value_t >& other );
     };
+
+    struct key_values_t {
+        ~key_values_t( );
+
+        using get_symbol_proc_t = bool( * )( const char* );
+
+        std::uint32_t		m_key_name : 24;
+        std::uint32_t		m_key_name_case_sensitive1 : 8;
+        char*              m_chr_val{};
+        wchar_t*           m_wchr_val{};
+        union {
+            int			   m_int_val{};
+            float				m_flt_val;
+            std::uintptr_t	m_ptr;
+            std::uint8_t	m_col[ 4u ];
+        };
+        char					m_data_type{},
+                           m_has_esc_sequences{};
+        std::uint16_t		m_key_name_case_sensitive2{};
+        key_values_t*      m_peer{},
+                           *m_sub{},
+                           *m_chain{};
+        get_symbol_proc_t  m_get_symbol_proc_fn{};
+    };
 }
 
 #include "impl/util.inl"

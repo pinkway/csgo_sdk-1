@@ -6,32 +6,32 @@ namespace csgo::valve {
     enum struct ent_handle_t : sdk::ulong_t {};
 
     enum struct e_buttons : int {
-        in_attack = 1 << 0,
-        in_jump = 1 << 1,
-        in_duck = 1 << 2,
-        in_forward = 1 << 3,
-        in_back = 1 << 4,
-        in_use = 1 << 5,
-        in_cancel = 1 << 6,
-        in_left = 1 << 7,
-        in_right = 1 << 8,
-        in_move_left = 1 << 9,
-        in_move_right = 1 << 10,
-        in_attack2 = 1 << 11,
-        in_run = 1 << 12,
-        in_reload = 1 << 13,
-        in_alt1 = 1 << 14,
-        in_alt2 = 1 << 15,
-        in_score = 1 << 16,
-        in_speed = 1 << 17,
-        in_walk = 1 << 18,
-        in_zoom = 1 << 19,
-        in_weapon1 = 1 << 20,
-        in_weapon2 = 1 << 21,
-        in_bullrush = 1 << 22,
-        in_grenade1 = 1 << 23,
-        in_grenade2 = 1 << 24,
-        in_attack3 = 1 << 25
+        in_attack       = 1 << 0,
+        in_jump         = 1 << 1,
+        in_duck         = 1 << 2,
+        in_forward      = 1 << 3,
+        in_back         = 1 << 4,
+        in_use          = 1 << 5,
+        in_cancel       = 1 << 6,
+        in_left         = 1 << 7,
+        in_right        = 1 << 8,
+        in_move_left    = 1 << 9,
+        in_move_right   = 1 << 10,
+        in_attack2      = 1 << 11,
+        in_run          = 1 << 12,
+        in_reload       = 1 << 13,
+        in_alt1         = 1 << 14,
+        in_alt2         = 1 << 15,
+        in_score        = 1 << 16,
+        in_speed        = 1 << 17,
+        in_walk         = 1 << 18,
+        in_zoom         = 1 << 19,
+        in_weapon1      = 1 << 20,
+        in_weapon2      = 1 << 21,
+        in_bullrush     = 1 << 22,
+        in_grenade1     = 1 << 23,
+        in_grenade2     = 1 << 24,
+        in_attack3      = 1 << 25
     };
     ENUM_BIT_OPERATORS( e_buttons, true );
 
@@ -46,12 +46,12 @@ namespace csgo::valve {
         e_buttons       m_buttons{}, m_old_buttons{};
         sdk::vec3_t     m_move{};
         float           m_max_speed{}, m_max_client_speed{};
-        sdk::vec3_t     m_velocity{}, m_trailing_velocity{};
-        float           m_trailing_velocity_time{};
+        sdk::vec3_t     m_vel{}, m_trailing_vel{};
+        float           m_trailing_vel_time{};
         sdk::qang_t     m_angles{}, m_old_angles{};
         float           m_out_step_height{};
-        sdk::vec3_t     m_out_wish_velocity{},
-                        m_out_jump_velocity{},
+        sdk::vec3_t     m_out_wish_vel{},
+                        m_out_jump_vel{},
                         m_constraint_center{};
         float           m_constraint_radius{},
                         m_constraint_width{},
@@ -91,32 +91,32 @@ namespace csgo::valve {
 
     struct data_map_t;
 
-    struct type_description_t {
-        int                 m_type{};
-        const char*         m_name{};
-        std::uint32_t       m_offset{};
-        std::uint16_t       m_size{},
-                            m_flags{};
-        const char*         m_external_name{};
-        sdk::address_t      m_save_restore_ops{},
-                            m_input_fn{};
-        data_map_t*         m_data_map{};
-        std::uint32_t       m_field_size_in_bytes{};
-        type_description_t* m_override_field{};
-        std::uint32_t       m_override_count{};
-        float               m_tolerance{};
-        int                 m_flat_offset[ 2u ]{};
-        std::uint16_t       m_flat_group{};
+    struct type_desc_t {
+        int             m_type{};
+        const char*     m_name{};
+        std::uint32_t   m_offset{};
+        std::uint16_t   m_size{},
+                        m_flags{};
+        const char*     m_external_name{};
+        sdk::address_t  m_save_restore_ops{},
+                        m_input_fn{};
+        data_map_t*     m_data_map{};
+        std::uint32_t   m_field_size_in_bytes{};
+        type_desc_t*    m_override_field{};
+        std::uint32_t   m_override_count{};
+        float           m_tolerance{};
+        int             m_flat_offset[ 2u ]{};
+        std::uint16_t   m_flat_group{};
     };
 
     struct data_map_t {
-        type_description_t* m_description{};
-        int                 m_size{};
-        char const*         m_name{};
-        data_map_t*         m_base_map{};
-        bool                m_chains_validated{},
-                            m_packed_offsets_computed{};
-        int                 m_packed_size{};
+        type_desc_t* m_desc{};
+        int          m_size{};
+        char const*  m_name{};
+        data_map_t*  m_base_map{};
+        bool         m_chains_validated{},
+                     m_packed_offsets_computed{};
+        int          m_packed_size{};
     };
 
     struct client_class_t {
@@ -212,50 +212,50 @@ namespace csgo::valve {
 
     struct surface_data_t {
         struct {
-            float   m_friction{},
-                    m_elasticity{},
-                    m_density{},
-                    m_thickness{},
-                    m_dampening{};
-        }       m_physics{};
+            float m_friction{},
+                  m_elasticity{},
+                  m_density{},
+                  m_thickness{},
+                  m_dampening{};
+        }      m_physics{};
 
         struct {
-            float   m_reflectivity{},
-                    m_hardness_factor{},
-                    m_roughness_factor{},
-                    m_rough_threshold{},
-                    m_hard_threshold{},
-                    m_hard_velocity_threshold{},
-                    m_high_pitch_occlusion{},
-                    m_mid_pitch_occlusion{},
-                    m_low_pitch_occlusion{};
-        }       m_audio{};
+            float m_reflectivity{},
+                  m_hardness_factor{},
+                  m_roughness_factor{},
+                  m_rough_threshold{},
+                  m_hard_threshold{},
+                  m_hard_vel_threshold{},
+                  m_high_pitch_occlusion{},
+                  m_mid_pitch_occlusion{},
+                  m_low_pitch_occlusion{};
+        }      m_audio{};
 
         struct {
-            std::uint16_t   m_walk_step_left{},
-                            m_walk_step_right{},
-                            m_run_step_left{},
-                            m_run_step_right{},
-                            m_impact_soft{},
-                            m_impact_hard{},
-                            m_scrape_smooth{},
-                            m_scrape_rough{},
-                            m_bullet_impact{},
-                            m_rolling{},
-                            m_break_sound{},
-                            m_strain_sound{};
-        }       m_sounds{};
+            std::uint16_t  m_walk_step_left{},
+                           m_walk_step_right{},
+                           m_run_step_left{},
+                           m_run_step_right{},
+                           m_impact_soft{},
+                           m_impact_hard{},
+                           m_scrape_smooth{},
+                           m_scrape_rough{},
+                           m_bullet_impact{},
+                           m_rolling{},
+                           m_break_sound{},
+                           m_strain_sound{};
+        }      m_sounds{};
 
         struct {
-            float           m_max_speed_factor{},
-                            m_jump_factor{},
-                            m_pen_modifier{},
-                            m_dmg_modifier{};
+            float          m_max_speed_factor{},
+                           m_jump_factor{},
+                           m_pen_modifier{},
+                           m_dmg_modifier{};
             std::uint16_t	m_material{};
             std::uint8_t	m_climbable{};
         }		m_game{};
 
-        char    pad0[ 48u ]{};
+        char   pad0[ 48u ]{};
     };
 
     struct ray_t {
@@ -314,8 +314,67 @@ namespace csgo::valve {
         gear = 10
     };
 
-    enum struct e_mask : int {
+    enum struct e_contents : int {
+        solid                 = 1 << 0,
+        window                = 1 << 1,
+        aux                   = 1 << 2,
+        grate                 = 1 << 3,
+        slime                 = 1 << 4,
+        water                 = 1 << 5,
+        block_los             = 1 << 6,
+        opaque                = 1 << 7,
+        test_fog_volume       = 1 << 8,
+        unused                = 1 << 9,
+        block_light           = 1 << 10,
+        team1                 = 1 << 11,
+        team2                 = 1 << 12,
+        ignore_nodraw_opaque  = 1 << 13,
+        moveable              = 1 << 14,
+        area_portal           = 1 << 15,
+        player_clip           = 1 << 16,
+        monster_clip          = 1 << 17,
+        cur_0                 = 1 << 18,
+        cur_90                = 1 << 19,
+        cur_180               = 1 << 20,
+        cur_270               = 1 << 21,
+        cur_up                = 1 << 22,
+        cur_down              = 1 << 23,
+        origin                = 1 << 24,
+        monster               = 1 << 25,
+        debris                = 1 << 26,
+        detail                = 1 << 27,
+        translucent           = 1 << 28,
+        ladder                = 1 << 29,
+        hitbox                = 1 << 30
+    };
+    ENUM_BIT_OPERATORS( e_contents, false );
+    ENUM_UNDERLYING_OPERATOR( e_contents );
 
+    enum struct e_mask : int {
+        solid						   = -( e_contents::solid | e_contents::moveable | e_contents::window | e_contents::monster | e_contents::grate ),
+        player_solid				   = -( e_contents::solid | e_contents::moveable | e_contents::window | e_contents::monster | e_contents::grate | e_contents::player_clip ),
+        npc_solid					   = -( e_contents::solid | e_contents::moveable | e_contents::window | e_contents::monster | e_contents::grate | e_contents::monster_clip ),
+        npc_fluid					   = -( e_contents::solid | e_contents::moveable | e_contents::window | e_contents::monster | e_contents::monster_clip ),
+        water						   = -( e_contents::water | e_contents::moveable | e_contents::slime ),
+        opaque					      = -( e_contents::solid | e_contents::moveable | e_contents::opaque ),
+        opaque_and_npcs			   = -( e_contents::monster ) | opaque,
+        block_los					   = -( e_contents::solid | e_contents::moveable | e_contents::block_los ),
+        block_los_and_npcs		   = -( e_contents::monster ) | block_los,
+        visible						= -( e_contents::ignore_nodraw_opaque ) | opaque,
+        visible_and_npcs			= -( e_contents::ignore_nodraw_opaque ) | opaque_and_npcs,
+        shot							= -( e_contents::solid | e_contents::moveable | e_contents::window | e_contents::debris | e_contents::monster | e_contents::hitbox ),
+        shot_brush_only			   = -( e_contents::solid | e_contents::moveable | e_contents::window | e_contents::debris ),
+        shot_hull					   = -( e_contents::solid | e_contents::moveable | e_contents::window | e_contents::debris | e_contents::monster | e_contents::grate ),
+        shot_portal					= -( e_contents::solid | e_contents::moveable | e_contents::window | e_contents::monster ),
+        solid_brush_only			= -( e_contents::solid | e_contents::moveable | e_contents::window | e_contents::grate ),
+        player_solid_brush_only	= -( e_contents::solid | e_contents::moveable | e_contents::window | e_contents::grate | e_contents::player_clip ),
+        npc_solid_brush_only		= -( e_contents::solid | e_contents::moveable | e_contents::window | e_contents::grate | e_contents::monster_clip ),
+        npc_world_static			= -( e_contents::solid | e_contents::window | e_contents::monster_clip | e_contents::grate ),
+        npc_world_static_fluid	= -( e_contents::solid | e_contents::window | e_contents::monster_clip ),
+        split_area_portal			= -( e_contents::water | e_contents::slime ),
+        current						= -( e_contents::cur_0 | e_contents::cur_90 | e_contents::cur_180 | e_contents::cur_270 | e_contents::cur_up | e_contents::cur_down ),
+        dead_solid					= -( e_contents::solid | e_contents::player_clip | e_contents::window | e_contents::grate ),
+        shot_player					= -( e_contents::hitbox ) | shot_hull
     };
     ENUM_BIT_OPERATORS( e_mask, true );
 
@@ -371,8 +430,9 @@ namespace csgo::valve {
         sdk::vec3_t     m_mins{}, m_maxs{};
         float           m_radius{};
 
-        /*key_values_t*   m_key_values{};
+        key_values_t*   m_key_values{};
 
+        /*
         union {
             brush_data_t    m_brush{};
             std::uint16_t   m_studio;
@@ -408,19 +468,19 @@ namespace csgo::valve {
     enum struct e_weapon_type : int {
         knife,
         pistol,
-        submachinegun,
+        smg,
         rifle,
         shotgun,
         sniper,
-        machinegun,
+        machine_gun,
         c4,
         placeholder,
         grenade,
         healthshot = 11,
 #ifndef CSGO2018
         fists,
-        breachcharge,
-        bumpmine,
+        breach_charge,
+        bump_mine,
         tablet,
         melee
 #endif
@@ -467,11 +527,11 @@ namespace csgo::valve {
         float           m_armor_ratio{};
         int             m_bullets{};
         float           m_penetration{},
-                        m_flinch_velocity_modifier_large{},
-                        m_flinch_velocity_modifier_small{},
+                        m_flinch_vel_modifier_large{},
+                        m_flinch_vel_modifier_small{},
                         m_range{},
                         m_range_modifier{},
-                        m_throw_velocity{};
+                        m_throw_vel{};
         char            pad7[ 12u ]{};
         bool            m_has_silencer{};
         char            pad8[ 15u ]{};
@@ -514,7 +574,7 @@ namespace csgo::valve {
 
     struct cs_player_t;
 
-struct studio_bone_t {
+    struct studio_bone_t {
         int             m_name_index{},
                         m_parent{},
                         m_bone_controller[ 6u ]{};
@@ -541,7 +601,7 @@ struct studio_bone_t {
         sdk::vec3_t m_mins{},
                     m_maxs{};
         int         m_name_index{};
-        sdk::qang_t m_rotation{};
+        sdk::qang_t m_rot{};
         float       m_radius{};
         char        pad0[ 16u ]{};
     };
@@ -588,7 +648,7 @@ struct studio_bone_t {
         bone_flags_t    m_bone_flags{};
     };
 
-   struct weapon_cs_base_gun_t;
+    struct weapon_cs_base_gun_t;
 
     struct anim_state_t {
         OFFSET_VFUNC( void( __thiscall* )( decltype( this ) ), reset( ), g_ctx->offsets( ).m_anim_state.m_reset );
@@ -621,11 +681,11 @@ struct studio_bone_t {
                                 m_recrouch_weight{};
         sdk::vec3_t             m_origin{},
                                 m_last_origin{},
-                                m_velocity{},
-                                m_velocity_normalized{},
-                                m_velocity_normalized_non_zero{};
+                                m_vel{},
+                                m_vel_normalized{},
+                                m_vel_normalized_non_zero{};
         float                   m_speed_2d{},
-                                m_up_velocity{},
+                                m_up_speed{},
                                 m_speed_as_portion_of_run_speed{},
                                 m_speed_as_portion_of_walk_speed{},
                                 m_speed_as_portion_of_crouch_speed{},
@@ -642,11 +702,11 @@ struct studio_bone_t {
         float                   m_in_air_smooth_value{};
         bool                    m_on_ladder{};
         char                    pad8[ 47u ]{};
-        float                   m_velocity_test_time{};
-        sdk::vec3_t             m_last_velocity{},
-                                m_dst_acceleration{},
-                                m_acceleration{};
-        float                   m_acceleration_weight{};
+        float                   m_vel_test_time{};
+        sdk::vec3_t             m_last_vel{},
+                                m_dst_accel{},
+                                m_accel{};
+        float                   m_accel_weight{};
         char                    pad9[ 12u ]{};
         float                   m_strafe_weight{};
         char                    pad10[ 4u ]{};
@@ -688,7 +748,7 @@ struct studio_bone_t {
         none,
         deagle,
         elite,
-        fiveseven,
+        five_seven,
         glock,
         ak47 = 7u,
         aug,
@@ -707,7 +767,7 @@ struct studio_bone_t {
         bizon,
         mag7,
         negev,
-        sawedoff,
+        sawed_off,
         tec9,
         taser,
         p2000,
@@ -797,46 +857,46 @@ struct studio_bone_t {
     };
     ENUM_UNDERLYING_OPERATOR( e_anim_layer )
 
-        enum struct e_team : int {
+    enum struct e_team : int {
         unassigned,
         spectator,
-        terrorist,
-        counter_terrorist
+        t,
+        ct
     };
 
     enum struct e_ent_flags : std::size_t {
-        on_ground = 1u << 0u,
-        ducking = 1u << 1u,
-        anim_ducking = 1u << 2u,
-        water_jump = 1u << 3u,
-        on_train = 1u << 4u,
-        in_rain = 1u << 5u,
-        frozen = 1u << 6u,
-        at_controls = 1u << 7u,
-        client = 1u << 8u,
-        fake_client = 1u << 9u,
-        in_water = 1u << 10u,
-        fly = 1u << 11u,
-        swim = 1u << 12u,
-        conveyor = 1u << 13u,
-        npc = 1u << 14u,
-        godmode = 1u << 15u,
-        no_target = 1u << 16u,
-        aim_target = 1u << 17u,
-        partial_ground = 1u << 18u,
-        static_prop = 1u << 19u,
-        graphed = 1u << 20u,
-        grenade = 1u << 21u,
-        step_movement = 1u << 22u,
-        dont_touch = 1u << 23u,
-        base_velocity = 1u << 24u,
-        world_brush = 1u << 25u,
-        object = 1u << 26u,
-        kill_me = 1u << 27u,
-        on_fire = 1u << 28u,
-        dissolving = 1u << 29u,
-        ragdoll = 1u << 30u,
-        unblockable_by_player = 1u << 31u
+        on_ground             = 1 << 0,
+        ducking               = 1 << 1,
+        anim_ducking          = 1 << 2,
+        water_jump            = 1 << 3,
+        on_train              = 1 << 4,
+        in_rain               = 1 << 5,
+        frozen                = 1 << 6,
+        at_controls           = 1 << 7,
+        client                = 1 << 8,
+        fake_client           = 1 << 9,
+        in_water              = 1 << 10,
+        fly                   = 1 << 11,
+        swim                  = 1 << 12,
+        conveyor              = 1 << 13,
+        npc                   = 1 << 14,
+        godmode               = 1 << 15,
+        no_target             = 1 << 16,
+        aim_target            = 1 << 17,
+        partial_ground        = 1 << 18,
+        static_prop           = 1 << 19,
+        graphed               = 1 << 20,
+        grenade               = 1 << 21,
+        step_movement         = 1 << 22,
+        dont_touch            = 1 << 23,
+        base_vel              = 1 << 24,
+        world_brush           = 1 << 25,
+        object                = 1 << 26,
+        kill_me               = 1 << 27,
+        on_fire               = 1 << 28,
+        dissolving            = 1 << 29,
+        ragdoll               = 1 << 30,
+        unblockable_by_player = 1u << 31
     };
     ENUM_BIT_OPERATORS( e_ent_flags, true );
 
@@ -870,7 +930,7 @@ struct studio_bone_t {
     };
 
     enum struct e_game_type : int {
-        unknown = -1,
+        unk = -1,
         classic,
         gungame,
         training,
@@ -880,7 +940,7 @@ struct studio_bone_t {
         ffa
     };
 
-    enum struct e_flow : int {
+    enum struct e_net_flow : int {
         out,
         in
     };

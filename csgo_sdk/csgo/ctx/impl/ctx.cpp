@@ -110,11 +110,11 @@ namespace csgo {
             std::unordered_map< sdk::hash_t, sdk::address_t > interfaces{};
 
             const auto parse_module = [ & ] ( const sdk::hash_t hash ) {
-                const auto module = modules.at( hash );
+                const auto mod = modules.at( hash );
 
                 sdk::address_t list{};
 
-                module->for_each_export( module, [ & ] ( const char* name, const sdk::address_t addr ) {
+                mod->for_each_export( mod, [ & ] ( const char* name, const sdk::address_t addr ) {
                     if ( sdk::hash( name ) != HASH( "CreateInterface" ) )
                         return false;
 
@@ -153,6 +153,19 @@ namespace csgo {
             parse_module( HASH( "vphysics.dll" ) );
             parse_module( HASH( "matchmaking.dll" ) );
 
+            {
+                const auto tier0 = modules.at( HASH( "tier0.dll" ) );
+
+                tier0->for_each_export( tier0, [&] ( const char* name, const sdk::address_t addr ) {
+                    if ( sdk::hash( name ) != HASH( "g_pMemAlloc" ) )
+                        return false;
+
+                    valve::g_mem_alloc = addr.deref( 1u ).as< decltype( valve::g_mem_alloc )>( );
+
+                    return true;
+                } );
+            }
+
             valve::g_client = interfaces.at( HASH( "VClient018" ) ).as< valve::c_client* >( );
             valve::g_engine = interfaces.at( HASH( "VEngineClient014" ) ).as< valve::c_engine* >( );
             valve::g_entity_list = interfaces.at( HASH( "VClientEntityList003" ) ).as< valve::c_entity_list* >( );
@@ -188,14 +201,18 @@ namespace csgo {
 
         /* initialize offsets */
         {
-            m_offsets.m_local_player = BYTESEQ( "8B 0D ? ? ? ? 83 FF FF 74 07" ).search( client.m_start, client.m_end ).self_offset( 0x2 ).self_deref( 1u );
+            m_offsets.m_local_player = BYTESEQ( "8B 0D ? ? ? ? 83 FF FF 74 07" ).search(
+                client.m_start, client.m_end ).self_offset( 0x2 ).self_deref( 1u );
 
             m_offsets.m_user_cmd_checksum = BYTESEQ( "53 8B D9 83 C8" ).search( client.m_start, client.m_end );
 
-            m_offsets.m_anim_state.m_reset = BYTESEQ( "56 6A 01 68 ? ? ? ? 8B F1" ).search( client.m_start, client.m_end );
-            m_offsets.m_anim_state.m_update = BYTESEQ( "55 8B EC 83 E4 F8 83 EC 18 56 57 8B F9 F3 0F 11 54 24" ).search( client.m_start, client.m_end );
+            m_offsets.m_anim_state.m_reset = BYTESEQ( "56 6A 01 68 ? ? ? ? 8B F1" ).search(
+                client.m_start, client.m_end );
+            m_offsets.m_anim_state.m_update = BYTESEQ( "55 8B EC 83 E4 F8 83 EC 18 56 57 8B F9 F3 0F 11 54 24" ).search(
+                client.m_start, client.m_end );
 
-            m_offsets.m_renderable.m_bone_cache = *BYTESEQ( "FF B7 ? ? ? ? 52" ).search( client.m_start, client.m_end ).self_offset( 0x2 ).as< std::uint32_t* >( );
+            m_offsets.m_renderable.m_bone_cache = *BYTESEQ( "FF B7 ? ? ? ? 52" ).search(
+                client.m_start, client.m_end ).self_offset( 0x2 ).as< std::uint32_t* >( );
             m_offsets.m_renderable.m_mdl_bone_cnt = *BYTESEQ( "EB 05 F3 0F 10 45 ? 8B 87 ? ? ? ?" ).search(
                 client.m_start, client.m_end
             ).self_offset( 0x9 ).as< std::uint32_t* >( );
@@ -207,9 +224,12 @@ namespace csgo {
 
             std::unordered_map< sdk::hash_t, ent_offset_t > ent_offsets{};
 
+            /* at the time of writing this ( early 2022 ) there are ~41k results */
             ent_offsets.reserve( 40000u );
 
-            const auto parse_recv_table = [ & ]( const auto& self, const char* name, valve::recv_table_t* const table, const std::uint32_t offset = 0u ) -> void {
+            const auto parse_recv_table = [ & ]( const auto& self_fn, const char* name,
+                valve::recv_table_t* const table, const std::uint32_t offset = 0u
+            ) -> void {
                 std::string concated{};
 
                 concated.reserve( 128u );
@@ -220,7 +240,7 @@ namespace csgo {
                     const auto child = prop->m_data_table;
                     if ( child
                         && child->m_props_count > 0 )
-                        self( self, name, child, prop->m_offset + offset );
+                        self_fn( self_fn, name, child, prop->m_offset + offset );
 
                     concated = name;
                     concated += "->";
@@ -240,6 +260,7 @@ namespace csgo {
             {
                 std::string concated{};
 
+                /* do not allocate memory every iteration */
                 concated.reserve( 128u );
 
                 const auto mov_data_map = BYTESEQ( "C7 05 ? ? ? ? ? ? ? ? C7 05 ? ? ? ? ? ? ? ? C3 CC" );
@@ -250,27 +271,24 @@ namespace csgo {
                         break;
 
                     const auto data_map = start.offset( 0x2 ).deref( 1u ).offset( -0x4 ).as< valve::data_map_t* >( );
-                    if ( !data_map
-                        || data_map->m_size <= 0
-                        || data_map->m_size >= 200
-                        || !data_map->m_name
-                        || !data_map->m_description )
+                    if ( !data_map || !data_map->m_name || !data_map->m_desc
+                        || data_map->m_size <= 0 || data_map->m_size >= 200 )
                         continue;
 
                     for ( int i{}; i < data_map->m_size; ++i ) {
-                        const auto& description = data_map->m_description[ i ];
-                        if ( !description.m_name )
+                        const auto& desc = data_map->m_desc[ i ];
+                        if ( !desc.m_name )
                             continue;
 
                         concated = data_map->m_name;
                         concated.erase( std::remove( concated.begin( ), concated.end( ), '_' ), concated.end( ) );
 
                         concated += "->";
-                        concated += description.m_name;
+                        concated += desc.m_name;
 
                         ent_offsets.insert_or_assign(
                             sdk::hash( concated.data( ), concated.size( ) ),
-                            ent_offset_t{ nullptr, description.m_offset }
+                            ent_offset_t{ nullptr, desc.m_offset }
                         );
                     }
                 }
@@ -281,10 +299,10 @@ namespace csgo {
             m_offsets.m_base_entity.m_sim_time = ent_offsets.at( HASH( "CBaseEntity->m_flSimulationTime" ) ).m_offset;
             m_offsets.m_base_entity.m_flags = ent_offsets.at( HASH( "CBaseEntity->m_fFlags" ) ).m_offset;
             m_offsets.m_base_entity.m_origin = ent_offsets.at( HASH( "CBaseEntity->m_vecOrigin" ) ).m_offset;
-            m_offsets.m_base_entity.m_velocity = ent_offsets.at( HASH( "CBaseEntity->m_vecVelocity" ) ).m_offset;
+            m_offsets.m_base_entity.m_vel = ent_offsets.at( HASH( "CBaseEntity->m_vecVelocity" ) ).m_offset;
             m_offsets.m_base_entity.m_abs_origin = ent_offsets.at( HASH( "CBaseEntity->m_vecAbsOrigin" ) ).m_offset;
-            m_offsets.m_base_entity.m_abs_velocity = ent_offsets.at( HASH( "CBaseEntity->m_vecAbsVelocity" ) ).m_offset;
-            m_offsets.m_base_entity.m_abs_rotation = ent_offsets.at( HASH( "CBaseEntity->m_angAbsRotation" ) ).m_offset;
+            m_offsets.m_base_entity.m_abs_vel = ent_offsets.at( HASH( "CBaseEntity->m_vecAbsVelocity" ) ).m_offset;
+            m_offsets.m_base_entity.m_abs_rot = ent_offsets.at( HASH( "CBaseEntity->m_angAbsRotation" ) ).m_offset;
             m_offsets.m_base_entity.m_move_type = ent_offsets.at( HASH( "CBaseEntity->m_MoveType" ) ).m_offset;
             m_offsets.m_base_entity.m_mins = ent_offsets.at( HASH( "CBaseEntity->m_vecMins" ) ).m_offset;
             m_offsets.m_base_entity.m_maxs = ent_offsets.at( HASH( "CBaseEntity->m_vecMaxs" ) ).m_offset;

@@ -1,6 +1,19 @@
 #pragma once
 
 namespace csgo::valve {
+    class c_mem_alloc {
+    public:
+       VFUNC( sdk::address_t( __thiscall* )( decltype( this ), std::size_t ),
+          alloc( const std::size_t region_size ), 1u, region_size );
+
+       VFUNC( sdk::address_t( __thiscall* )( decltype( this ), void*, std::size_t ),
+          realloc( const sdk::address_t addr, const std::size_t region_size ), 3u,
+          addr.as< void* >( ), region_size );
+
+       VFUNC( void( __thiscall* )( decltype( this ), void* ),
+          free( const sdk::address_t addr ), 5, addr.as< void* >( ) );
+    } inline* g_mem_alloc{};
+
     class c_client {
     public:
         VFUNC( client_class_t*( __thiscall* )( decltype( this ) ), all_classes( ), 8u );
@@ -42,7 +55,7 @@ namespace csgo::valve {
 
     struct client_state_t {
         struct net_chan_t {
-            VFUNC( float( __thiscall* )( decltype( this ), e_flow ), latency( const e_flow flow ), 9u, flow );
+            VFUNC( float( __thiscall* )( decltype( this ), e_net_flow ), latency( const e_net_flow flow ), 9u, flow );
 
             VFUNC( int( __thiscall* )( decltype( this ), std::uintptr_t ), send_datagram( ), 46u, 0u );
 

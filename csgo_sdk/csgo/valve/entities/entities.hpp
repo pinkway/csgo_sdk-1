@@ -25,11 +25,11 @@ namespace csgo::valve {
         OFFSET( e_ent_flags, flags( ), g_ctx->offsets( ).m_base_entity.m_flags );
 
         OFFSET( sdk::vec3_t, origin( ), g_ctx->offsets( ).m_base_entity.m_origin );
-        OFFSET( sdk::vec3_t, velocity( ), g_ctx->offsets( ).m_base_entity.m_velocity );
+        OFFSET( sdk::vec3_t, vel( ), g_ctx->offsets( ).m_base_entity.m_vel );
 
         OFFSET( sdk::vec3_t, abs_origin( ), g_ctx->offsets( ).m_base_entity.m_abs_origin );
-        OFFSET( sdk::vec3_t, abs_velocity( ), g_ctx->offsets( ).m_base_entity.m_abs_velocity );
-        OFFSET( sdk::qang_t, abs_rotation( ), g_ctx->offsets( ).m_base_entity.m_abs_rotation );
+        OFFSET( sdk::vec3_t, abs_vel( ), g_ctx->offsets( ).m_base_entity.m_abs_vel );
+        OFFSET( sdk::qang_t, abs_rot( ), g_ctx->offsets( ).m_base_entity.m_abs_rot );
 
         OFFSET( e_move_type, move_type( ), g_ctx->offsets( ).m_base_entity.m_move_type );
 
@@ -109,7 +109,7 @@ namespace csgo::valve {
         OFFSET( float, spawn_time( ), g_ctx->offsets( ).m_base_player.m_spawn_time );
 
         OFFSET( sdk::qang_t, aim_punch( ), g_ctx->offsets( ).m_base_player.m_aim_punch );
-        OFFSET( sdk::qang_t, view_punch( ), g_ctx->offsets( ).m_base_player.m_view_punch);
+        OFFSET( sdk::qang_t, view_punch( ), g_ctx->offsets( ).m_base_player.m_view_punch );
     };
 
     struct cs_player_t : public base_player_t {
