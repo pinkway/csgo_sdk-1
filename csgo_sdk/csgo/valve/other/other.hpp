@@ -9,7 +9,7 @@ namespace csgo::valve {
         in_attack       = 1 << 0,
         in_jump         = 1 << 1,
         in_duck         = 1 << 2,
-        in_forward      = 1 << 3,
+        in_fwd          = 1 << 3,
         in_back         = 1 << 4,
         in_use          = 1 << 5,
         in_cancel       = 1 << 6,
@@ -33,7 +33,8 @@ namespace csgo::valve {
         in_grenade2     = 1 << 24,
         in_attack3      = 1 << 25
     };
-    ENUM_BIT_OPERATORS( e_buttons, true );
+    ENUM_BIT_OPERATORS( e_buttons, false );
+    ENUM_UNDERLYING_OPERATOR( e_buttons );
 
     struct move_data_t {
         bool            m_first_run_of_functions{},
@@ -798,7 +799,7 @@ namespace csgo::valve {
 
     struct beam_info_t {
         ALWAYS_INLINE beam_info_t( )
-            : m_type(e_beam_type::two_points), m_model_idx(-1), m_halo_idx(-1), m_renderable(true) {};
+            : m_type( e_beam_type::two_points ), m_model_idx( -1 ), m_halo_idx( -1 ), m_renderable( true ) {};
 
         e_beam_type    m_type{};
         base_entity_t* m_ent_start{};

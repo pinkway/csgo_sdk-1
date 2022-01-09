@@ -160,7 +160,7 @@ namespace csgo {
                     if ( sdk::hash( name ) != HASH( "g_pMemAlloc" ) )
                         return false;
 
-                    valve::g_mem_alloc = addr.deref( 1u ).as< decltype( valve::g_mem_alloc )>( );
+                    valve::g_mem_alloc = addr.deref( 1u ).as< valve::c_mem_alloc* >( );
 
                     return true;
                 } );
@@ -170,16 +170,16 @@ namespace csgo {
             valve::g_engine = interfaces.at( HASH( "VEngineClient014" ) ).as< valve::c_engine* >( );
             valve::g_entity_list = interfaces.at( HASH( "VClientEntityList003" ) ).as< valve::c_entity_list* >( );
 
-            valve::g_global_vars = **reinterpret_cast< valve::global_vars_base_t*** >(
+            valve::g_global_vars = **reinterpret_cast< valve::c_global_vars_base*** >(
                 ( *reinterpret_cast< std::uintptr_t** >( valve::g_client ) )[ 11u ] + 0xau
             );
-            valve::g_client_state = **reinterpret_cast< valve::client_state_t*** >(
+            valve::g_client_state = **reinterpret_cast< valve::c_client_state*** >(
                 ( *reinterpret_cast< std::uintptr_t** >( valve::g_engine ) )[ 12u ] + 0x10u
             );
 
             valve::g_input = *BYTESEQ( "B9 ? ? ? ? 8B 40 38 FF D0 84 C0 0F 85" ).search(
                 client.m_start, client.m_end, false
-            ).self_offset( 0x1 ).as< valve::input_t** >( );
+            ).self_offset( 0x1 ).as< valve::c_input** >( );
 
             valve::g_cvar = interfaces.at( HASH( "VEngineCvar007" ) ).as< valve::c_cvar* >( );
 
@@ -187,7 +187,7 @@ namespace csgo {
                 client.m_start, client.m_end, false
             ).self_offset( 0x2 ).as< valve::c_move_helper*** >( );
 
-            valve::g_prediction = interfaces.at( HASH( "VClientPrediction001" ) ).as< valve::prediction_t* >( );
+            valve::g_prediction = interfaces.at( HASH( "VClientPrediction001" ) ).as< valve::c_prediction* >( );
             valve::g_movement = interfaces.at( HASH( "GameMovement001" ) ).as< valve::c_movement* >( );
 
             valve::g_engine_trace = interfaces.at( HASH( "EngineTraceClient004" ) ).as< valve::c_engine_trace* >( );
@@ -195,7 +195,7 @@ namespace csgo {
 
             valve::g_game_rules = *BYTESEQ( "A1 ? ? ? ? 85 C0 0F 84 ? ? ? ? 80 B8 ? ? ? ? ? 74 7A" ).search(
                 client.m_start, client.m_end, false
-            ).self_offset( 0x1 ).as< valve::game_rules_t*** >( );
+            ).self_offset( 0x1 ).as< valve::c_game_rules*** >( );
             valve::g_game_types = interfaces.at( HASH( "VENGINE_GAMETYPES_VERSION002" ) ).as< valve::c_game_types* >( );
         }
 
@@ -260,7 +260,7 @@ namespace csgo {
             {
                 std::string concated{};
 
-                /* do not allocate memory every iteration */
+                /* don't allocate memory every iteration */
                 concated.reserve( 128u );
 
                 const auto mov_data_map = BYTESEQ( "C7 05 ? ? ? ? ? ? ? ? C7 05 ? ? ? ? ? ? ? ? C3 CC" );
@@ -271,12 +271,12 @@ namespace csgo {
                         break;
 
                     const auto data_map = start.offset( 0x2 ).deref( 1u ).offset( -0x4 ).as< valve::data_map_t* >( );
-                    if ( !data_map || !data_map->m_name || !data_map->m_desc
+                    if ( !data_map || !data_map->m_name || !data_map->m_descriptions
                         || data_map->m_size <= 0 || data_map->m_size >= 200 )
                         continue;
 
                     for ( int i{}; i < data_map->m_size; ++i ) {
-                        const auto& desc = data_map->m_desc[ i ];
+                        const auto& desc = data_map->m_descriptions[ i ];
                         if ( !desc.m_name )
                             continue;
 
@@ -389,7 +389,6 @@ namespace csgo {
 
         if ( MH_EnableHook( MH_ALL_HOOKS ) != MH_OK )
             THROW_IF_DBG( "can't enable all hooks." );
-
     }
 }
 

@@ -21,13 +21,15 @@ namespace csgo {
         hacks::g_move->handle( cmd );
 
         {
-            if ( ( m_weapon = self( )->weapon( ) ) )
+            if ( m_weapon = self( )->weapon( ) )
                 m_weapon_info = m_weapon->info( );
             else
                 m_weapon_info = nullptr;
         }
 
         hacks::g_move->rotate( cmd, old_angles );
+
+        cmd.sanitize( );
 
         vfyd_cmd.m_cmd = cmd;
         vfyd_cmd.m_checksum = cmd.checksum( );
