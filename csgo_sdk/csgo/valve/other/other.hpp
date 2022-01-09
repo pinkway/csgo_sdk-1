@@ -89,28 +89,45 @@ namespace csgo::valve {
         const char*     m_parent_array_prop_name{};
     };
 
+    enum struct e_data_field_type : int {
+        flt = 1,
+        str,
+        vec3,
+        vec4,
+        integer,
+        boolean,
+        short_int,
+        chr,
+    };
+
+    enum struct e_data_field_flags : std::uint16_t {
+       in_send_table    = 1 << 8,
+       no_error_check   = 1 << 10,
+    };
+    ENUM_BIT_OPERATORS( e_data_field_flags, false );
+
     struct data_map_t;
 
     struct type_desc_t {
-        int             m_type{};
-        const char*     m_name{};
-        std::uint32_t   m_offset{};
-        std::uint16_t   m_size{},
-                        m_flags{};
-        const char*     m_external_name{};
-        sdk::address_t  m_save_restore_ops{},
-                        m_input_fn{};
-        data_map_t*     m_data_map{};
-        std::uint32_t   m_field_size_in_bytes{};
-        type_desc_t*    m_override_field{};
-        std::uint32_t   m_override_count{};
-        float           m_tolerance{};
-        int             m_flat_offset[ 2u ]{};
-        std::uint16_t   m_flat_group{};
+        e_data_field_type  m_type{};
+        const char*        m_name{};
+        std::uint32_t      m_offset{};
+        std::uint16_t      m_size{};
+        e_data_field_flags m_flags{};
+        const char*        m_external_name{};
+        sdk::address_t     m_save_restore_ops{},
+                           m_input_fn{};
+        data_map_t*        m_data_map{};
+        std::uint32_t      m_field_size_in_bytes{};
+        type_desc_t*       m_override_field{};
+        std::uint32_t      m_override_count{};
+        float              m_tolerance{};
+        int                m_flat_offset[ 2u ]{};
+        std::uint16_t      m_flat_group{};
     };
 
     struct data_map_t {
-        type_desc_t* m_desc{};
+        type_desc_t* m_descriptions{};
         int          m_size{};
         char const*  m_name{};
         data_map_t*  m_base_map{};
@@ -251,9 +268,9 @@ namespace csgo::valve {
                            m_jump_factor{},
                            m_pen_modifier{},
                            m_dmg_modifier{};
-            std::uint16_t	m_material{};
-            std::uint8_t	m_climbable{};
-        }		m_game{};
+            std::uint16_t  m_material{};
+            std::uint8_t   m_climbable{};
+        }      m_game{};
 
         char   pad0[ 48u ]{};
     };
@@ -351,30 +368,30 @@ namespace csgo::valve {
     ENUM_UNDERLYING_OPERATOR( e_contents );
 
     enum struct e_mask : int {
-        solid						   = -( e_contents::solid | e_contents::moveable | e_contents::window | e_contents::monster | e_contents::grate ),
-        player_solid				   = -( e_contents::solid | e_contents::moveable | e_contents::window | e_contents::monster | e_contents::grate | e_contents::player_clip ),
-        npc_solid					   = -( e_contents::solid | e_contents::moveable | e_contents::window | e_contents::monster | e_contents::grate | e_contents::monster_clip ),
-        npc_fluid					   = -( e_contents::solid | e_contents::moveable | e_contents::window | e_contents::monster | e_contents::monster_clip ),
-        water						   = -( e_contents::water | e_contents::moveable | e_contents::slime ),
-        opaque					      = -( e_contents::solid | e_contents::moveable | e_contents::opaque ),
-        opaque_and_npcs			   = -( e_contents::monster ) | opaque,
-        block_los					   = -( e_contents::solid | e_contents::moveable | e_contents::block_los ),
-        block_los_and_npcs		   = -( e_contents::monster ) | block_los,
-        visible						= -( e_contents::ignore_nodraw_opaque ) | opaque,
-        visible_and_npcs			= -( e_contents::ignore_nodraw_opaque ) | opaque_and_npcs,
-        shot							= -( e_contents::solid | e_contents::moveable | e_contents::window | e_contents::debris | e_contents::monster | e_contents::hitbox ),
-        shot_brush_only			   = -( e_contents::solid | e_contents::moveable | e_contents::window | e_contents::debris ),
-        shot_hull					   = -( e_contents::solid | e_contents::moveable | e_contents::window | e_contents::debris | e_contents::monster | e_contents::grate ),
-        shot_portal					= -( e_contents::solid | e_contents::moveable | e_contents::window | e_contents::monster ),
-        solid_brush_only			= -( e_contents::solid | e_contents::moveable | e_contents::window | e_contents::grate ),
-        player_solid_brush_only	= -( e_contents::solid | e_contents::moveable | e_contents::window | e_contents::grate | e_contents::player_clip ),
-        npc_solid_brush_only		= -( e_contents::solid | e_contents::moveable | e_contents::window | e_contents::grate | e_contents::monster_clip ),
-        npc_world_static			= -( e_contents::solid | e_contents::window | e_contents::monster_clip | e_contents::grate ),
-        npc_world_static_fluid	= -( e_contents::solid | e_contents::window | e_contents::monster_clip ),
-        split_area_portal			= -( e_contents::water | e_contents::slime ),
-        current						= -( e_contents::cur_0 | e_contents::cur_90 | e_contents::cur_180 | e_contents::cur_270 | e_contents::cur_up | e_contents::cur_down ),
-        dead_solid					= -( e_contents::solid | e_contents::player_clip | e_contents::window | e_contents::grate ),
-        shot_player					= -( e_contents::hitbox ) | shot_hull
+        solid                   = -( e_contents::solid | e_contents::moveable | e_contents::window | e_contents::monster | e_contents::grate ),
+        player_solid            = -( e_contents::solid | e_contents::moveable | e_contents::window | e_contents::monster | e_contents::grate | e_contents::player_clip ),
+        npc_solid               = -( e_contents::solid | e_contents::moveable | e_contents::window | e_contents::monster | e_contents::grate | e_contents::monster_clip ),
+        npc_fluid               = -( e_contents::solid | e_contents::moveable | e_contents::window | e_contents::monster | e_contents::monster_clip ),
+        water                   = -( e_contents::water | e_contents::moveable | e_contents::slime ),
+        opaque                  = -( e_contents::solid | e_contents::moveable | e_contents::opaque ),
+        opaque_and_npcs         = -( e_contents::monster ) | opaque,
+        block_los               = -( e_contents::solid | e_contents::moveable | e_contents::block_los ),
+        block_los_and_npcs      = -( e_contents::monster ) | block_los,
+        visible                 = -( e_contents::ignore_nodraw_opaque ) | opaque,
+        visible_and_npcs        = -( e_contents::ignore_nodraw_opaque ) | opaque_and_npcs,
+        shot                    = -( e_contents::solid | e_contents::moveable | e_contents::window | e_contents::debris | e_contents::monster | e_contents::hitbox ),
+        shot_brush_only         = -( e_contents::solid | e_contents::moveable | e_contents::window | e_contents::debris ),
+        shot_hull               = -( e_contents::solid | e_contents::moveable | e_contents::window | e_contents::debris | e_contents::monster | e_contents::grate ),
+        shot_portal             = -( e_contents::solid | e_contents::moveable | e_contents::window | e_contents::monster ),
+        solid_brush_only        = -( e_contents::solid | e_contents::moveable | e_contents::window | e_contents::grate ),
+        player_solid_brush_only = -( e_contents::solid | e_contents::moveable | e_contents::window | e_contents::grate | e_contents::player_clip ),
+        npc_solid_brush_only    = -( e_contents::solid | e_contents::moveable | e_contents::window | e_contents::grate | e_contents::monster_clip ),
+        npc_world_static        = -( e_contents::solid | e_contents::window | e_contents::monster_clip | e_contents::grate ),
+        npc_world_static_fluid  = -( e_contents::solid | e_contents::window | e_contents::monster_clip ),
+        split_area_portal       = -( e_contents::water | e_contents::slime ),
+        current                 = -( e_contents::cur_0 | e_contents::cur_90 | e_contents::cur_180 | e_contents::cur_270 | e_contents::cur_up | e_contents::cur_down ),
+        dead_solid              = -( e_contents::solid | e_contents::player_clip | e_contents::window | e_contents::grate ),
+        shot_player             = -( e_contents::hitbox ) | shot_hull
     };
     ENUM_BIT_OPERATORS( e_mask, true );
 
@@ -743,6 +760,77 @@ namespace csgo::valve {
     using anim_layers_t = utl_vec_t< anim_layer_t >;
 
     using bones_t = utl_vec_t< sdk::mat3x4_t >;
+
+    enum struct e_beam_type : int {
+        two_points,
+        sprite,
+        expands_disk,
+        expands_cylinder,
+        follow,
+        ring,
+        spline,
+        ring_point,
+        laser,
+        tesla
+    };
+
+    enum struct e_beam_flags : int {
+        none,
+        ent_start    = 1 << 0,
+        ent_end      = 1 << 1,
+        fade_in      = 1 << 2,
+        fade_out     = 1 << 3,
+        sine_noise   = 1 << 4,
+        solid        = 1 << 5,
+        shade_in     = 1 << 6,
+        shade_out    = 1 << 7,
+        static_noise = 1 << 8,
+        no_tile      = 1 << 9,
+        use_hitboxes = 1 << 10,
+        vis_start    = 1 << 11,
+        vis_end      = 1 << 12,
+        active       = 1 << 13,
+        forever      = 1 << 14,
+        halo_beam    = 1 << 15,
+        reversed     = 1 << 16
+    };
+    ENUM_BIT_OPERATORS( e_beam_flags, true );
+
+    struct beam_info_t {
+        ALWAYS_INLINE beam_info_t( )
+            : m_type(e_beam_type::two_points), m_model_idx(-1), m_halo_idx(-1), m_renderable(true) {};
+
+        e_beam_type    m_type{};
+        base_entity_t* m_ent_start{};
+        int            m_attachment_start{};
+        base_entity_t* m_ent_end{};
+        int            m_attachment_end{};
+        sdk::vec3_t    m_pos_start{};
+        sdk::vec3_t    m_pos_end{};
+        int            m_model_idx{};
+        const char*    m_model_name{};
+        int            m_halo_idx{};
+        const char*    m_halo_name{};
+        float          m_halo_scale{},
+                       m_life{},
+                       m_width_start{},
+                       m_width_end{},
+                       m_fade_length{},
+                       m_amplitude{},
+                       m_brightness{},
+                       m_speed{};
+        int            m_frame_start{};
+        float          m_framerate{},
+                       m_red{},
+                       m_green{},
+                       m_blue{};
+        bool           m_renderable{};
+        int            m_segs{};
+        e_beam_flags   m_flags{};
+        sdk::vec3_t    m_center{};
+        float          m_radius_start{},
+                       m_radius_end{};
+    };
 
     enum struct e_item_index : std::uint16_t {
         none,

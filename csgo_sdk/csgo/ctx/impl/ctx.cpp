@@ -156,7 +156,7 @@ namespace csgo {
             {
                 const auto tier0 = modules.at( HASH( "tier0.dll" ) );
 
-                tier0->for_each_export( tier0, [&] ( const char* name, const sdk::address_t addr ) {
+                tier0->for_each_export( tier0, [ & ] ( const char* name, const sdk::address_t addr ) {
                     if ( sdk::hash( name ) != HASH( "g_pMemAlloc" ) )
                         return false;
 

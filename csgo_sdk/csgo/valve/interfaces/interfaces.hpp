@@ -36,7 +36,8 @@ namespace csgo::valve {
         VFUNC( base_entity_t*( __thiscall* )( decltype( this ), ent_handle_t ), get_entity( ent_handle_t handle ), 4u, handle );
     } inline* g_entity_list{};
 
-    struct global_vars_base_t {
+    class c_global_vars_base {
+    public:
         float           m_real_time{};
         int             m_frame_count{};
 
@@ -53,7 +54,8 @@ namespace csgo::valve {
         bool            m_client{}, m_remote_client{};
     } inline* g_global_vars{};
 
-    struct client_state_t {
+    class c_client_state {
+    public:
         struct net_chan_t {
             VFUNC( float( __thiscall* )( decltype( this ), e_net_flow ), latency( const e_net_flow flow ), 9u, flow );
 
@@ -73,7 +75,7 @@ namespace csgo::valve {
         };
 
         char        pad0[ 156u ]{};
-        net_chan_t* m_net_channel{};
+        net_chan_t* m_net_chan{};
         int         m_challenge_number{};
         char        pad1[ 4u ]{};
         double      m_connect_time{};
@@ -116,7 +118,8 @@ namespace csgo::valve {
         char        pad10[ 208u ]{};
     } inline* g_client_state{};
 
-    struct input_t {
+    class c_input {
+    public:
         char                pad0[ 12u ]{};
         bool                m_track_ir_available{},
                             m_mouse_initialized{},
@@ -142,7 +145,8 @@ namespace csgo::valve {
         VFUNC( void( __thiscall* )( decltype( this ), base_player_t* ), set_host( base_player_t* player ), 1u, player );
     } inline* g_move_helper{};
 
-    struct prediction_t {
+    class c_prediction {
+    public:
         VFUNC( void( __thiscall* )( decltype( this ), int, bool, int, int ),
             update( int start, bool valid, int in_ack, int out_cmd ), 3u, start, valid, in_ack, out_cmd );
 
@@ -197,7 +201,8 @@ namespace csgo::valve {
         VFUNC( surface_data_t*( __thiscall* )( decltype( this ), int ), get( int index ), 5u, index );
     } inline* g_surface_data{};
 
-    struct game_rules_t {
+    class c_game_rules {
+    public:
         OFFSET( bool, warmup_period( ), g_ctx->offsets( ).m_game_rules.m_warmup_period );
         OFFSET( bool, freeze_period( ), g_ctx->offsets( ).m_game_rules.m_freeze_period );
 
