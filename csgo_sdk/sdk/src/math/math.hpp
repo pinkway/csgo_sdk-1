@@ -49,10 +49,6 @@ namespace sdk {
 
     using ivec2_t = detail::base_vec_t< int, 2u >;
 
-    using uivec2_t = detail::base_vec_t< std::size_t, 2u >;
-
-    using u16vec2_t = detail::base_vec_t< std::uint16_t, 2u >;
-
     using s16vec2_t = detail::base_vec_t< short, 2u >;
 
     using vec3_t = detail::base_vec_t< float, 3u >;

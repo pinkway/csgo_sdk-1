@@ -2,59 +2,68 @@
 
 namespace csgo::hacks {
     void c_move::handle( valve::user_cmd_t& cmd ) const {
-        if ( !( g_local_player->self( )->flags( ) & valve::e_ent_flags::on_ground ) )
+        if ( g_menu->main( ).m_move.m_bhop.get( )
+            && !( g_local_player->self( )->flags( ) & valve::e_ent_flags::on_ground ) )
             cmd.m_buttons &= ~valve::e_buttons::in_jump;
     }
 
     void c_move::rotate( valve::user_cmd_t& cmd, const sdk::qang_t& wish_angles ) const {
-        const auto local_player = g_local_player->self( );
+        if ( g_local_player->self( )->move_type( ) == valve::e_move_type::noclip
+            || g_local_player->self( )->move_type( ) == valve::e_move_type::ladder )
+            return;
 
-        const auto speed_2d = cmd.m_move.length( 2u );
-        if ( speed_2d == 0.f )
-           return;
+        sdk::vec3_t right{};
+        auto fwd = cmd.m_view_angles.vectors( &right );
 
-        if ( cmd.m_view_angles.z( ) != 0.f
-            && !( local_player->flags( ) & valve::e_ent_flags::on_ground ) )
-            cmd.m_move.y( ) = 0.f;
-
-        const auto delta = cmd.m_view_angles.y( ) - wish_angles.y( );
-
-        const auto ang = sdk::to_rad( std::remainder(
-            delta + sdk::to_deg( std::atan2( cmd.m_move.y( ) / speed_2d, cmd.m_move.x( ) / speed_2d ) ),
-            360.f ) );
-
-        auto move_2d = sdk::vec2_t( std::cos( ang ), std::sin( ang ) )
-            * speed_2d * std::cos(
-                sdk::to_rad( std::remainder( sdk::to_deg( std::atan2( 0.f, speed_2d ) ), 360.f ) )
-            );
-
-        const auto on_ladder = local_player->move_type( ) == valve::e_move_type::ladder;
-
-        if ( on_ladder ) {
-            if ( wish_angles.x( ) < 45.f && cmd.m_view_angles.x( ) >= 45.f
-                && std::abs( delta ) <= 65.f )
-                move_2d.x( ) *= -1.f;
+        if ( fwd.z( ) ) {
+            fwd.z( ) = 0.f;
+            fwd.normalize( );
         }
-        else if ( std::abs( cmd.m_view_angles.x( ) ) > 90.f )
-            move_2d.x( ) *= -1.f;
+        
+        if ( right.z( ) ) {
+            right.z( ) = 0.f;
+            right.normalize( );
+        }
 
-        cmd.m_move.x( ) = move_2d.x( );
-        cmd.m_move.y( ) = move_2d.y( );
+        if ( const auto div = ( right.y( ) * fwd.x( ) ) - ( right.x( ) * fwd.y( ) ) ) {
+            sdk::vec3_t wish_right{};
+            auto wish_fwd = wish_angles.vectors( &wish_right );
 
-        cmd.m_buttons &= ~( valve::e_buttons::in_fwd | valve::e_buttons::in_back
-            | valve::e_buttons::in_move_right | valve::e_buttons::in_move_left );
+            if ( wish_fwd.z( ) ) {
+                wish_fwd.z( ) = 0.f;
+                wish_fwd.normalize( );
+            }
 
-        const auto in_x_move = on_ladder ? std::abs( cmd.m_move.x( ) ) > 200.f
-           : cmd.m_move.x( ) != 0.f;
-        const auto in_y_move = on_ladder ? std::abs( cmd.m_move.y( ) ) > 200.f
-           : cmd.m_move.y( ) != 0.f;
+            if ( wish_right.z( ) ) {
+                wish_right.z( ) = 0.f;
+                wish_right.normalize( );
+            }
 
-        if ( in_x_move )
-            cmd.m_buttons |= ( cmd.m_move.x( ) > 0.f ? valve::e_buttons::in_fwd
-               : valve::e_buttons::in_back );
+            const sdk::vec2_t wish_vel{
+                wish_fwd.x( ) * cmd.m_move.x( ) + wish_right.x( ) * cmd.m_move.y( ),
+                wish_fwd.y( ) * cmd.m_move.x( ) + wish_right.y( ) * cmd.m_move.y( )
+            };
 
-        if ( in_y_move )
-            cmd.m_buttons |= ( cmd.m_move.y( ) > 0.f ? valve::e_buttons::in_move_right
-               : valve::e_buttons::in_move_left );
+            cmd.m_move.y( ) = ( wish_vel.y( ) * fwd.x( ) - wish_vel.x( ) * fwd.y( ) ) / div;
+            cmd.m_move.x( ) = ( wish_vel.x( ) * right.y( ) - wish_vel.y( ) * right.x( ) ) / div;
+        }
+
+        const auto& cvars = g_ctx->cvars( );
+
+        const auto max_fwd_speed = cvars.m_cl_forwardspeed->get_float( );
+        const auto max_side_speed = cvars.m_cl_sidespeed->get_float( );
+
+        cmd.m_buttons &= ~(
+            valve::e_buttons::in_fwd | ( valve::e_buttons::in_back
+            | ( valve::e_buttons::in_move_right | valve::e_buttons::in_move_left ) )
+        );
+
+        if ( ( cmd.m_move.x( ) = std::clamp( cmd.m_move.x( ), -max_fwd_speed, max_fwd_speed ) ) )
+            cmd.m_buttons |= cmd.m_move.x( ) > 0.f
+                ? valve::e_buttons::in_fwd : valve::e_buttons::in_back;
+
+        if ( ( cmd.m_move.y( ) = std::clamp( cmd.m_move.y( ), -max_side_speed, max_side_speed ) ) )
+            cmd.m_buttons |= cmd.m_move.y( ) > 0.f
+                ? valve::e_buttons::in_move_right : valve::e_buttons::in_move_left;
     }
 }

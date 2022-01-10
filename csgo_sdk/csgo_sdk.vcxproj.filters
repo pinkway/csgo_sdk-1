@@ -12,7 +12,7 @@
     <ClCompile Include="thirdparty\include\imgui\imgui_impl_dx9.cpp" />
     <ClCompile Include="csgo\hacks\move\move.cpp" />
     <ClCompile Include="csgo\local_player\impl\local_player.cpp" />
-    <ClCompile Include="csgo\valve\util\impl\util.cpp" />
+    <ClCompile Include="csgo\menu\impl\menu.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="csgo\ctx\ctx.hpp" />
@@ -53,6 +53,7 @@
     <ClInclude Include="thirdparty\include\imgui\imstb_truetype.h" />
     <ClInclude Include="thirdparty\include\imgui\imgui_impl_dx9.h" />
     <ClInclude Include="csgo\local_player\local_player.hpp" />
+    <ClInclude Include="csgo\menu\menu.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="sdk\src\cfg\impl\cfg.inl" />
@@ -64,5 +65,6 @@
     <None Include="csgo\valve\other\impl\other.inl" />
     <None Include="csgo\valve\util\impl\util.inl" />
     <None Include="csgo\local_player\impl\local_player.inl" />
+    <None Include="csgo\menu\impl\menu.inl" />
   </ItemGroup>
 </Project>

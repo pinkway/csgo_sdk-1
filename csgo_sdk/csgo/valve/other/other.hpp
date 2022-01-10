@@ -33,8 +33,7 @@ namespace csgo::valve {
         in_grenade2     = 1 << 24,
         in_attack3      = 1 << 25
     };
-    ENUM_BIT_OPERATORS( e_buttons, false );
-    ENUM_UNDERLYING_OPERATOR( e_buttons );
+    ENUM_BIT_OPERATORS( e_buttons, true );
 
     struct move_data_t {
         bool            m_first_run_of_functions{},
@@ -47,12 +46,12 @@ namespace csgo::valve {
         e_buttons       m_buttons{}, m_old_buttons{};
         sdk::vec3_t     m_move{};
         float           m_max_speed{}, m_max_client_speed{};
-        sdk::vec3_t     m_vel{}, m_trailing_vel{};
-        float           m_trailing_vel_time{};
+        sdk::vec3_t     m_velocity{}, m_trailing_velocity{};
+        float           m_trailing_velocity_time{};
         sdk::qang_t     m_angles{}, m_old_angles{};
         float           m_out_step_height{};
-        sdk::vec3_t     m_out_wish_vel{},
-                        m_out_jump_vel{},
+        sdk::vec3_t     m_out_wish_velocity{},
+                        m_out_jump_velocity{},
                         m_constraint_center{};
         float           m_constraint_radius{},
                         m_constraint_width{},
@@ -90,41 +89,24 @@ namespace csgo::valve {
         const char*     m_parent_array_prop_name{};
     };
 
-    enum struct e_data_field_type : int {
-        flt = 1,
-        str,
-        vec3,
-        vec4,
-        integer,
-        boolean,
-        short_int,
-        chr,
-    };
-
-    enum struct e_data_field_flags : std::uint16_t {
-       in_send_table    = 1 << 8,
-       no_error_check   = 1 << 10,
-    };
-    ENUM_BIT_OPERATORS( e_data_field_flags, false );
-
     struct data_map_t;
 
     struct type_desc_t {
-        e_data_field_type  m_type{};
-        const char*        m_name{};
-        std::uint32_t      m_offset{};
-        std::uint16_t      m_size{};
-        e_data_field_flags m_flags{};
-        const char*        m_external_name{};
-        sdk::address_t     m_save_restore_ops{},
-                           m_input_fn{};
-        data_map_t*        m_data_map{};
-        std::uint32_t      m_field_size_in_bytes{};
-        type_desc_t*       m_override_field{};
-        std::uint32_t      m_override_count{};
-        float              m_tolerance{};
-        int                m_flat_offset[ 2u ]{};
-        std::uint16_t      m_flat_group{};
+        int             m_type{};
+        const char*     m_name{};
+        std::uint32_t   m_offset{};
+        std::uint16_t   m_size{},
+                        m_flags{};
+        const char*     m_external_name{};
+        sdk::address_t  m_save_restore_ops{},
+                        m_input_fn{};
+        data_map_t*     m_data_map{};
+        std::uint32_t   m_field_size_in_bytes{};
+        type_desc_t*    m_override_field{};
+        std::uint32_t   m_override_count{};
+        float           m_tolerance{};
+        int             m_flat_offset[ 2u ]{};
+        std::uint16_t   m_flat_group{};
     };
 
     struct data_map_t {
@@ -235,7 +217,7 @@ namespace csgo::valve {
                   m_density{},
                   m_thickness{},
                   m_dampening{};
-        }      m_physics{};
+        }               m_physics{};
 
         struct {
             float m_reflectivity{},
@@ -243,11 +225,11 @@ namespace csgo::valve {
                   m_roughness_factor{},
                   m_rough_threshold{},
                   m_hard_threshold{},
-                  m_hard_vel_threshold{},
+                  m_hard_velocity_threshold{},
                   m_high_pitch_occlusion{},
                   m_mid_pitch_occlusion{},
                   m_low_pitch_occlusion{};
-        }      m_audio{};
+        }               m_audio{};
 
         struct {
             std::uint16_t  m_walk_step_left{},
@@ -262,18 +244,18 @@ namespace csgo::valve {
                            m_rolling{},
                            m_break_sound{},
                            m_strain_sound{};
-        }      m_sounds{};
+        }               m_sounds{};
 
         struct {
-            float          m_max_speed_factor{},
-                           m_jump_factor{},
-                           m_pen_modifier{},
-                           m_dmg_modifier{};
-            std::uint16_t  m_material{};
-            std::uint8_t   m_climbable{};
-        }      m_game{};
+            float           m_max_speed_factor{},
+                            m_jump_factor{},
+                            m_pen_modifier{},
+                            m_dmg_modifier{};
+            std::uint16_t   m_material{};
+            std::uint8_t    m_climbable{};
+        }               m_game{};
 
-        char   pad0[ 48u ]{};
+        std::uint8_t    pad0[ 48u ]{};
     };
 
     struct ray_t {
@@ -505,7 +487,7 @@ namespace csgo::valve {
     };
 
     struct weapon_info_t {
-        char            pad0[ 4u ]{};
+        std::uint8_t    pad0[ 4u ]{};
         const char*     m_con_name{};
         char            pad1[ 12u ]{};
         int             m_max_clip1{},
@@ -517,14 +499,14 @@ namespace csgo::valve {
         const char*     m_world_model{},
                         *m_view_model{},
                         *m_dropped_model{};
-        char            pad2[ 80u ]{};
+        std::uint8_t    pad2[ 80u ]{};
         const char*     m_hud_name{},
                         *m_name{};
-        char            pad3[ 2u ]{};
+        std::uint8_t    pad3[ 2u ]{};
         bool            m_is_melee{};
-        char            pad4[ 9u ]{};
+        std::uint8_t    pad4[ 9u ]{};
         float           m_weight{};
-        char            pad5[ 40u ]{};
+        std::uint8_t    pad5[ 40u ]{};
         e_weapon_type   m_type{};
 #ifndef CSGO2018
         int             m_unk_type{};
@@ -537,7 +519,7 @@ namespace csgo::valve {
                         m_time_to_idle_after_fire{},
                         m_idle_interval{};
         bool            m_full_auto{};
-        char            pad6[ 3u ]{};
+        std::uint8_t    pad6[ 3u ]{};
         int             m_dmg{};
 #ifndef CSGO2018
         float           m_headshot_multiplier{};
@@ -545,18 +527,18 @@ namespace csgo::valve {
         float           m_armor_ratio{};
         int             m_bullets{};
         float           m_penetration{},
-                        m_flinch_vel_modifier_large{},
-                        m_flinch_vel_modifier_small{},
+                        m_flinch_velocity_modifier_large{},
+                        m_flinch_velocity_modifier_small{},
                         m_range{},
                         m_range_modifier{},
-                        m_throw_vel{};
-        char            pad7[ 12u ]{};
+                        m_throw_velocity{};
+        std::uint8_t    pad7[ 12u ]{};
         bool            m_has_silencer{};
-        char            pad8[ 15u ]{};
+        std::uint8_t    pad8[ 15u ]{};
         float           m_max_speed{},
                         m_max_speed_alt{};
 #ifndef CSGO2018
-        char            pad9[ 4u ]{};
+        std::uint8_t    pad9[ 4u ]{};
 #endif
         float           m_spread{},
                         m_spread_alt{},
@@ -598,9 +580,9 @@ namespace csgo::valve {
                         m_bone_controller[ 6u ]{};
         sdk::vec3_t     m_pos{};
         float           m_quat[ 4u ]{};
-        sdk::vec3_t     m_rot{},
+        sdk::vec3_t     m_rotation{},
                         m_pos_scale{},
-                        m_rot_scale{};
+                        m_rotation_scale{};
         sdk::mat3x4_t   m_pose_to_bone{};
         float           m_align[ 4u ]{};
         int             m_flags{},
@@ -610,18 +592,18 @@ namespace csgo::valve {
                         m_surface_prop_index{},
                         m_contents{},
                         m_surface_prop_lookup{};
-        char            pad0[ 28u ]{};
+        std::uint8_t    pad0[ 28u ]{};
     };
 
     struct studio_bbox_t {
-        int         m_bone{},
-                    m_group{};
-        sdk::vec3_t m_mins{},
-                    m_maxs{};
-        int         m_name_index{};
-        sdk::qang_t m_rot{};
-        float       m_radius{};
-        char        pad0[ 16u ]{};
+        int             m_bone{},
+                        m_group{};
+        sdk::vec3_t     m_mins{},
+                        m_maxs{};
+        int             m_name_index{};
+        sdk::qang_t     m_rotation{};
+        float           m_radius{};
+        std::uint8_t    pad0[ 16u ]{};
     };
 
     struct studio_hitbox_set_t {
@@ -662,7 +644,7 @@ namespace csgo::valve {
                             m_hitbox_set_index{};
         }               *m_studio{};
 
-        char            pad0[ 44u ]{};
+        std::uint8_t    pad0[ 44u ]{};
         bone_flags_t    m_bone_flags{};
     };
 
@@ -674,9 +656,9 @@ namespace csgo::valve {
         OFFSET_VFUNC( void( __vectorcall* )( decltype( this ), void*, float, float, float, void* ),
             update( float pitch, float yaw ), g_ctx->offsets( ).m_anim_state.m_update, nullptr, 0.f, yaw, pitch, nullptr );
 
-        char                    pad0[ 4u ]{};
+        std::uint8_t            pad0[ 4u ]{};
         bool                    m_first_update{};
-        char                    pad1[ 91u ]{};
+        std::uint8_t            pad1[ 91u ]{};
         cs_player_t*            m_player{};
         weapon_cs_base_gun_t*   m_weapon{},
                                 *m_last_weapon{};
@@ -699,9 +681,9 @@ namespace csgo::valve {
                                 m_recrouch_weight{};
         sdk::vec3_t             m_origin{},
                                 m_last_origin{},
-                                m_vel{},
-                                m_vel_normalized{},
-                                m_vel_normalized_non_zero{};
+                                m_velocity{},
+                                m_velocity_normalized{},
+                                m_velocity_normalized_non_zero{};
         float                   m_speed_2d{},
                                 m_up_speed{},
                                 m_speed_as_portion_of_run_speed{},
@@ -711,29 +693,29 @@ namespace csgo::valve {
                                 m_time_since_stopped_moving{};
         bool                    m_on_ground{},
                                 m_landing{};
-        char                    pad6[ 6u ]{};
+        std::uint8_t            pad6[ 6u ]{};
         float                   m_time_since_in_air{},
                                 m_left_ground_height{},
                                 m_land_anim_multiplier{},
                                 m_walk_to_run_transition{};
-        char                    pad7[ 4u ]{};
+        std::uint8_t            pad7[ 4u ]{};
         float                   m_in_air_smooth_value{};
         bool                    m_on_ladder{};
-        char                    pad8[ 47u ]{};
-        float                   m_vel_test_time{};
-        sdk::vec3_t             m_last_vel{},
-                                m_dst_accel{},
-                                m_accel{};
-        float                   m_accel_weight{};
-        char                    pad9[ 12u ]{};
+        std::uint8_t            pad8[ 47u ]{};
+        float                   m_velocity_test_time{};
+        sdk::vec3_t             m_last_velocity{},
+                                m_dst_acceleration{},
+                                m_acceleration{};
+        float                   m_acceleration_weight{};
+        std::uint8_t            pad9[ 12u ]{};
         float                   m_strafe_weight{};
-        char                    pad10[ 4u ]{};
+        std::uint8_t            pad10[ 4u ]{};
         float                   m_strafe_cycle{};
         int                     m_strafe_sequence{};
-        char                    pad11[ 388u ]{};
+        std::uint8_t            pad11[ 388u ]{};
         float                   m_camera_shooth_height{};
         bool                    m_smooth_height_valid{};
-        char                    pad12[ 11u ]{};
+        std::uint8_t            pad12[ 11u ]{};
         float                   m_aim_yaw_min{},
                                 m_aim_yaw_max{},
                                 m_aim_pitch_min{},
@@ -761,77 +743,6 @@ namespace csgo::valve {
     using anim_layers_t = utl_vec_t< anim_layer_t >;
 
     using bones_t = utl_vec_t< sdk::mat3x4_t >;
-
-    enum struct e_beam_type : int {
-        two_points,
-        sprite,
-        expands_disk,
-        expands_cylinder,
-        follow,
-        ring,
-        spline,
-        ring_point,
-        laser,
-        tesla
-    };
-
-    enum struct e_beam_flags : int {
-        none,
-        ent_start    = 1 << 0,
-        ent_end      = 1 << 1,
-        fade_in      = 1 << 2,
-        fade_out     = 1 << 3,
-        sine_noise   = 1 << 4,
-        solid        = 1 << 5,
-        shade_in     = 1 << 6,
-        shade_out    = 1 << 7,
-        static_noise = 1 << 8,
-        no_tile      = 1 << 9,
-        use_hitboxes = 1 << 10,
-        vis_start    = 1 << 11,
-        vis_end      = 1 << 12,
-        active       = 1 << 13,
-        forever      = 1 << 14,
-        halo_beam    = 1 << 15,
-        reversed     = 1 << 16
-    };
-    ENUM_BIT_OPERATORS( e_beam_flags, true );
-
-    struct beam_info_t {
-        ALWAYS_INLINE beam_info_t( )
-            : m_type( e_beam_type::two_points ), m_model_idx( -1 ), m_halo_idx( -1 ), m_renderable( true ) {};
-
-        e_beam_type    m_type{};
-        base_entity_t* m_ent_start{};
-        int            m_attachment_start{};
-        base_entity_t* m_ent_end{};
-        int            m_attachment_end{};
-        sdk::vec3_t    m_pos_start{};
-        sdk::vec3_t    m_pos_end{};
-        int            m_model_idx{};
-        const char*    m_model_name{};
-        int            m_halo_idx{};
-        const char*    m_halo_name{};
-        float          m_halo_scale{},
-                       m_life{},
-                       m_width_start{},
-                       m_width_end{},
-                       m_fade_length{},
-                       m_amplitude{},
-                       m_brightness{},
-                       m_speed{};
-        int            m_frame_start{};
-        float          m_framerate{},
-                       m_red{},
-                       m_green{},
-                       m_blue{};
-        bool           m_renderable{};
-        int            m_segs{};
-        e_beam_flags   m_flags{};
-        sdk::vec3_t    m_center{};
-        float          m_radius_start{},
-                       m_radius_end{};
-    };
 
     enum struct e_item_index : std::uint16_t {
         none,
@@ -929,7 +840,7 @@ namespace csgo::valve {
         render_end
     };
 
-    enum struct e_anim_layer : std::size_t {
+    enum struct e_anim_layer : int {
         aim_matrix,
         weapon_action,
         weapon_action_recrouch,
@@ -953,39 +864,39 @@ namespace csgo::valve {
         ct
     };
 
-    enum struct e_ent_flags : std::size_t {
-        on_ground             = 1 << 0,
-        ducking               = 1 << 1,
-        anim_ducking          = 1 << 2,
-        water_jump            = 1 << 3,
-        on_train              = 1 << 4,
-        in_rain               = 1 << 5,
-        frozen                = 1 << 6,
-        at_controls           = 1 << 7,
-        client                = 1 << 8,
-        fake_client           = 1 << 9,
-        in_water              = 1 << 10,
-        fly                   = 1 << 11,
-        swim                  = 1 << 12,
-        conveyor              = 1 << 13,
-        npc                   = 1 << 14,
-        godmode               = 1 << 15,
-        no_target             = 1 << 16,
-        aim_target            = 1 << 17,
-        partial_ground        = 1 << 18,
-        static_prop           = 1 << 19,
-        graphed               = 1 << 20,
-        grenade               = 1 << 21,
-        step_movement         = 1 << 22,
-        dont_touch            = 1 << 23,
-        base_vel              = 1 << 24,
-        world_brush           = 1 << 25,
-        object                = 1 << 26,
-        kill_me               = 1 << 27,
-        on_fire               = 1 << 28,
-        dissolving            = 1 << 29,
-        ragdoll               = 1 << 30,
-        unblockable_by_player = 1u << 31
+    enum struct e_ent_flags : std::uint32_t {
+        on_ground             = 1u << 0u,
+        ducking               = 1u << 1u,
+        anim_ducking          = 1u << 2u,
+        water_jump            = 1u << 3u,
+        on_train              = 1u << 4u,
+        in_rain               = 1u << 5u,
+        frozen                = 1u << 6u,
+        at_controls           = 1u << 7u,
+        client                = 1u << 8u,
+        fake_client           = 1u << 9u,
+        in_water              = 1u << 10u,
+        fly                   = 1u << 11u,
+        swim                  = 1u << 12u,
+        conveyor              = 1u << 13u,
+        npc                   = 1u << 14u,
+        godmode               = 1u << 15u,
+        no_target             = 1u << 16u,
+        aim_target            = 1u << 17u,
+        partial_ground        = 1u << 18u,
+        static_prop           = 1u << 19u,
+        graphed               = 1u << 20u,
+        grenade               = 1u << 21u,
+        step_movement         = 1u << 22u,
+        dont_touch            = 1u << 23u,
+        base_vel              = 1u << 24u,
+        world_brush           = 1u << 25u,
+        object                = 1u << 26u,
+        kill_me               = 1u << 27u,
+        on_fire               = 1u << 28u,
+        dissolving            = 1u << 29u,
+        ragdoll               = 1u << 30u,
+        unblockable_by_player = 1u << 31u
     };
     ENUM_BIT_OPERATORS( e_ent_flags, true );
 
@@ -1019,7 +930,7 @@ namespace csgo::valve {
     };
 
     enum struct e_game_type : int {
-        unk = -1,
+        unknown = -1,
         classic,
         gungame,
         training,

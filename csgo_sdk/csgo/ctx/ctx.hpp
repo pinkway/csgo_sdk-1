@@ -9,8 +9,8 @@ namespace csgo {
     private:
         struct {
             sdk::address_t  m_local_player{},
+                            m_weapon_system{},
                             m_user_cmd_checksum{};
-
 
             struct {
                 sdk::address_t m_reset{}, m_update{};
@@ -23,9 +23,9 @@ namespace csgo {
             struct {
                 std::uint32_t   m_health{}, m_team_num{},
                                 m_sim_time{}, m_flags{},
-                                m_origin{}, m_vel{},
-                                m_abs_origin{}, m_abs_vel{},
-                                m_abs_rot{}, m_move_type{},
+                                m_origin{}, m_velocity{},
+                                m_abs_origin{}, m_abs_velocity{},
+                                m_abs_rotation{}, m_move_type{},
                                 m_mins{}, m_maxs{};
             }               m_base_entity{};
 
@@ -45,8 +45,6 @@ namespace csgo {
             }               m_base_attributable_item{};
 
             struct {
-                sdk::address_t  m_get_info{};
-
                 std::uint32_t   m_clip1{}, m_primary_reserve_ammo_count{},
                                 m_next_primary_attack{}, m_next_secondary_attack{};
             }               m_base_weapon{};

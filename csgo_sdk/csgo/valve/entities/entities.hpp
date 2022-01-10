@@ -25,11 +25,11 @@ namespace csgo::valve {
         OFFSET( e_ent_flags, flags( ), g_ctx->offsets( ).m_base_entity.m_flags );
 
         OFFSET( sdk::vec3_t, origin( ), g_ctx->offsets( ).m_base_entity.m_origin );
-        OFFSET( sdk::vec3_t, vel( ), g_ctx->offsets( ).m_base_entity.m_vel );
+        OFFSET( sdk::vec3_t, velocity( ), g_ctx->offsets( ).m_base_entity.m_velocity );
 
         OFFSET( sdk::vec3_t, abs_origin( ), g_ctx->offsets( ).m_base_entity.m_abs_origin );
-        OFFSET( sdk::vec3_t, abs_vel( ), g_ctx->offsets( ).m_base_entity.m_abs_vel );
-        OFFSET( sdk::qang_t, abs_rot( ), g_ctx->offsets( ).m_base_entity.m_abs_rot );
+        OFFSET( sdk::vec3_t, abs_velocity( ), g_ctx->offsets( ).m_base_entity.m_abs_velocity );
+        OFFSET( sdk::qang_t, abs_rotation( ), g_ctx->offsets( ).m_base_entity.m_abs_rotation );
 
         OFFSET( e_move_type, move_type( ), g_ctx->offsets( ).m_base_entity.m_move_type );
 
@@ -62,7 +62,7 @@ namespace csgo::valve {
     };
 
     struct base_weapon_t : public base_animating_t, base_attributable_item_t {
-        OFFSET_VFUNC( weapon_info_t*( __thiscall* )( decltype( this ) ), info( ), g_ctx->offsets( ).m_base_weapon.m_get_info );
+        ALWAYS_INLINE weapon_info_t* info( );
 
         OFFSET( int, clip1( ), g_ctx->offsets( ).m_base_weapon.m_clip1 );
         OFFSET( int, primary_reserve_ammo_count( ), g_ctx->offsets( ).m_base_weapon.m_primary_reserve_ammo_count );

@@ -3,6 +3,14 @@
 #include "../entities.hpp"
 
 namespace csgo::valve {
+    ALWAYS_INLINE weapon_info_t* base_weapon_t::info( ) {
+        using fn_t = weapon_info_t*( __thiscall* )( sdk::address_t, e_item_index );
+
+        const auto weapon_system = g_ctx->offsets( ).m_weapon_system;
+
+        return ( *weapon_system.as< fn_t** >( ) )[ 2u ]( weapon_system, item_index( ) );
+    }
+
     ALWAYS_INLINE weapon_cs_base_gun_t* base_combat_character_t::weapon( ) {
         return static_cast< weapon_cs_base_gun_t* >( g_entity_list->get_entity( weapon_handle( ) ) );
     }

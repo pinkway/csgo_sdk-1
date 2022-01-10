@@ -47,10 +47,9 @@ namespace csgo::valve {
 
         m_alloc_count = new_alloc_count;
 
-        m_ptr = reinterpret_cast< _value_t* >( m_ptr
-            ? realloc( m_ptr, m_alloc_count * sizeof( _value_t ) )
-            : malloc( m_alloc_count * sizeof( _value_t ) )
-        );
+        m_ptr = ( m_ptr
+            ? g_mem_alloc->realloc( m_ptr, m_alloc_count * sizeof( _value_t ) )
+            : g_mem_alloc->alloc( m_alloc_count * sizeof( _value_t ) ) ).template as< _value_t* >( );
     }
 
     template < typename _value_t, typename _index_t >

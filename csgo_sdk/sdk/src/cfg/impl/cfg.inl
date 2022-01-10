@@ -52,13 +52,13 @@ namespace sdk {
             m_value.reserve( bytes.size( ) );
 
             for ( const auto& chr : bytes.items( ) )
-                m_value.push_back( chr.value( ).get< char >( ) );
+                m_value.push_back( chr.value( ).template get< char >( ) );
 
             return;
         }
 
         for ( std::size_t i{}; i < sizeof( _value_t ); ++i )
-            reinterpret_cast< std::uint8_t* >( &m_value )[ i ] = bytes.at( i ).get< std::uint8_t >( );
+            reinterpret_cast< std::uint8_t* >( &m_value )[ i ] = bytes.at( i ).template get< std::uint8_t >( );
     }
 
     ALWAYS_INLINE void c_cfg::add_var( detail::base_cfg_var_t* const var ) { m_vars.emplace_back( var ); }

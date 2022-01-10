@@ -3,15 +3,12 @@
 namespace csgo::valve {
     class c_mem_alloc {
     public:
-       VFUNC( sdk::address_t( __thiscall* )( decltype( this ), std::size_t ),
-          alloc( const std::size_t region_size ), 1u, region_size );
+       VFUNC( sdk::address_t( __thiscall* )( decltype( this ), std::size_t ), alloc( std::size_t size ), 1u, size );
 
        VFUNC( sdk::address_t( __thiscall* )( decltype( this ), void*, std::size_t ),
-          realloc( const sdk::address_t addr, const std::size_t region_size ), 3u,
-          addr.as< void* >( ), region_size );
+          realloc( sdk::address_t addr, std::size_t size ), 3u, addr.as< void* >( ), size );
 
-       VFUNC( void( __thiscall* )( decltype( this ), void* ),
-          free( const sdk::address_t addr ), 5, addr.as< void* >( ) );
+       VFUNC( void( __thiscall* )( decltype( this ), void* ), free( sdk::address_t addr ), 5u, addr.as< void* >( ) );
     } inline* g_mem_alloc{};
 
     class c_client {
@@ -36,8 +33,7 @@ namespace csgo::valve {
         VFUNC( base_entity_t*( __thiscall* )( decltype( this ), ent_handle_t ), get_entity( ent_handle_t handle ), 4u, handle );
     } inline* g_entity_list{};
 
-    class c_global_vars_base {
-    public:
+    struct global_vars_base_t {
         float           m_real_time{};
         int             m_frame_count{};
 
@@ -54,81 +50,79 @@ namespace csgo::valve {
         bool            m_client{}, m_remote_client{};
     } inline* g_global_vars{};
 
-    class c_client_state {
-    public:
+    struct client_state_t {
         struct net_chan_t {
             VFUNC( float( __thiscall* )( decltype( this ), e_net_flow ), latency( const e_net_flow flow ), 9u, flow );
 
             VFUNC( int( __thiscall* )( decltype( this ), std::uintptr_t ), send_datagram( ), 46u, 0u );
 
-            char    pad0[ 20u ]{};
-            bool    m_processing_messages{},
-                    m_should_delete{};
-            char    pad1[ 2u ]{};
-            int     m_out_seq{},
-                    m_in_seq{},
-                    m_out_seq_ack{},
-                    m_out_rel_state{},
-                    m_in_rel_state{},
-                    m_choked_packets{};
-            char    pad2[ 1044u ]{};
+            std::uint8_t    pad0[ 20u ]{};
+            bool            m_processing_messages{},
+                            m_should_delete{};
+            std::uint8_t    pad1[ 2u ]{};
+            int             m_out_seq{},
+                            m_in_seq{},
+                            m_out_seq_ack{},
+                            m_out_rel_state{},
+                            m_in_rel_state{},
+                            m_choked_packets{};
+            std::uint8_t    pad2[ 1044u ]{};
         };
 
-        char        pad0[ 156u ]{};
-        net_chan_t* m_net_chan{};
-        int         m_challenge_number{};
-        char        pad1[ 4u ]{};
-        double      m_connect_time{};
-        int         m_retry_number{};
-        char        pad2[ 84u ]{};
-        int         m_signon_state{};
-        char        pad3[ 4u ]{};
-        double      m_next_cmd_time{};
-        int         m_server_count{},
-                    m_cur_seq{};
-        char        pad4[ 8u ]{};
-        float       m_clock_offsets[ 16u ]{};
-        int         m_cur_clock_offset{},
-                    m_server_tick{},
-                    m_client_tick{},
-                    m_delta_tick{};
-        char        pad5[ 4u ]{};
-        int         m_view_entity{},
-                    m_player_slot{};
-        bool        m_paused{};
-        char        pad6[ 3u ]{};
-        char        m_level_name[ 260u ]{},
-                    m_level_name_short[ 40u ]{};
-        char        pad7[ 212u ]{};
-        int         m_max_clients{};
-        char        pad8[ 18836u ]{};
-        int         m_old_tick_count{};
-        float       m_tick_remainder{},
-                    m_frame_time{};
-        int         m_last_cmd_out{},
-                    m_choked_cmds{},
-                    m_last_cmd_ack{},
-                    m_last_server_tick{},
-                    m_cmd_ack{},
-                    m_sound_seq{},
-                    m_last_progress_percent{};
-        bool        m_is_hltv{};
-        char        pad9[ 75u ]{};
-        sdk::qang_t m_view_angles{};
-        char        pad10[ 208u ]{};
+        std::uint8_t    pad0[ 156u ]{};
+        net_chan_t*     m_net_chan{};
+        int             m_challenge_number{};
+        std::uint8_t    pad1[ 4u ]{};
+        double          m_connect_time{};
+        int             m_retry_number{};
+        std::uint8_t    pad2[ 84u ]{};
+        int             m_signon_state{};
+        std::uint8_t    pad3[ 4u ]{};
+        double          m_next_cmd_time{};
+        int             m_server_count{},
+                        m_cur_seq{};
+        std::uint8_t    pad4[ 8u ]{};
+        float           m_clock_offsets[ 16u ]{};
+        int             m_cur_clock_offset{},
+                        m_server_tick{},
+                        m_client_tick{},
+                        m_delta_tick{};
+        std::uint8_t    pad5[ 4u ]{};
+        int             m_view_entity{},
+                        m_player_slot{};
+        bool            m_paused{};
+        std::uint8_t    pad6[ 3u ]{};
+        char            m_level_name[ 260u ]{},
+                        m_level_name_short[ 40u ]{};
+        std::uint8_t    pad7[ 212u ]{};
+        int             m_max_clients{};
+        std::uint8_t    pad8[ 18836u ]{};
+        int             m_old_tick_count{};
+        float           m_tick_remainder{},
+                        m_frame_time{};
+        int             m_last_cmd_out{},
+                        m_choked_cmds{},
+                        m_last_cmd_ack{},
+                        m_last_server_tick{},
+                        m_cmd_ack{},
+                        m_sound_seq{},
+                        m_last_progress_percent{};
+        bool            m_is_hltv{};
+        std::uint8_t    pad9[ 75u ]{};
+        sdk::qang_t     m_view_angles{};
+        std::uint8_t    pad10[ 208u ]{};
     } inline* g_client_state{};
 
-    class c_input {
-    public:
-        char                pad0[ 12u ]{};
+    struct input_t {
+        std::uint8_t        pad0[ 12u ]{};
         bool                m_track_ir_available{},
                             m_mouse_initialized{},
                             m_mouse_active{};
-        char                pad1[ 178u ]{};
+        std::uint8_t        pad1[ 178u ]{};
         bool                m_camera_in_third_person{};
-        char                pad2[ 2u ]{};
+        std::uint8_t        pad2[ 2u ]{};
         sdk::vec3_t         m_camera_offset{};
-        char                pad3[ 56u ]{};
+        std::uint8_t        pad3[ 56u ]{};
         user_cmd_t*         m_cmds{};
         vfyd_user_cmd_t*    m_vfyd_cmds{};
     } inline* g_input{};
@@ -145,8 +139,7 @@ namespace csgo::valve {
         VFUNC( void( __thiscall* )( decltype( this ), base_player_t* ), set_host( base_player_t* player ), 1u, player );
     } inline* g_move_helper{};
 
-    class c_prediction {
-    public:
+    struct prediction_t {
         VFUNC( void( __thiscall* )( decltype( this ), int, bool, int, int ),
             update( int start, bool valid, int in_ack, int out_cmd ), 3u, start, valid, in_ack, out_cmd );
 
@@ -157,19 +150,19 @@ namespace csgo::valve {
         VFUNC( void( __thiscall* )( decltype( this ), base_player_t*, user_cmd_t*, move_data_t* ),
             finish_move( base_player_t* player, user_cmd_t* cmd, move_data_t* move_data ), 21u, player, cmd, move_data );
 
-        char    pad0[ 8u ]{};
-        bool    m_in_prediction{};
-        char    pad1{};
-        bool    m_engine_paused{},
-                m_old_cl_predict_value{};
-        int     m_prev_start_frame{},
-                m_incoming_packet_number{};
-        float   m_last_server_world_time_stamp{};
-        bool    m_first_time_predicted{};
-        char    pad2[ 3u ]{};
-        int     m_cmds_predicted{},
-                m_server_cmds_acked{};
-        bool    m_prev_ack_had_errors{};
+        std::uint8_t    pad0[ 8u ]{};
+        bool            m_in_prediction{};
+        std::uint8_t    pad1{};
+        bool            m_engine_paused{},
+                        m_old_cl_predict_value{};
+        int             m_prev_start_frame{},
+                        m_incoming_packet_number{};
+        float           m_last_server_world_time_stamp{};
+        bool            m_first_time_predicted{};
+        std::uint8_t    pad2[ 3u ]{};
+        int             m_cmds_predicted{},
+                        m_server_cmds_acked{};
+        bool            m_prev_ack_had_errors{};
     } inline* g_prediction{};
 
     class c_movement {
@@ -201,8 +194,7 @@ namespace csgo::valve {
         VFUNC( surface_data_t*( __thiscall* )( decltype( this ), int ), get( int index ), 5u, index );
     } inline* g_surface_data{};
 
-    class c_game_rules {
-    public:
+    struct game_rules_t {
         OFFSET( bool, warmup_period( ), g_ctx->offsets( ).m_game_rules.m_warmup_period );
         OFFSET( bool, freeze_period( ), g_ctx->offsets( ).m_game_rules.m_freeze_period );
 

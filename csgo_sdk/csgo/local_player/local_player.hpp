@@ -5,8 +5,8 @@ namespace csgo {
     private:
         void update_prediction( ) const;
 
-        valve::weapon_cs_base_gun_t*   m_weapon{};
-        valve::weapon_info_t*          m_weapon_info{};
+        valve::weapon_cs_base_gun_t*    m_weapon{};
+        valve::weapon_info_t*           m_weapon_info{};
     public:
         void create_move( bool& send_packet,
             valve::user_cmd_t& cmd, valve::vfyd_user_cmd_t& vfyd_cmd

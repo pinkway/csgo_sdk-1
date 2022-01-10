@@ -41,53 +41,29 @@ namespace csgo::valve {
         ALWAYS_INLINE utl_vec_t< _value_t >& operator =( const utl_vec_t< _value_t >& other );
     };
 
-    struct buf_write_t {
-        ALWAYS_INLINE buf_write_t( )
-            : m_data_bits( -1 ), m_ass_on_overflow( true ) {};
-
-        sdk::address_t m_data{};
-        int            m_data_bytes{},
-                       m_data_bits{},
-                       m_cur_bit{};
-        bool           m_overflow{},
-                       m_ass_on_overflow{};
-        const char*    m_debug_name{};
-    };
-
-    struct buf_read_t {
-        const char*    m_debug_name{};
-        bool           m_overflow{};
-        int            m_data_bits{};
-        std::uint32_t  m_data_bytes{},
-                       m_in_buf_word{};
-        int            m_bits_avail{};
-        std::uint32_t* m_data_in{},
-                       *m_buf_end{},
-                       *m_data{};
-    };
-
     struct key_values_t {
-        ~key_values_t( );
+        using get_symbol_proc_t = bool( __cdecl* )( const char* );
 
-        using get_symbol_proc_t = bool( * )( const char* );
+        std::uint32_t       m_key_name : 24u,
+                            m_key_name_case_sensitive1 : 8u;
 
-        std::uint32_t      m_key_name : 24;
-        std::uint32_t      m_key_name_case_sensitive1 : 8;
-        char*              m_chr_val{};
-        wchar_t*           m_wchr_val{};
+        char*               m_str{};
+        wchar_t*            m_wstr{};
+
         union {
-            int            m_int_val{};
-            float            m_flt_val;
-            std::uintptr_t   m_ptr;
-            std::uint8_t   m_col[ 4u ];
+            int             m_int;
+            float           m_float;
+            sdk::address_t  m_ptr;
+            sdk::argb_t     m_clr{};
         };
-        char               m_data_type{},
-                           m_has_esc_sequences{};
-        std::uint16_t      m_key_name_case_sensitive2{};
-        key_values_t*      m_peer{},
-                           *m_sub{},
-                           *m_chain{};
-        get_symbol_proc_t  m_get_symbol_proc_fn{};
+
+        char                m_data_type{},
+                            m_has_esc_sequences{};
+        std::uint16_t       m_key_name_case_sensitive2{};
+
+        key_values_t*       m_peer{}, *m_sub{}, *m_chain{};
+
+        get_symbol_proc_t   m_get_symbol_proc_fn{};
     };
 }
 

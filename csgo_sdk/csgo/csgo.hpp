@@ -29,6 +29,7 @@
     } \
 
 #include "ctx/ctx.hpp"
+#include "menu/menu.hpp"
 
 #include "valve/valve.hpp"
 #include "local_player/local_player.hpp"
