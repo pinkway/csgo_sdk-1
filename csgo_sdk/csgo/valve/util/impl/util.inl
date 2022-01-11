@@ -18,14 +18,13 @@ namespace csgo::valve {
 
         const auto calc_new_alloc_count = [ ] ( int count, const int grow_size, const int requested, const int bytes ) {
             if ( grow_size )
-                count = ( ( 1 + ( ( requested - 1 ) / grow_size ) ) * grow_size );
-            else {
-                if ( !count )
-                    count = ( 31 + bytes ) / bytes;
+               return ( 1 + ( requested - 1 ) / grow_size ) * grow_size;
 
-                while ( count < requested )
-                    count *= 2;
-            }
+            if ( !count )
+                count = ( 31 + bytes ) / bytes;
+
+            while ( count < requested )
+                count *= 2;
 
             return count;
         };
@@ -49,7 +48,8 @@ namespace csgo::valve {
 
         m_ptr = ( m_ptr
             ? g_mem_alloc->realloc( m_ptr, m_alloc_count * sizeof( _value_t ) )
-            : g_mem_alloc->alloc( m_alloc_count * sizeof( _value_t ) ) ).template as< _value_t* >( );
+            : g_mem_alloc->alloc( m_alloc_count * sizeof( _value_t ) )
+        ).template as< _value_t* >( );
     }
 
     template < typename _value_t, typename _index_t >

@@ -1,16 +1,6 @@
 #pragma once
 
 namespace csgo::valve {
-    class c_mem_alloc {
-    public:
-       VFUNC( sdk::address_t( __thiscall* )( decltype( this ), std::size_t ), alloc( std::size_t size ), 1u, size );
-
-       VFUNC( sdk::address_t( __thiscall* )( decltype( this ), void*, std::size_t ),
-          realloc( sdk::address_t addr, std::size_t size ), 3u, addr.as< void* >( ), size );
-
-       VFUNC( void( __thiscall* )( decltype( this ), void* ), free( sdk::address_t addr ), 5u, addr.as< void* >( ) );
-    } inline* g_mem_alloc{};
-
     class c_client {
     public:
         VFUNC( client_class_t*( __thiscall* )( decltype( this ) ), all_classes( ), 8u );
@@ -54,7 +44,7 @@ namespace csgo::valve {
         struct net_chan_t {
             VFUNC( float( __thiscall* )( decltype( this ), e_net_flow ), latency( const e_net_flow flow ), 9u, flow );
 
-            VFUNC( int( __thiscall* )( decltype( this ), std::uintptr_t ), send_datagram( ), 46u, 0u );
+            VFUNC( int( __thiscall* )( decltype( this ), std::uintptr_t ), send_datagram( ), DIFF_CSVER_VALUE( 48u, 46u ), 0u );
 
             std::uint8_t    pad0[ 20u ]{};
             bool            m_processing_messages{},
@@ -94,9 +84,9 @@ namespace csgo::valve {
         std::uint8_t    pad6[ 3u ]{};
         char            m_level_name[ 260u ]{},
                         m_level_name_short[ 40u ]{};
-        std::uint8_t    pad7[ 212u ]{};
+        std::uint8_t    pad7[ DIFF_CSVER_VALUE( 92u, 212u ) ]{};
         int             m_max_clients{};
-        std::uint8_t    pad8[ 18836u ]{};
+        std::uint8_t    pad8[ DIFF_CSVER_VALUE( 18828u, 18836u ) ]{};
         int             m_old_tick_count{};
         float           m_tick_remainder{},
                         m_frame_time{};
@@ -114,15 +104,15 @@ namespace csgo::valve {
     } inline* g_client_state{};
 
     struct input_t {
-        std::uint8_t        pad0[ 12u ]{};
+        std::uint8_t        pad0[ DIFF_CSVER_VALUE( 4u, 12u ) ]{};
         bool                m_track_ir_available{},
                             m_mouse_initialized{},
                             m_mouse_active{};
-        std::uint8_t        pad1[ 178u ]{};
+        std::uint8_t        pad1[ DIFF_CSVER_VALUE( 158u, 178u ) ]{};
         bool                m_camera_in_third_person{};
-        std::uint8_t        pad2[ 2u ]{};
+        std::uint8_t        pad2[ DIFF_CSVER_VALUE( 1u, 2u ) ]{};
         sdk::vec3_t         m_camera_offset{};
-        std::uint8_t        pad3[ 56u ]{};
+        std::uint8_t        pad3[ DIFF_CSVER_VALUE( 54u, 56u ) ]{};
         user_cmd_t*         m_cmds{};
         vfyd_user_cmd_t*    m_vfyd_cmds{};
     } inline* g_input{};

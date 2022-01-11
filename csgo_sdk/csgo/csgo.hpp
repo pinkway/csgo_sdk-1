@@ -28,6 +28,12 @@
         return offset.as< type >( )( this, __VA_ARGS__ ); \
     } \
 
+#ifdef CSGO2018
+#define DIFF_CSVER_VALUE( legacy, latest ) legacy
+#else
+#define DIFF_CSVER_VALUE( legacy, latest ) latest
+#endif
+
 #include "ctx/ctx.hpp"
 #include "menu/menu.hpp"
 

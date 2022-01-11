@@ -3,6 +3,8 @@
 namespace csgo::valve {
     inline constexpr auto k_mp_backup = 150u;
 
+    inline constexpr auto k_max_bones = 256u;
+
     enum struct ent_handle_t : sdk::ulong_t {};
 
     enum struct e_buttons : int {
@@ -259,6 +261,22 @@ namespace csgo::valve {
     };
 
     struct ray_t {
+        ALWAYS_INLINE ray_t( ) = default;
+
+        ALWAYS_INLINE ray_t( const sdk::vec3_t& start, const sdk::vec3_t& end )
+            : m_start{ start }, m_delta{ end - start },
+            m_ray{ true }, m_swept{ m_delta.length_sqr( ) != 0.f } {}
+
+        ALWAYS_INLINE ray_t(
+            const sdk::vec3_t& start, const sdk::vec3_t& end,
+            const sdk::vec3_t& mins, const sdk::vec3_t& maxs
+        ) : m_start{ start + ( mins + maxs ) / 2.f },
+            m_delta{ end - start },
+            m_start_offset{ ( mins + maxs ) / -2.f },
+            m_extents{ ( maxs - mins ) / 2.f },
+            m_ray{ m_extents.length_sqr( ) < 1e-6f },
+            m_swept{ m_delta.length_sqr( ) != 0.f } {}
+
         sdk::vec3_t             m_start{};
         std::uint8_t            pad0[ 4u ]{};
 

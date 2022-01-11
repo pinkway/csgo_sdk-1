@@ -1,6 +1,17 @@
 #pragma once
 
 namespace csgo::valve {
+    /* should be in interfaces.hpp tbh */
+    class c_mem_alloc {
+    public:
+        VFUNC( sdk::address_t( __thiscall* )( decltype( this ), std::size_t ), alloc( std::size_t size ), 1u, size );
+
+        VFUNC( sdk::address_t( __thiscall* )( decltype( this ), void*, std::size_t ),
+           realloc( sdk::address_t addr, std::size_t size ), 3u, addr.as< void* >( ), size );
+
+        VFUNC( void( __thiscall* )( decltype( this ), void* ), free( sdk::address_t addr ), 5u, addr.as< void* >( ) );
+    } inline* g_mem_alloc{};
+
     template < typename _value_t, typename _index_t >
     struct utl_mem_t {
     private:

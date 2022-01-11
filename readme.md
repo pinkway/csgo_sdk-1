@@ -4,6 +4,7 @@ a csgo hack base written in c++20, compatible w msvc & clang-cl
 
 ## features
 - easy to use n understand project structure & code
+- the base is split into 2 "projects", one of which is a [vuln-sdk](https://github.com/vulnerable-development/sdk/) that can be used elsewhere
 - compatibility w old csgo ver ( 8 march 2018 )
 - byte_seq_t, cfg_var_t n other things present in vuln-sdk
 

@@ -4,7 +4,6 @@ namespace sdk {
     void c_cfg::save( const std::string_view name ) const {
         const auto path = std::filesystem::path{ SDK_CFG_ID_OBJECT } /= name;
 
-        /* create a dir if it doesn't exists */
         std::filesystem::create_directory( SDK_CFG_ID_OBJECT );
 
         nlohmann::json json{};
@@ -29,7 +28,6 @@ namespace sdk {
     void c_cfg::load( const std::string_view name ) {
         const auto path = std::filesystem::path{ SDK_CFG_ID_OBJECT } /= name;
 
-        /* create a dir if it doesn't exists */
         std::filesystem::create_directory( SDK_CFG_ID_OBJECT );
 
         std::string str{};
