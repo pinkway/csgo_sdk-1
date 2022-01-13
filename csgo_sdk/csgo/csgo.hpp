@@ -29,9 +29,9 @@
     } \
 
 #ifdef CSGO2018
-#define DIFF_CSVER_VALUE( legacy, latest ) legacy
+#define VARVAL( old, latest ) old
 #else
-#define DIFF_CSVER_VALUE( legacy, latest ) latest
+#define VARVAL( old, latest ) latest
 #endif
 
 #include "ctx/ctx.hpp"

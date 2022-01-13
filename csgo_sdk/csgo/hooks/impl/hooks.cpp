@@ -54,10 +54,10 @@ namespace csgo::hooks {
         o_lock_cursor( ecx, edx );
     }
 
-	NAKED void __stdcall create_move_proxy( int seq_number, float input_sample_frame_time, bool active ) {
-		__asm {
-			push ebp
-			mov ebp, esp
+    NAKED void __stdcall create_move_proxy( int seq_number, float input_sample_frame_time, bool active ) {
+        __asm {
+            push ebp
+            mov ebp, esp
 
             push ebx
             push esp

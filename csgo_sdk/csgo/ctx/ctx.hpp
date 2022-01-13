@@ -3,10 +3,39 @@
 namespace csgo {
     namespace valve {
         struct cvar_t;
+
+        struct recv_prop_t;
     }
 
     class c_ctx {
     private:
+        using modules_t = std::unordered_map< sdk::hash_t, sdk::x86_pe_image_t* >;
+
+        using interfaces_t = std::unordered_map< sdk::hash_t, sdk::address_t >;
+
+        struct ent_offset_t {
+            valve::recv_prop_t* m_prop{};
+            std::uint32_t       m_offset{};
+        };
+
+        using ent_offsets_t = std::unordered_map< sdk::hash_t, ent_offset_t >;
+
+        bool wait_for_all_modules( modules_t& modules ) const;
+
+        void init_imgui( const modules_t& modules ) const;
+
+        void parse_interfaces( sdk::x86_pe_image_t* const image, interfaces_t& interfaces ) const;
+
+        void init_interfaces( const modules_t& modules ) const;
+
+        bool parse_ent_offsets( ent_offsets_t& offsets, const modules_t& modules ) const;
+
+        void init_offsets( const modules_t& modules );
+
+        void init_cvars( );
+
+        void init_hooks( const modules_t& modules ) const;
+
         struct {
             sdk::address_t  m_local_player{},
                             m_weapon_system{},
