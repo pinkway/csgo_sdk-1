@@ -88,7 +88,7 @@ namespace csgo {
 
         const code_section_t inputsystem{ modules.at( HASH( "inputsystem.dll" ) ) };
 
-        HOOK( BYTESEQ( "55 8B EC 83 EC 0C 80 3D" ).search(
+        HOOK( BYTESEQ( "55 8B EC 83 EC ? 80 3D" ).search(
             inputsystem.m_start, inputsystem.m_end, false
         ), hooks::wnd_proc, hooks::o_wnd_proc );
 
@@ -382,7 +382,7 @@ namespace csgo {
             vguimatsurface.m_start, vguimatsurface.m_end, false
         ), hooks::lock_cursor, hooks::o_lock_cursor );
 
-        HOOK_VFUNC( valve::g_client, 22u, hooks::create_move_proxy, hooks::o_create_move );
+        HOOK_VFUNC( valve::g_client, VARVAL( 21u, 22u ), hooks::create_move_proxy, hooks::o_create_move );
     }
 
     void c_ctx::init( ) {
@@ -408,7 +408,7 @@ namespace csgo {
     }
 }
 
-#undef DETOUR
-#undef DETOUR_VFUNC
+#undef HOOK
+#undef HOOK_VFUNC
 
 #undef THROW_IF_DBG

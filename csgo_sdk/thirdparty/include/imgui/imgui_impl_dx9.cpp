@@ -223,6 +223,11 @@ void ImGui_ImplDX9_RenderDrawData(ImDrawData* draw_data)
     bd->pd3dDevice->SetIndices(bd->pIB);
     bd->pd3dDevice->SetFVF(D3DFVF_CUSTOMVERTEX);
 
+    DWORD backup_color_write{};
+    bd->pd3dDevice->GetRenderState(D3DRS_COLORWRITEENABLE, &backup_color_write);
+
+    bd->pd3dDevice->SetRenderState(D3DRS_COLORWRITEENABLE, 0xfffffffful);
+
     // Setup desired DX state
     ImGui_ImplDX9_SetupRenderState(draw_data);
 
@@ -270,6 +275,8 @@ void ImGui_ImplDX9_RenderDrawData(ImDrawData* draw_data)
     bd->pd3dDevice->SetTransform(D3DTS_WORLD, &last_world);
     bd->pd3dDevice->SetTransform(D3DTS_VIEW, &last_view);
     bd->pd3dDevice->SetTransform(D3DTS_PROJECTION, &last_projection);
+
+    bd->pd3dDevice->SetRenderState(D3DRS_COLORWRITEENABLE, backup_color_write);
 
     // Restore the DX9 state
     d3d9_state_block->Apply();
