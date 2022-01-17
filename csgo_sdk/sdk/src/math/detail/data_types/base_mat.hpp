@@ -9,7 +9,7 @@ namespace sdk::detail {
 
         using column_t = base_vec_t< _value_t, _rows_count >;
 
-        std::array< _value_t, _rows_count* _columns_count > m_elements{};
+        _value_t m_elements[ _rows_count * _columns_count ]{};
     public:
         ALWAYS_INLINE constexpr mat_helper_t( ) = default;
 
@@ -18,19 +18,19 @@ namespace sdk::detail {
         ALWAYS_INLINE constexpr mat_helper_t( const _args_t&... args ) : m_elements{ args... } {}
 
         ALWAYS_INLINE constexpr _value_t& at( const std::size_t row, const std::size_t column ) {
-            return m_elements.at( row * _columns_count + column );
+            return m_elements[ row * _columns_count + column ];
         }
 
         ALWAYS_INLINE constexpr _value_t at( const std::size_t row, const std::size_t column ) const {
-            return m_elements.at( row * _columns_count + column );
+            return m_elements[ row * _columns_count + column ];
         }
 
         ALWAYS_INLINE row_t& row( const std::size_t i ) {
-            return *reinterpret_cast< row_t* >( &m_elements.at( i * _columns_count ) );
+            return *reinterpret_cast< row_t* >( &m_elements[ i * _columns_count ] );
         }
 
         ALWAYS_INLINE const row_t& row( const std::size_t i ) const {
-            return *reinterpret_cast< const row_t* >( &m_elements.at( i * _columns_count ) );
+            return *reinterpret_cast< const row_t* >( &m_elements[ i * _columns_count ] );
         }
 
         template < typename _rhs_t >

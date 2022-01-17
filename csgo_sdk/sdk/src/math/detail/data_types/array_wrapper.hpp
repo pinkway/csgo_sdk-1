@@ -17,7 +17,7 @@ namespace sdk::detail {
         template < typename _other_t >
         using is_base_of = decltype( is_base_of_t::test( std::declval< _other_t >( ) ) );
 
-        std::array< _value_t, _size > m_elements{};
+        _value_t m_elements[ _size ]{};
     public:
         ALWAYS_INLINE constexpr array_wrapper_t( ) = default;
 
@@ -25,17 +25,17 @@ namespace sdk::detail {
             requires ( sizeof...( _args_t ) <= _size )
         ALWAYS_INLINE constexpr array_wrapper_t( const _args_t&... args ) : m_elements{ args... } {}
 
-        ALWAYS_INLINE constexpr _value_t& at( const std::size_t i ) { return m_elements.at( i ); }
+        ALWAYS_INLINE constexpr _value_t& at( const std::size_t i ) { return m_elements[ i ]; }
 
-        ALWAYS_INLINE constexpr _value_t at( const std::size_t i ) const { return m_elements.at( i ); }
+        ALWAYS_INLINE constexpr _value_t at( const std::size_t i ) const { return m_elements[ i ]; }
 
-        ALWAYS_INLINE constexpr auto begin( ) { return m_elements.begin( ); }
+        ALWAYS_INLINE constexpr _value_t* begin( ) { return m_elements; }
 
-        ALWAYS_INLINE constexpr auto begin( ) const { return m_elements.begin( ); }
+        ALWAYS_INLINE constexpr const _value_t* begin( ) const { return m_elements; }
 
-        ALWAYS_INLINE constexpr auto end( ) { return m_elements.end( ); }
+        ALWAYS_INLINE constexpr _value_t* end( ) { return m_elements + _size; }
 
-        ALWAYS_INLINE constexpr auto end( ) const { return m_elements.end( ); }
+        ALWAYS_INLINE constexpr const _value_t* end( ) const { return m_elements + _size; }
 
         template < typename _rhs_t >
             requires std::is_arithmetic_v< _rhs_t >
@@ -163,9 +163,7 @@ namespace sdk::detail {
             const array_wrapper_t< _value_t, _size, _derived_t >& rhs
         ) const {
             return std::lexicographical_compare_three_way(
-                m_elements.begin( ), m_elements.end( ),
-                rhs.m_elements.begin( ), rhs.m_elements.end( ),
-                std::_Synth_three_way{}
+                begin( ), end( ), rhs.begin( ), rhs.end( ), std::_Synth_three_way{}
             );
         }
 
