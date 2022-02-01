@@ -15,7 +15,6 @@ namespace csgo {
     ) {
         const auto old_angles = cmd.m_view_angles;
 
-        /* not the best way tho, but enough for an example */
         update_prediction( );
 
         hacks::g_move->handle( cmd );

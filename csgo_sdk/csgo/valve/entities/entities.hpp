@@ -13,8 +13,8 @@ namespace csgo::valve {
     };
 
     struct base_entity_t {
-        OFFSET( renderable_t*, renderable( ), sizeof( sdk::address_t ) );
-        OFFSET( networkable_t*, networkable( ), sizeof( sdk::address_t ) * 2u );
+        POFFSET( renderable_t, renderable( ), sizeof( sdk::address_t ) );
+        POFFSET( networkable_t, networkable( ), sizeof( sdk::address_t ) * 2u );
 
         OFFSET( int, health( ), g_ctx->offsets( ).m_base_entity.m_health );
         OFFSET( e_team, team( ), g_ctx->offsets( ).m_base_entity.m_team_num );

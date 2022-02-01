@@ -37,135 +37,67 @@ namespace sdk::detail {
 
         ALWAYS_INLINE constexpr const _value_t* end( ) const { return m_elements + _size; }
 
-        template < typename _rhs_t >
-            requires std::is_arithmetic_v< _rhs_t >
-        ALWAYS_INLINE _derived_t& operator -=( const _rhs_t rhs ) {
-            for ( auto& element : m_elements )
-                element -= rhs;
+#define ARITHMETIC_OPERATOR( op ) \
+    template < typename _rhs_t > \
+        requires std::is_arithmetic_v< _rhs_t > \
+    ALWAYS_INLINE _derived_t& operator op##=( const _rhs_t rhs ) { \
+        for ( auto& element : m_elements ) \
+            element op##= rhs; \
+        \
+        return static_cast< _derived_t& >( *this ); \
+    } \
+    \
+    template < std::size_t _rhs_size, typename _rhs_derived_t > \
+    ALWAYS_INLINE _derived_t& operator op##=( \
+        const array_wrapper_t< _value_t, _rhs_size, _rhs_derived_t >& rhs \
+    ) { \
+        constexpr auto k_min_size = std::min( _size, _rhs_size ); \
+        for ( std::size_t i{}; i < k_min_size; ++i ) \
+            at( i ) op##= rhs.at( i ); \
+        \
+        return static_cast< _derived_t& >( *this ); \
+    } \
+    \
+    template < typename _rhs_t > \
+        requires std::is_arithmetic_v< _rhs_t > || is_base_of< _rhs_t >::value \
+    ALWAYS_INLINE _derived_t operator op( const _rhs_t& rhs ) const { \
+        auto ret = *this; \
+        \
+        return ret op##= rhs; \
+    } \
 
-            return static_cast< _derived_t& >( *this );
-        }
+        ARITHMETIC_OPERATOR( - );
 
-        template < typename _rhs_t >
-            requires std::is_arithmetic_v< _rhs_t >
-        ALWAYS_INLINE _derived_t& operator +=( const _rhs_t rhs ) {
-            for ( auto& element : m_elements )
-                element += rhs;
+        ARITHMETIC_OPERATOR( + );
 
-            return static_cast< _derived_t& >( *this );
-        }
+        ARITHMETIC_OPERATOR( * );
 
-        template < typename _rhs_t >
-            requires std::is_arithmetic_v< _rhs_t >
-        ALWAYS_INLINE _derived_t& operator *=( const _rhs_t rhs ) {
-            for ( auto& element : m_elements )
-                element *= rhs;
+        ARITHMETIC_OPERATOR( / );
 
-            return static_cast< _derived_t& >( *this );
-        }
+#undef ARITHMETIC_OPERATOR
 
-        template < typename _rhs_t >
-            requires std::is_arithmetic_v< _rhs_t >
-        ALWAYS_INLINE _derived_t& operator /=( const _rhs_t rhs ) {
-            for ( auto& element : m_elements )
-                element /= rhs;
+#define COMPARISON_OPERATOR( op ) \
+    ALWAYS_INLINE constexpr bool operator op( \
+        const array_wrapper_t< _value_t, _size, _derived_t >& rhs \
+    ) const { \
+        for ( std::size_t i{}; i < _size; ++i ) \
+            if ( !( at( i ) op rhs.at( i ) ) ) \
+                return false; \
+        \
+        return true; \
+    } \
 
-            return static_cast< _derived_t& >( *this );
-        }
+        COMPARISON_OPERATOR( == );
 
-        template < std::size_t _rhs_size, typename _rhs_derived_t >
-        ALWAYS_INLINE _derived_t& operator -=(
-            const array_wrapper_t< _value_t, _rhs_size, _rhs_derived_t >& rhs
-        ) {
-            constexpr auto k_min_size = std::min( _size, _rhs_size );
-            for ( std::size_t i{}; i < k_min_size; ++i )
-                at( i ) -= rhs.at( i );
+        COMPARISON_OPERATOR( >= );
 
-            return static_cast< _derived_t& >( *this );
-        }
+        COMPARISON_OPERATOR( <= );
 
-        template < std::size_t _rhs_size, typename _rhs_derived_t >
-        ALWAYS_INLINE _derived_t& operator +=(
-            const array_wrapper_t< _value_t, _rhs_size, _rhs_derived_t >& rhs
-        ) {
-            constexpr auto k_min_size = std::min( _size, _rhs_size );
-            for ( std::size_t i{}; i < k_min_size; ++i )
-                at( i ) += rhs.at( i );
+        COMPARISON_OPERATOR( > );
 
-            return static_cast< _derived_t& >( *this );
-        }
+        COMPARISON_OPERATOR( < );
 
-        template < std::size_t _rhs_size, typename _rhs_derived_t >
-        ALWAYS_INLINE _derived_t& operator *=(
-            const array_wrapper_t< _value_t, _rhs_size, _rhs_derived_t >& rhs
-        ) {
-            constexpr auto k_min_size = std::min( _size, _rhs_size );
-            for ( std::size_t i{}; i < k_min_size; ++i )
-                at( i ) *= rhs.at( i );
-
-            return static_cast< _derived_t& >( *this );
-        }
-
-        template < std::size_t _rhs_size, typename _rhs_derived_t >
-        ALWAYS_INLINE _derived_t& operator /=(
-            const array_wrapper_t< _value_t, _rhs_size, _rhs_derived_t >& rhs
-        ) {
-            constexpr auto k_min_size = std::min( _size, _rhs_size );
-            for ( std::size_t i{}; i < k_min_size; ++i )
-                at( i ) /= rhs.at( i );
-
-            return static_cast< _derived_t& >( *this );
-        }
-
-        template < typename _rhs_t >
-            requires std::is_arithmetic_v< _rhs_t > || is_base_of< _rhs_t >::value
-        ALWAYS_INLINE _derived_t operator -( const _rhs_t& rhs ) const {
-            auto ret = *this;
-
-            return ret -= rhs;
-        }
-
-        template < typename _rhs_t >
-            requires std::is_arithmetic_v< _rhs_t > || is_base_of< _rhs_t >::value
-        ALWAYS_INLINE _derived_t operator +( const _rhs_t& rhs ) const {
-            auto ret = *this;
-
-            return ret += rhs;
-        }
-
-        template < typename _rhs_t >
-            requires std::is_arithmetic_v< _rhs_t > || is_base_of< _rhs_t >::value
-        ALWAYS_INLINE _derived_t operator *( const _rhs_t& rhs ) const {
-            auto ret = *this;
-
-            return ret *= rhs;
-        }
-
-        template < typename _rhs_t >
-            requires std::is_arithmetic_v< _rhs_t > || is_base_of< _rhs_t >::value
-        ALWAYS_INLINE _derived_t operator /( const _rhs_t& rhs ) const {
-            auto ret = *this;
-
-            return ret /= rhs;
-        }
-
-        ALWAYS_INLINE constexpr bool operator ==(
-            const array_wrapper_t< _value_t, _size, _derived_t >& rhs
-        ) const {
-            for ( std::size_t i{}; i < _size; ++i )
-                if ( at( i ) != rhs.at( i ) )
-                    return false;
-
-            return true;
-        }
-
-        ALWAYS_INLINE constexpr std::compare_three_way_result_t< _value_t, _value_t > operator <=>(
-            const array_wrapper_t< _value_t, _size, _derived_t >& rhs
-        ) const {
-            return std::lexicographical_compare_three_way(
-                begin( ), end( ), rhs.begin( ), rhs.end( ), std::_Synth_three_way{}
-            );
-        }
+#undef COMPARISON_OPERATOR
 
         ALWAYS_INLINE constexpr std::size_t size( ) const { return _size; }
     };

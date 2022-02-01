@@ -16,6 +16,11 @@
         return *sdk::address_t{ this }.self_offset( offset ).as< type* >( ); \
     } \
 
+#define POFFSET( type, name, offset ) \
+    ALWAYS_INLINE type* name { \
+        return sdk::address_t{ this }.self_offset( offset ).as< type* >( ); \
+    } \
+
 #define VFUNC( type, name, index, ... ) \
     ALWAYS_INLINE auto name { \
         using fn_t = type; \
