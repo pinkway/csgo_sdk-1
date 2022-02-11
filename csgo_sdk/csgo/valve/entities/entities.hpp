@@ -50,18 +50,18 @@ namespace csgo::valve {
         OFFSET( anim_layers_t, anim_layers( ), g_ctx->offsets( ).m_base_animating.m_anim_layers );
     };
 
-    struct base_attributable_item_t {
+    struct base_attributable_item_t : public base_animating_t {
         OFFSET( e_item_index, item_index( ), g_ctx->offsets( ).m_base_attributable_item.m_item_index );
     };
 
-    struct base_grenade_t : public base_animating_t, base_attributable_item_t {
+    struct base_grenade_t : public base_attributable_item_t {
         OFFSET( bool, pin_pulled( ), g_ctx->offsets( ).m_base_grenade.m_pin_pulled );
 
         OFFSET( float, throw_time( ), g_ctx->offsets( ).m_base_grenade.m_throw_time );
         OFFSET( float, throw_strength( ), g_ctx->offsets( ).m_base_grenade.m_throw_strength );
     };
 
-    struct base_weapon_t : public base_animating_t, base_attributable_item_t {
+    struct base_weapon_t : public base_attributable_item_t {
         ALWAYS_INLINE weapon_info_t* info( );
 
         OFFSET( int, clip1( ), g_ctx->offsets( ).m_base_weapon.m_clip1 );

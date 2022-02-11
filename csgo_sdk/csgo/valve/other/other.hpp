@@ -19,6 +19,7 @@ namespace csgo::valve {
         in_right        = 1 << 8,
         in_move_left    = 1 << 9,
         in_move_right   = 1 << 10,
+        in_move         = in_fwd | in_back | in_move_right | in_move_left,
         in_attack2      = 1 << 11,
         in_run          = 1 << 12,
         in_reload       = 1 << 13,

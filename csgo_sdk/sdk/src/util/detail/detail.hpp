@@ -77,8 +77,6 @@ namespace sdk::detail {
         }
 
         static constexpr bytes_t parse( const std::string_view str ) {
-            static_assert( byte_t::e_type::invalid == static_cast< typename byte_t::e_type >( 0u ) );
-
             constexpr auto hex2int = [ ] ( const std::size_t chr ) {
                 if ( chr >= '0'
                     && chr <= '9' )
@@ -142,39 +140,20 @@ namespace sdk::detail {
             };
         }
 
-        ALWAYS_INLINE address_t search( const address_t start, const address_t end, const bool up = false ) const {
-            if ( up ) {
-                const auto seq_end = m_bytes.rend( );
+        ALWAYS_INLINE address_t search( const address_t start, const address_t end ) const {
+            const auto seq_end = m_bytes.end( );
 
-                for ( auto i = end.as< std::uint8_t* >( ); ; --i ) {
-                    auto j = i;
-                    for ( auto k = m_bytes.rbegin( ); ; --j, k = std::next( k ) ) {
-                        if ( k == seq_end )
-                            return j;
+            for ( auto i = start.as< std::uint8_t* >( ); ; ++i ) {
+                auto j = i;
+                for ( auto k = m_bytes.begin( ); ; ++j, k = std::next( k ) ) {
+                    if ( k == seq_end )
+                        return i;
 
-                        if ( j == start.as< std::uint8_t* >( ) )
-                            return end;
+                    if ( j == end.as< std::uint8_t* >( ) )
+                        return end;
 
-                        if ( !k->valid( *j ) )
-                            break;
-                    }
-                }
-            }
-            else {
-                const auto seq_end = m_bytes.end( );
-
-                for ( auto i = start.as< std::uint8_t* >( ); ; ++i ) {
-                    auto j = i;
-                    for ( auto k = m_bytes.begin( ); ; ++j, k = std::next( k ) ) {
-                        if ( k == seq_end )
-                            return i;
-
-                        if ( j == end.as< std::uint8_t* >( ) )
-                            return end;
-
-                        if ( !k->valid( *j ) )
-                            break;
-                    }
+                    if ( !k->valid( *j ) )
+                        break;
                 }
             }
 

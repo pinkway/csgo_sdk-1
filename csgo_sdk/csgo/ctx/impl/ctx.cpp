@@ -67,7 +67,7 @@ namespace csgo {
         const code_section_t shaderapidx9{ modules.at( HASH( "shaderapidx9.dll" ) ) };
 
         const auto device = **BYTESEQ( "A1 ? ? ? ? 50 8B 08 FF 51 0C" ).search(
-            shaderapidx9.m_start, shaderapidx9.m_end, false
+            shaderapidx9.m_start, shaderapidx9.m_end
         ).self_offset( 0x1 ).as< IDirect3DDevice9*** >( );
 
         D3DDEVICE_CREATION_PARAMETERS params{};
@@ -89,7 +89,7 @@ namespace csgo {
         const code_section_t inputsystem{ modules.at( HASH( "inputsystem.dll" ) ) };
 
         HOOK( BYTESEQ( "55 8B EC 83 EC ? 80 3D" ).search(
-            inputsystem.m_start, inputsystem.m_end, false
+            inputsystem.m_start, inputsystem.m_end
         ), hooks::wnd_proc, hooks::o_wnd_proc );
 
         HOOK_VFUNC( device, 16u, hooks::dx9_reset, hooks::o_dx9_reset );
@@ -171,13 +171,13 @@ namespace csgo {
         );
 
         valve::g_input = *BYTESEQ( "B9 ? ? ? ? 8B 40 38 FF D0 84 C0 0F 85" ).search(
-            client.m_start, client.m_end, false
+            client.m_start, client.m_end
         ).self_offset( 0x1 ).as< valve::input_t** >( );
 
         valve::g_cvar = interfaces.at( HASH( "VEngineCvar007" ) ).as< valve::c_cvar* >( );
 
         valve::g_move_helper = **BYTESEQ( "8B 0D ? ? ? ? 8B 45 ? 51 8B D4 89 02 8B 01" ).search(
-            client.m_start, client.m_end, false
+            client.m_start, client.m_end
         ).self_offset( 0x2 ).as< valve::c_move_helper*** >( );
 
         valve::g_prediction = interfaces.at( HASH( "VClientPrediction001" ) ).as< valve::prediction_t* >( );
@@ -187,7 +187,7 @@ namespace csgo {
         valve::g_surface_data = interfaces.at( HASH( "VPhysicsSurfaceProps001" ) ).as< valve::c_surface_data* >( );
 
         valve::g_game_rules = *BYTESEQ( "A1 ? ? ? ? 85 C0 0F 84 ? ? ? ? 80 B8 ? ? ? ? ? 74 7A" ).search(
-            client.m_start, client.m_end, false
+            client.m_start, client.m_end
         ).self_offset( 0x1 ).as< valve::game_rules_t*** >( );
         valve::g_game_types = interfaces.at( HASH( "VENGINE_GAMETYPES_VERSION002" ) ).as< valve::c_game_types* >( );
     }
@@ -379,7 +379,7 @@ namespace csgo {
         const code_section_t vguimatsurface{ modules.at( HASH( "vguimatsurface.dll" ) ) };
 
         HOOK( BYTESEQ( "80 3D ? ? ? ? ? 8B 91 ? ? ? ? 8B 0D ? ? ? ? C6 05 ? ? ? ? 01" ).search(
-            vguimatsurface.m_start, vguimatsurface.m_end, false
+            vguimatsurface.m_start, vguimatsurface.m_end
         ), hooks::lock_cursor, hooks::o_lock_cursor );
 
         HOOK_VFUNC( valve::g_client, VARVAL( 21u, 22u ), hooks::create_move_proxy, hooks::o_create_move );

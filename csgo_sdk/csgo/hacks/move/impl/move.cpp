@@ -1,4 +1,4 @@
-#include "../../csgo.hpp"
+#include "../../../csgo.hpp"
 
 namespace csgo::hacks {
     void c_move::handle( valve::user_cmd_t& cmd ) const {
@@ -55,10 +55,7 @@ namespace csgo::hacks {
         const auto max_fwd_speed = cvars.m_cl_forwardspeed->get_float( );
         const auto max_side_speed = cvars.m_cl_sidespeed->get_float( );
 
-        cmd.m_buttons &= ~(
-            valve::e_buttons::in_fwd | ( valve::e_buttons::in_back
-            | ( valve::e_buttons::in_move_right | valve::e_buttons::in_move_left ) )
-        );
+        cmd.m_buttons &= ~valve::e_buttons::in_move;
 
         if ( ( cmd.m_move.x( ) = std::clamp( cmd.m_move.x( ), -max_fwd_speed, max_fwd_speed ) ) )
             cmd.m_buttons |= cmd.m_move.x( ) > 0.f
