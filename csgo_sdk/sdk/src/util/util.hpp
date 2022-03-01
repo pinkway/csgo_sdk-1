@@ -22,9 +22,11 @@ namespace sdk {
     inline constexpr auto is_char_v = std::is_same_v< _type, char > || std::is_same_v< _type, char16_t >
         || std::is_same_v< _type, char32_t > || std::is_same_v< _type, wchar_t >;
 
+#if defined( _WIN32 ) || defined( _WIN64 )
     ALWAYS_INLINE std::string to_multi_byte( const std::wstring_view str );
 
     ALWAYS_INLINE std::wstring to_wide_char( const std::string_view str );
+#endif
 
     template < typename _char_t >
         requires is_char_v< _char_t >

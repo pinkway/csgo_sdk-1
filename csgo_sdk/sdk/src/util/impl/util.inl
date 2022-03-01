@@ -1,23 +1,20 @@
 #include "../util.hpp"
 
 namespace sdk {
+#if defined( _WIN32 ) || defined( _WIN64 )
     ALWAYS_INLINE std::string to_multi_byte( const std::wstring_view wstr ) {
         if ( wstr.empty( ) )
             return {};
 
-        std::size_t len{};
-        std::mbstate_t state{};
-
-        auto src = wstr.data( );
-
-        if ( wcsrtombs_s( &len, nullptr, 0u, &src, wstr.size( ), &state ) )
+        const auto len = WideCharToMultiByte( CP_UTF8, 0, wstr.data( ), wstr.size( ), 0, 0, 0, 0 );
+        if ( len <= 0 )
             return {};
 
         std::string str{};
 
-        str.resize( len - 1u );
+        str.resize( len );
 
-        if ( wcsrtombs_s( &len, str.data( ), len, &src, wstr.size( ), &state ) )
+        if ( WideCharToMultiByte( CP_UTF8, 0, wstr.data( ), wstr.size( ), str.data( ), len, 0, 0 ) <= 0 )
             return {};
 
         return str;
@@ -27,23 +24,20 @@ namespace sdk {
         if ( str.empty( ) )
             return {};
 
-        std::size_t len{};
-        std::mbstate_t state{};
-
-        auto src = str.data( );
-
-        if ( mbsrtowcs_s( &len, nullptr, 0u, &src, str.size( ), &state ) )
+        const auto len = MultiByteToWideChar( CP_UTF8, 0, str.data( ), str.size( ), 0, 0 );
+        if ( len <= 0 )
             return {};
 
         std::wstring wstr{};
 
-        wstr.resize( len - 1u );
+        wstr.resize( len );
 
-        if ( mbsrtowcs_s( &len, wstr.data( ), len, &src, str.size( ), &state ) )
+        if ( MultiByteToWideChar( CP_UTF8, 0, str.data( ), str.size( ), wstr.data( ), len ) <= 0 )
             return {};
 
         return wstr;
     }
+#endif
 
     template < typename _char_t >
         requires is_char_v< _char_t >
