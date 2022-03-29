@@ -6,6 +6,12 @@ namespace sdk {
     template < typename _value_t >
     struct cfg_var_t final : public detail::base_cfg_var_t {
     private:
+        static constexpr auto k_has_custom_save_n_load =
+            requires( _value_t& value, nlohmann::json& json ) {
+                value.save( json );
+                value.load( json );
+            };
+
         _value_t m_value{};
     public:
         ALWAYS_INLINE constexpr cfg_var_t( ) = default;

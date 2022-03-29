@@ -4,8 +4,6 @@ namespace csgo::valve {
     ALWAYS_INLINE void user_cmd_t::sanitize( ) {
         m_view_angles.normalize( );
 
-        constexpr auto k_max_roll = 50.f;
-
         const auto& cvars = g_ctx->cvars( );
 
         m_view_angles.x( ) = std::clamp( m_view_angles.x( ), -cvars.m_cl_pitchup->get_float( ), cvars.m_cl_pitchdown->get_float( ) );

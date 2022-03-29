@@ -5,6 +5,8 @@ namespace csgo::valve {
 
     inline constexpr auto k_max_bones = 256u;
 
+    inline constexpr auto k_max_roll = 50.f;
+
     enum struct ent_handle_t : sdk::ulong_t {};
 
     enum struct e_buttons : int {

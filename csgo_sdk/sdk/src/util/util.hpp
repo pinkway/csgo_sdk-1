@@ -35,10 +35,6 @@ namespace sdk {
     template < typename _char_t >
         requires is_char_v< _char_t >
     ALWAYS_INLINE constexpr hash_t hash( const _char_t* const str );
-
-    template < typename _enum_t >
-        requires std::is_enum_v< _enum_t >
-    ALWAYS_INLINE constexpr std::underlying_type_t< _enum_t > to_underlying( const _enum_t value );
 }
 
 #include "impl/util.inl"
