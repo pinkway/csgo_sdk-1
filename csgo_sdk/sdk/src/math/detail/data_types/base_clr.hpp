@@ -125,33 +125,29 @@ namespace sdk::detail {
 
             ahsv.a( ) = static_cast< _value_t >( ( argb.a( ) / argb.limit( ) ) * ahsv.limit( ) );
 
-            const auto r_frac = argb.r( ) / argb.limit( );
-            const auto g_frac = argb.g( ) / argb.limit( );
-            const auto b_frac = argb.b( ) / argb.limit( );
+            auto r_frac = argb.r( ) / argb.limit( );
+            auto g_frac = argb.g( ) / argb.limit( );
+            auto b_frac = argb.b( ) / argb.limit( );
 
-            const auto min = std::min( { r_frac, g_frac, b_frac } );
-            const auto max = std::max( { r_frac, g_frac, b_frac } );
+            float k{};
 
-            const auto delta = max - min;
-            if ( delta == 0.f )
-                ahsv.h( ) = static_cast< _value_t >( 0.f );
-            else {
-                constexpr auto k_unscaled_limit = 6.f;
+            if ( g_frac < b_frac ) {
+                std::swap( g_frac, b_frac );
 
-                enough_float_t< _value_t > unscaled_hue{};
-
-                if ( max == r_frac )
-                    unscaled_hue = ( g_frac - b_frac ) / delta;
-                else if ( max == g_frac )
-                    unscaled_hue = 2.f + ( b_frac - r_frac ) / delta;
-                else if ( max == b_frac )
-                    unscaled_hue = 4.f + ( r_frac - g_frac ) / delta;
-
-                ahsv.h( ) = static_cast< _value_t >( ( unscaled_hue / k_unscaled_limit ) * ahsv.hue_limit( ) );
+                k = -1.f;
             }
 
-            ahsv.s( ) = static_cast< _value_t >( ( max != 0.f ) ? ( delta / max ) * ahsv.limit( ) : 0.f );
-            ahsv.v( ) = static_cast< _value_t >( max * ahsv.limit( ) );
+            if ( r_frac < g_frac ) {
+                std::swap( r_frac, g_frac );
+
+                k = -2.f / 6.f - k;
+            }
+
+            const auto chroma = r_frac - std::min( g_frac, b_frac );
+
+            ahsv.h( ) = static_cast< _value_t >( ( std::abs( k + ( g_frac - b_frac ) / ( 6.f * chroma + 1e-20f ) ) ) * ahsv.hue_limit( ) );
+            ahsv.s( ) = static_cast< _value_t >( ( chroma / ( r_frac + 1e-20f ) ) * ahsv.limit( ) );
+            ahsv.v( ) = static_cast< _value_t >( r_frac * ahsv.limit( ) );
 
             return ahsv;
         }

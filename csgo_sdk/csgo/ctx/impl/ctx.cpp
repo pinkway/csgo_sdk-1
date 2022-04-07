@@ -137,11 +137,16 @@ namespace csgo {
 
         interfaces_t interfaces{};
 
-        parse_interfaces( modules.at( HASH( "client.dll" ) ), interfaces );
-        parse_interfaces( modules.at( HASH( "engine.dll" ) ), interfaces );
-        parse_interfaces( modules.at( HASH( "vstdlib.dll" ) ), interfaces );
-        parse_interfaces( modules.at( HASH( "vphysics.dll" ) ), interfaces );
-        parse_interfaces( modules.at( HASH( "matchmaking.dll" ) ), interfaces );
+        constexpr sdk::hash_t needed_modules[ ]{
+            HASH( "client.dll" ),
+            HASH( "engine.dll" ),
+            HASH( "vstdlib.dll" ),
+            HASH( "vphysics.dll" ),
+            HASH( "matchmaking.dll" )
+        };
+
+        for ( const auto hash : needed_modules )
+            parse_interfaces( modules.at( hash ), interfaces );
 
         if ( interfaces.empty( ) )
             THROW_IF_DBG( "can't find interfaces." );
