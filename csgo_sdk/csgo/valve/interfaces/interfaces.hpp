@@ -108,7 +108,7 @@ namespace csgo::valve {
         bool                m_track_ir_available{},
                             m_mouse_initialized{},
                             m_mouse_active{};
-        std::uint8_t        pad1[ 158u ]{};
+        std::uint8_t        pad1[ VARVAL( 158u, 154u ) ]{};
         bool                m_camera_in_third_person{};
         std::uint8_t        pad2[ VARVAL( 1u, 2u ) ]{};
         sdk::vec3_t         m_camera_offset{};
