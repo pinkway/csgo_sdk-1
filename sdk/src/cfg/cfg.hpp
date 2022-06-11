@@ -20,8 +20,6 @@ namespace sdk {
 
         ALWAYS_INLINE _value_t* operator &( );
 
-        ALWAYS_INLINE operator _value_t( ) const;
-
         ALWAYS_INLINE _value_t& get( );
 
         ALWAYS_INLINE const _value_t& get( ) const;

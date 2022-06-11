@@ -52,12 +52,13 @@ namespace hacks {
 
         const auto& cvars = g_ctx->cvars( );
 
-        const auto max_fwd_speed = cvars.m_cl_forwardspeed->get_float( );
-        const auto max_side_speed = cvars.m_cl_sidespeed->get_float( );
+        const auto max_fwd_speed = cvars.cl_forwardspeed->get_float( );
+        const auto max_back_speed = cvars.cl_backspeed->get_float( );
+        const auto max_side_speed = cvars.cl_sidespeed->get_float( );
 
         cmd.m_buttons &= ~valve::e_buttons::in_move;
 
-        if ( ( cmd.m_move.x( ) = std::clamp( cmd.m_move.x( ), -max_fwd_speed, max_fwd_speed ) ) )
+        if ( ( cmd.m_move.x( ) = std::clamp( cmd.m_move.x( ), -max_back_speed, max_fwd_speed ) ) )
             cmd.m_buttons |= cmd.m_move.x( ) > 0.f
                 ? valve::e_buttons::in_fwd : valve::e_buttons::in_back;
 

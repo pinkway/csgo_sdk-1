@@ -41,6 +41,10 @@ private:
                         m_user_cmd_checksum{};
 
         struct {
+            sdk::address_t m_init{}, m_load_from_buffer{};
+        }               m_key_values{};
+
+        struct {
             sdk::address_t m_reset{}, m_update{};
         }               m_anim_state{};
 
@@ -114,10 +118,10 @@ private:
     } m_offsets{};
 
     struct {
-        valve::cvar_t*  m_cl_forwardspeed{},
-                        *m_cl_sidespeed{}, *m_cl_upspeed{},
-                        *m_cl_pitchdown{}, *m_cl_pitchup{},
-                        *m_mp_teammates_are_enemies{};
+        valve::cvar_t*  cl_forwardspeed{}, *cl_backspeed{},
+                        *cl_sidespeed{}, *cl_upspeed{},
+                        *cl_pitchdown{}, *cl_pitchup{},
+                        *mp_teammates_are_enemies{};
     } m_cvars{};
 public:
     void init( );

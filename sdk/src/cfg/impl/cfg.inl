@@ -12,9 +12,6 @@ namespace sdk {
     ALWAYS_INLINE _value_t* cfg_var_t< _value_t >::operator &( ) { return &m_value; }
 
     template < typename _value_t >
-    ALWAYS_INLINE cfg_var_t< _value_t >::operator _value_t( ) const { return m_value; }
-
-    template < typename _value_t >
     ALWAYS_INLINE _value_t& cfg_var_t< _value_t >::get( ) { return m_value; }
 
     template < typename _value_t >
@@ -55,7 +52,7 @@ namespace sdk {
     ALWAYS_INLINE void c_cfg::add_var( detail::base_cfg_var_t* const var ) { m_vars.emplace_back( var ); }
 
     ALWAYS_INLINE detail::base_cfg_var_t* c_cfg::find_var( const hash_t hash ) const {
-        for ( const auto& var : m_vars )
+        for ( const auto var : m_vars )
             if ( var->hash( ) == hash )
                 return var;
 

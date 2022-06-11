@@ -139,7 +139,9 @@ void c_ctx::init_interfaces( const modules_t& modules ) const {
         HASH( "engine.dll" ),
         HASH( "vstdlib.dll" ),
         HASH( "vphysics.dll" ),
-        HASH( "matchmaking.dll" )
+        HASH( "matchmaking.dll" ),
+        HASH( "studiorender.dll" ),
+        HASH( "materialsystem.dll" )
     };
 
     for ( const auto hash : needed_modules )
@@ -185,8 +187,11 @@ void c_ctx::init_interfaces( const modules_t& modules ) const {
     valve::g_prediction = interfaces.at( HASH( "VClientPrediction001" ) ).as< valve::prediction_t* >( );
     valve::g_movement = interfaces.at( HASH( "GameMovement001" ) ).as< valve::c_movement* >( );
 
+    valve::g_studio_render = interfaces.at( HASH( "VStudioRender026" ) ).as< valve::studio_render_t* >( );
+    valve::g_material_system = interfaces.at( HASH( "VMaterialSystem080" ) ).as< valve::c_material_system* >( );
+
     valve::g_engine_trace = interfaces.at( HASH( "EngineTraceClient004" ) ).as< valve::c_engine_trace* >( );
-    valve::g_surface_data = interfaces.at( HASH( "VPhysicsSurfaceProps001" ) ).as< valve::c_surface_data* >( );
+    valve::g_phys_props = interfaces.at( HASH( "VPhysicsSurfaceProps001" ) ).as< valve::c_physics_surface_props* >( );
 
     valve::g_game_rules = *BYTESEQ( "A1 ? ? ? ? 85 C0 0F 84 ? ? ? ? 80 B8 ? ? ? ? ? 74 7A" ).search(
         client.m_start, client.m_end
@@ -234,7 +239,7 @@ bool c_ctx::parse_ent_offsets( ent_offsets_t& offsets, const modules_t& modules 
         if ( start == client.m_end )
             break;
 
-        const auto data_map = start.offset( 0x2 ).deref( 1u ).offset( -0x4 ).as< valve::data_map_t* >( );
+        const auto data_map = start.offset( 0x2 ).self_deref( ).self_offset( -0x4 ).as< valve::data_map_t* >( );
         if ( !data_map
             || !data_map->m_name
             || !data_map->m_descriptions
@@ -248,7 +253,6 @@ bool c_ctx::parse_ent_offsets( ent_offsets_t& offsets, const modules_t& modules 
                 continue;
 
             concated = data_map->m_name;
-            concated.erase( std::remove( concated.begin( ), concated.end( ), '_' ), concated.end( ) );
 
             concated += "->";
             concated += desc.m_name;
@@ -268,13 +272,16 @@ void c_ctx::init_offsets( const modules_t& modules ) {
 
     m_offsets.m_local_player = BYTESEQ( "8B 0D ? ? ? ? 83 FF FF 74 07" ).search(
         client.m_start, client.m_end
-    ).self_offset( 0x2 ).self_deref( 1u );
+    ).self_offset( 0x2 ).self_deref( );
 
     m_offsets.m_weapon_system = BYTESEQ( "8B 35 ? ? ? ? FF 10 0F B7 C0" ).search(
         client.m_start, client.m_end
-    ).self_offset( 0x2 ).self_deref( 1u );
+    ).self_offset( 0x2 ).self_deref( );
 
     m_offsets.m_user_cmd_checksum = BYTESEQ( "53 8B D9 83 C8" ).search( client.m_start, client.m_end );
+
+    m_offsets.m_key_values.m_init = BYTESEQ( "E8 ? ? ? ? 5F 89 06" ).search( client.m_start, client.m_end ).self_rel( );
+    m_offsets.m_key_values.m_load_from_buffer = BYTESEQ( "55 8B EC 83 E4 F8 83 EC 34 53 8B 5D 0C 89" ).search( client.m_start, client.m_end );
 
     m_offsets.m_anim_state.m_reset = BYTESEQ( "56 6A 01 68 ? ? ? ? 8B F1" ).search(
         client.m_start, client.m_end
@@ -294,16 +301,16 @@ void c_ctx::init_offsets( const modules_t& modules ) {
     if ( !parse_ent_offsets( offsets, modules ) )
         THROW_IF_DBG( "can't find ent offsets." );
 
-    m_offsets.m_base_entity.m_health = offsets.at( HASH( "CBaseEntity->m_iHealth" ) ).m_offset;
+    m_offsets.m_base_entity.m_health = offsets.at( HASH( "C_BaseEntity->m_iHealth" ) ).m_offset;
     m_offsets.m_base_entity.m_team_num = offsets.at( HASH( "CBaseEntity->m_iTeamNum" ) ).m_offset;
     m_offsets.m_base_entity.m_sim_time = offsets.at( HASH( "CBaseEntity->m_flSimulationTime" ) ).m_offset;
-    m_offsets.m_base_entity.m_flags = offsets.at( HASH( "CBaseEntity->m_fFlags" ) ).m_offset;
+    m_offsets.m_base_entity.m_flags = offsets.at( HASH( "C_BaseEntity->m_fFlags" ) ).m_offset;
     m_offsets.m_base_entity.m_origin = offsets.at( HASH( "CBaseEntity->m_vecOrigin" ) ).m_offset;
-    m_offsets.m_base_entity.m_velocity = offsets.at( HASH( "CBaseEntity->m_vecVelocity" ) ).m_offset;
-    m_offsets.m_base_entity.m_abs_origin = offsets.at( HASH( "CBaseEntity->m_vecAbsOrigin" ) ).m_offset;
-    m_offsets.m_base_entity.m_abs_velocity = offsets.at( HASH( "CBaseEntity->m_vecAbsVelocity" ) ).m_offset;
-    m_offsets.m_base_entity.m_abs_rotation = offsets.at( HASH( "CBaseEntity->m_angAbsRotation" ) ).m_offset;
-    m_offsets.m_base_entity.m_move_type = offsets.at( HASH( "CBaseEntity->m_MoveType" ) ).m_offset;
+    m_offsets.m_base_entity.m_velocity = offsets.at( HASH( "C_BaseEntity->m_vecVelocity" ) ).m_offset;
+    m_offsets.m_base_entity.m_abs_origin = offsets.at( HASH( "C_BaseEntity->m_vecAbsOrigin" ) ).m_offset;
+    m_offsets.m_base_entity.m_abs_velocity = offsets.at( HASH( "C_BaseEntity->m_vecAbsVelocity" ) ).m_offset;
+    m_offsets.m_base_entity.m_abs_rotation = offsets.at( HASH( "C_BaseEntity->m_angAbsRotation" ) ).m_offset;
+    m_offsets.m_base_entity.m_move_type = offsets.at( HASH( "C_BaseEntity->m_MoveType" ) ).m_offset;
     m_offsets.m_base_entity.m_mins = offsets.at( HASH( "CBaseEntity->m_vecMins" ) ).m_offset;
     m_offsets.m_base_entity.m_maxs = offsets.at( HASH( "CBaseEntity->m_vecMaxs" ) ).m_offset;
 
@@ -367,24 +374,31 @@ void c_ctx::init_offsets( const modules_t& modules ) {
 }
 
 void c_ctx::init_cvars( ) {
-    m_cvars.m_cl_forwardspeed = valve::g_cvar->find_var( "cl_forwardspeed" );
-    m_cvars.m_cl_sidespeed = valve::g_cvar->find_var( "cl_sidespeed" );
-    m_cvars.m_cl_upspeed = valve::g_cvar->find_var( "cl_upspeed" );
+    m_cvars.cl_forwardspeed = valve::g_cvar->find_var( "cl_forwardspeed" );
+    m_cvars.cl_backspeed = valve::g_cvar->find_var( "cl_backspeed" );
 
-    m_cvars.m_cl_pitchdown = valve::g_cvar->find_var( "cl_pitchdown" );
-    m_cvars.m_cl_pitchup = valve::g_cvar->find_var( "cl_pitchup" );
+    m_cvars.cl_sidespeed = valve::g_cvar->find_var( "cl_sidespeed" );
+    m_cvars.cl_upspeed = valve::g_cvar->find_var( "cl_upspeed" );
 
-    m_cvars.m_mp_teammates_are_enemies = valve::g_cvar->find_var( "mp_teammates_are_enemies" );
+    m_cvars.cl_pitchdown = valve::g_cvar->find_var( "cl_pitchdown" );
+    m_cvars.cl_pitchup = valve::g_cvar->find_var( "cl_pitchup" );
+
+    m_cvars.mp_teammates_are_enemies = valve::g_cvar->find_var( "mp_teammates_are_enemies" );
 }
 
 void c_ctx::init_hooks( const modules_t& modules ) const {
     const code_section_t vguimatsurface{ modules.at( HASH( "vguimatsurface.dll" ) ) };
+    const code_section_t studiorender{ modules.at( HASH( "studiorender.dll" ) ) };
 
     HOOK( BYTESEQ( "80 3D ? ? ? ? ? 8B 91 ? ? ? ? 8B 0D ? ? ? ? C6 05 ? ? ? ? 01" ).search(
         vguimatsurface.m_start, vguimatsurface.m_end
     ), hooks::lock_cursor, hooks::o_lock_cursor );
 
     HOOK_VFUNC( valve::g_client, VARVAL( 21u, 22u ), hooks::create_move_proxy, hooks::o_create_move );
+
+    HOOK( BYTESEQ( "55 8B EC 83 E4 F8 83 EC 54" ).search(
+        studiorender.m_start, studiorender.m_end
+    ), hooks::draw_model, hooks::o_draw_model );
 }
 
 void c_ctx::init( ) {

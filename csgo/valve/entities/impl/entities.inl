@@ -36,7 +36,7 @@ namespace valve {
             return survival_team( ) == with->survival_team( );
 #endif
 
-        if ( g_ctx->cvars( ).m_mp_teammates_are_enemies->get_int( ) )
+        if ( g_ctx->cvars( ).mp_teammates_are_enemies->get_int( ) )
             return false;
 
         return team( ) == with->team( );

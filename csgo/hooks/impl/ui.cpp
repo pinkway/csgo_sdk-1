@@ -46,8 +46,8 @@ namespace hooks {
         return o_dx9_present( device, src_rect, dst_rect, dst_wnd_override, dirty_region );
     }
 
-    void __fastcall lock_cursor( const std::uintptr_t ecx, const std::uintptr_t edx ) {
-        using unlock_cursor_t = void( __thiscall* )( const std::uintptr_t );
+    void __fastcall lock_cursor( std::uintptr_t ecx, std::uintptr_t edx ) {
+        using unlock_cursor_t = void( __thiscall* )( std::uintptr_t );
 
         if ( !g_menu->main( ).m_hidden )
             return ( *sdk::address_t{ ecx }.as< unlock_cursor_t** >( ) )[ 66u ]( ecx );

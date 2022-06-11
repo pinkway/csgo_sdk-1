@@ -56,6 +56,18 @@ namespace valve {
     struct key_values_t {
         using get_symbol_proc_t = bool( __cdecl* )( const char* );
 
+        OFFSET_VFUNC( void( __thiscall* )( decltype( this ), const char* ),
+            init( const char* key ), g_ctx->offsets( ).m_key_values.m_init, key
+        );
+
+        OFFSET_VFUNC( bool( __thiscall* )( decltype( this ), const char*, const char*, void*, const char*, get_symbol_proc_t ),
+            load_from_buffer(
+                const char* name, const char* buffer, void* file_system = nullptr,
+                const char* path_id = nullptr, get_symbol_proc_t symbol_proc = nullptr
+            ),
+            g_ctx->offsets( ).m_key_values.m_load_from_buffer, name, buffer, file_system, path_id, symbol_proc
+        );
+
         std::uint32_t       m_key_name : 24u,
                             m_key_name_case_sensitive1 : 8u;
 

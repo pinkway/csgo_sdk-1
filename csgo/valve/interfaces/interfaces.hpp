@@ -9,7 +9,8 @@ namespace valve {
     class c_engine {
     public:
         VFUNC( bool( __thiscall* )( decltype( this ), int, player_info_t* ),
-            get_player_info( int index, player_info_t* info ), 8u, index, info );
+            get_player_info( int index, player_info_t* info ), 8u, index, info
+        );
 
         VFUNC( int( __thiscall* )( decltype( this ), int ), index_for_uid( int uid ), 9u, uid );
 
@@ -131,14 +132,17 @@ namespace valve {
 
     struct prediction_t {
         VFUNC( void( __thiscall* )( decltype( this ), int, bool, int, int ),
-            update( int start, bool valid, int in_ack, int out_cmd ), 3u, start, valid, in_ack, out_cmd );
+            update( int start, bool valid, int in_ack, int out_cmd ), 3u, start, valid, in_ack, out_cmd
+        );
 
         VFUNC( void( __thiscall* )( decltype( this ), base_player_t*, user_cmd_t*, c_move_helper*, move_data_t* ),
             setup_move( base_player_t* player, user_cmd_t* cmd, c_move_helper* move_helper, move_data_t* move_data ),
-            20u, player, cmd, move_helper, move_data );
+            20u, player, cmd, move_helper, move_data
+        );
        
         VFUNC( void( __thiscall* )( decltype( this ), base_player_t*, user_cmd_t*, move_data_t* ),
-            finish_move( base_player_t* player, user_cmd_t* cmd, move_data_t* move_data ), 21u, player, cmd, move_data );
+            finish_move( base_player_t* player, user_cmd_t* cmd, move_data_t* move_data ), 21u, player, cmd, move_data
+        );
 
         std::uint8_t    pad0[ 8u ]{};
         bool            m_in_prediction{};
@@ -158,31 +162,67 @@ namespace valve {
     class c_movement {
     public:
         VFUNC( void( __thiscall* )( decltype( this ), base_player_t*, move_data_t* ),
-            process_movement( base_player_t* player, move_data_t* move_data ), 1u, player, move_data );
+            process_movement( base_player_t* player, move_data_t* move_data ), 1u, player, move_data
+        );
         
-        VFUNC( void( __thiscall* )( decltype( this ), base_player_t* ), start_track_pred_errors( base_player_t* player ), 3u, player );
+        VFUNC( void( __thiscall* )( decltype( this ), base_player_t* ),
+            start_track_pred_errors( base_player_t* player ), 3u, player
+        );
 
-        VFUNC( void( __thiscall* )( decltype( this ), base_player_t* ), finish_track_pred_errors( base_player_t* player ), 4u, player );
+        VFUNC( void( __thiscall* )( decltype( this ), base_player_t* ),
+            finish_track_pred_errors( base_player_t* player ), 4u, player
+        );
     } inline* g_movement{};
+
+    struct studio_render_t {
+        VFUNC( void( __thiscall* )( decltype( this ), float* ), set_clr_mod( float* value ), 27u, value );
+        VFUNC( void( __thiscall* )( decltype( this ), float ), set_alpha_mod( float value ), 28u, value );
+
+        VFUNC( void( __thiscall* )( decltype( this ), material_t*, e_override_type, int ),
+            forced_material_override(
+                material_t* material = nullptr,
+                e_override_type type = e_override_type::normal,
+                int material_index = 0
+            ),
+            33u, material, type, material_index
+        );
+
+        ALWAYS_INLINE bool is_forced_material_override( );
+
+        std::uint8_t    pad0[ 592u ]{};
+        material_t*     m_override_material{};
+        std::uint8_t    pad1[ 12u ]{};
+        e_override_type m_override_type{};
+    } inline* g_studio_render{};
+
+    class c_material_system {
+    public:
+        VFUNC( material_t* ( __thiscall* )( decltype( this ), const char*, key_values_t* ),
+            create_material( const char* name, key_values_t* key_values ), 83u, name, key_values
+        );
+    } inline* g_material_system{};
 
     struct base_entity_t;
 
     class c_engine_trace {
     public:
         VFUNC( e_mask( __thiscall* )( decltype( this ), const sdk::vec3_t&, e_mask, base_entity_t** ),
-            get_point_contents( const sdk::vec3_t& point, e_mask mask, base_entity_t** entity = nullptr ), 0u, point, mask, entity );
+            get_point_contents( const sdk::vec3_t& point, e_mask mask, base_entity_t** entity = nullptr ), 0u, point, mask, entity
+        );
 
         VFUNC( void( __thiscall* )( decltype( this ), const ray_t&, e_mask, base_entity_t*, trace_t* ),
-            clip_ray_to_entity( const ray_t& ray, e_mask mask, base_entity_t* entity, trace_t* trace ), 3u, ray, mask, entity, trace );
+            clip_ray_to_entity( const ray_t& ray, e_mask mask, base_entity_t* entity, trace_t* trace ), 3u, ray, mask, entity, trace
+        );
 
         VFUNC( void( __thiscall* )( decltype( this ), const ray_t&, e_mask, base_trace_filter_t*, trace_t* ),
-            trace_ray( const ray_t& ray, e_mask mask, base_trace_filter_t* filter, trace_t* trace ), 5u, ray, mask, filter, trace );
+            trace_ray( const ray_t& ray, e_mask mask, base_trace_filter_t* filter, trace_t* trace ), 5u, ray, mask, filter, trace
+        );
     } inline* g_engine_trace{};
 
-    class c_surface_data {
+    class c_physics_surface_props {
     public:
-        VFUNC( surface_data_t*( __thiscall* )( decltype( this ), int ), get( int index ), 5u, index );
-    } inline* g_surface_data{};
+        VFUNC( surface_data_t*( __thiscall* )( decltype( this ), int ), get_surface_data( int index ), 5u, index );
+    } inline* g_phys_props{};
 
     struct game_rules_t {
         OFFSET( bool, warmup_period( ), g_ctx->offsets( ).m_game_rules.m_warmup_period );
@@ -197,3 +237,5 @@ namespace valve {
         VFUNC( e_game_type( __thiscall* )( decltype( this ) ), game_type( ), 8u );
     } inline* g_game_types{};
 }
+
+#include "impl/interfaces.inl"

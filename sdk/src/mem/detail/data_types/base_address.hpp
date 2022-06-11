@@ -27,14 +27,14 @@ namespace sdk::detail {
             return *this;
         }
 
-        ALWAYS_INLINE base_address_t< _addr_t >& self_deref( std::size_t count ) {
+        ALWAYS_INLINE base_address_t< _addr_t >& self_deref( std::size_t count = 1u ) {
             for ( ; m_addr && count; --count )
                 m_addr = *as< _addr_t* >( );
 
             return *this;
         }
 
-        ALWAYS_INLINE base_address_t< _addr_t >& self_rel( const std::ptrdiff_t offset, const bool is_long ) {
+        ALWAYS_INLINE base_address_t< _addr_t >& self_rel( const std::ptrdiff_t offset = 0x1, const bool is_long = true ) {
             m_addr +=
                 is_long
                 ? offset + sizeof( std::uint32_t ) + *reinterpret_cast< std::int32_t* >( m_addr + offset )
@@ -46,7 +46,7 @@ namespace sdk::detail {
         ALWAYS_INLINE base_address_t< _addr_t >& self_find_byte(
             const std::uint8_t byte, const std::size_t max_region, const bool up
         ) {
-            for ( auto i = m_addr; i && ( i - m_addr ) < max_region; up ? --i : ++i ) {
+            for ( auto i = m_addr; i && ( up ? ( m_addr - i ) : ( i - m_addr ) ) < max_region; up ? --i : ++i ) {
                 if ( *reinterpret_cast< std::uint8_t* >( i ) != byte )
                     continue;
 
@@ -64,13 +64,13 @@ namespace sdk::detail {
             return ret.self_offset( offset );
         }
 
-        ALWAYS_INLINE base_address_t< _addr_t > deref( const std::size_t count ) const {
+        ALWAYS_INLINE base_address_t< _addr_t > deref( const std::size_t count = 1u ) const {
             auto ret = *this;
 
             return ret.self_deref( count );
         }
 
-        ALWAYS_INLINE base_address_t< _addr_t > rel( const std::ptrdiff_t offset, const bool is_long ) const {
+        ALWAYS_INLINE base_address_t< _addr_t > rel( const std::ptrdiff_t offset = 0x1, const bool is_long = true ) const {
             auto ret = *this;
 
             return ret.self_rel( offset, is_long );

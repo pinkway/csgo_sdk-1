@@ -97,8 +97,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ctx\impl\ctx.cpp" />
+    <ClCompile Include="hacks\models\impl\models.cpp" />
     <ClCompile Include="hacks\move\impl\move.cpp" />
     <ClCompile Include="hooks\impl\client.cpp" />
+    <ClCompile Include="hooks\impl\render.cpp" />
     <ClCompile Include="hooks\impl\ui.cpp" />
     <ClCompile Include="local_player\impl\local_player.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
@@ -113,6 +115,7 @@
     <ClInclude Include="csgo.hpp" />
     <ClInclude Include="ctx\ctx.hpp" />
     <ClInclude Include="hacks\hacks.hpp" />
+    <ClInclude Include="hacks\models\models.hpp" />
     <ClInclude Include="hacks\move\move.hpp" />
     <ClInclude Include="hooks\hooks.hpp" />
     <ClInclude Include="local_player\local_player.hpp" />
@@ -160,9 +163,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ctx\impl\ctx.inl" />
+    <None Include="hacks\models\impl\models.inl" />
     <None Include="local_player\impl\local_player.inl" />
     <None Include="menu\impl\menu.inl" />
     <None Include="valve\entities\impl\entities.inl" />
+    <None Include="valve\interfaces\impl\interfaces.inl" />
     <None Include="valve\other\impl\other.inl" />
     <None Include="valve\util\impl\util.inl" />
     <None Include="sdk\src\cfg\impl\cfg.inl" />

@@ -13,7 +13,7 @@ namespace hooks {
     );
     inline decltype( &dx9_present ) o_dx9_present{};
 
-    void __fastcall lock_cursor( const std::uintptr_t ecx, const std::uintptr_t edx );
+    void __fastcall lock_cursor( std::uintptr_t ecx, std::uintptr_t edx );
     inline decltype( &lock_cursor ) o_lock_cursor{};
 #pragma endregion
 
@@ -23,5 +23,12 @@ namespace hooks {
 
     using o_create_move_t = void( __thiscall* )( valve::c_client* const, int, float, bool );
     inline o_create_move_t o_create_move{};
+#pragma endregion
+
+#pragma region render
+    void __fastcall draw_model( valve::studio_render_t* ecx, std::uintptr_t edx, std::uintptr_t results, const valve::draw_model_info_t& info,
+        sdk::mat3x4_t* bones, float* flex_weights, float* flex_delayed_weights, const sdk::vec3_t& origin, int flags
+    );
+    inline decltype( &draw_model ) o_draw_model{};
 #pragma endregion
 }

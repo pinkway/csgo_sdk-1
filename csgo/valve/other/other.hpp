@@ -769,6 +769,36 @@ namespace valve {
     };
 #pragma endregion
 
+#pragma region render
+    struct renderable_t;
+
+    enum struct e_override_type : int {
+        normal,
+        build_shadows,
+        depth_write,
+        selective,
+        ssao_depth_write
+    };
+
+    struct material_t {
+        VFUNC( const char*( __thiscall* )( decltype( this ) ), name( ), 0u );
+        VFUNC( const char*( __thiscall* )( decltype( this ) ), texture_group_name( ), 1u );
+    };
+
+    struct draw_model_info_t {
+        studio_hdr_t::studio_t* m_studio{};
+        sdk::address_t          m_studio_hw_data{};
+        std::uint16_t           m_decals{};
+        int                     m_skin{}, m_body{},
+                                m_hitbox_set_index{};
+        renderable_t*           m_renderable{};
+        int                     m_lod{};
+        sdk::address_t          m_clr_meshes{};
+        bool                    m_static_lighting{};
+        char                    m_lighting_state[ 440u ]{};
+    };
+#pragma endregion
+
 #pragma region animations
     struct cs_player_t;
 
