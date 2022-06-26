@@ -28,23 +28,23 @@ int __stdcall DllMain( _In_ HINSTANCE instance, _In_ DWORD reason, _In_ LPVOID r
         THROW_IF_DBG( "can't hook " #hook "." ) \
 
 struct code_section_t {
-ALWAYS_INLINE constexpr code_section_t( ) = default;
+    ALWAYS_INLINE constexpr code_section_t( ) = default;
 
-/*ALWAYS_INLINE*/ code_section_t( const sdk::x86_pe_image_t* const image ) {
-    if ( image->m_dos_hdr.e_magic != sdk::k_dos_hdr_magic )
-        THROW_IF_DBG( "invalid dos hdr." );
+    /*ALWAYS_INLINE*/ code_section_t( const sdk::x86_pe_image_t* const image ) {
+        if ( image->m_dos_hdr.e_magic != sdk::k_dos_hdr_magic )
+            THROW_IF_DBG( "invalid dos hdr." );
 
-    const auto nt_hdrs = image->nt_hdrs( );
-    if ( nt_hdrs->m_sig != sdk::k_nt_hdrs_magic )
-        THROW_IF_DBG( "invalid nt hdrs." );
+        const auto nt_hdrs = image->nt_hdrs( );
+        if ( nt_hdrs->m_sig != sdk::k_nt_hdrs_magic )
+            THROW_IF_DBG( "invalid nt hdrs." );
 
-    m_start = image;
-    m_start.self_offset( nt_hdrs->m_opt_hdr.m_code_base );
+        m_start = image;
+        m_start.self_offset( nt_hdrs->m_opt_hdr.m_code_base );
 
-    m_end = m_start.offset( nt_hdrs->m_opt_hdr.m_code_size );
-}
+        m_end = m_start.offset( nt_hdrs->m_opt_hdr.m_code_size );
+    }
 
-sdk::address_t m_start{}, m_end{};
+    sdk::address_t m_start{}, m_end{};
 };
 
 bool c_ctx::wait_for_all_modules( modules_t& modules ) const {
@@ -231,7 +231,7 @@ bool c_ctx::parse_ent_offsets( ent_offsets_t& offsets, const modules_t& modules 
         if ( client_class->m_recv_table )
             parse_recv_table( parse_recv_table, client_class->m_network_name, client_class->m_recv_table );
 
-    const auto mov_data_map = BYTESEQ( "C7 05 ? ? ? ? ? ? ? ? C7 05 ? ? ? ? ? ? ? ? C3 CC" );
+    const auto mov_data_map = BYTESEQ( "CC CC CC CC C7 05 ? ? ? ? ? ? ? ? C7 05 ? ? ? ? ? ? ? ? C3 CC" );
 
     const code_section_t client{ modules.at( HASH( "client.dll" ) ) };
     for ( auto start = client.m_start; ; start.self_offset( 0x1 ) ) {
@@ -239,7 +239,7 @@ bool c_ctx::parse_ent_offsets( ent_offsets_t& offsets, const modules_t& modules 
         if ( start == client.m_end )
             break;
 
-        const auto data_map = start.offset( 0x2 ).self_deref( ).self_offset( -0x4 ).as< valve::data_map_t* >( );
+        const auto data_map = start.offset( 0x6 ).self_deref( ).self_offset( -0x4 ).as< valve::data_map_t* >( );
         if ( !data_map
             || !data_map->m_name
             || !data_map->m_descriptions
@@ -280,7 +280,14 @@ void c_ctx::init_offsets( const modules_t& modules ) {
 
     m_offsets.m_user_cmd_checksum = BYTESEQ( "53 8B D9 83 C8" ).search( client.m_start, client.m_end );
 
-    m_offsets.m_key_values.m_init = BYTESEQ( "E8 ? ? ? ? 5F 89 06" ).search( client.m_start, client.m_end ).self_rel( );
+    m_offsets.m_key_values.m_init =
+#ifdef CSGO2018
+        BYTESEQ( "E8 ? ? ? ? 5F 89 06" ) 
+#else
+        BYTESEQ( "E8 ? ? ? ? 8B F0 EB 75" )
+#endif
+        .search( client.m_start, client.m_end ).self_rel( );
+
     m_offsets.m_key_values.m_load_from_buffer = BYTESEQ( "55 8B EC 83 E4 F8 83 EC 34 53 8B 5D 0C 89" ).search( client.m_start, client.m_end );
 
     m_offsets.m_anim_state.m_reset = BYTESEQ( "56 6A 01 68 ? ? ? ? 8B F1" ).search(
