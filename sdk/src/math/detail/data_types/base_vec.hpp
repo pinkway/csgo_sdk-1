@@ -167,9 +167,9 @@ namespace sdk::detail {
             const base_mat_t< _value_t, 3u, 4u >& matrix
         ) const {
             return {
-                dot( matrix.row( 0u ) ) + matrix.row( 0u ).at( 3u ),
-                dot( matrix.row( 1u ) ) + matrix.row( 1u ).at( 3u ),
-                dot( matrix.row( 2u ) ) + matrix.row( 2u ).at( 3u )
+                base_t::dot( matrix.row( 0u ) ) + matrix.row( 0u ).at( 3u ),
+                base_t::dot( matrix.row( 1u ) ) + matrix.row( 1u ).at( 3u ),
+                base_t::dot( matrix.row( 2u ) ) + matrix.row( 2u ).at( 3u )
             };
         }
 
@@ -190,7 +190,7 @@ namespace sdk::detail {
         ALWAYS_INLINE constexpr base_vec_t< _value_t, 3u > rotate(
             const base_mat_t< _value_t, 3u, 4u >& matrix
         ) const {
-            return { dot( matrix.row( 0u ) ), dot( matrix.row( 1u ) ), dot( matrix.row( 2u ) ) };
+            return { base_t::dot( matrix.row( 0u ) ), base_t::dot( matrix.row( 1u ) ), base_t::dot( matrix.row( 2u ) ) };
         }
 
         ALWAYS_INLINE constexpr base_vec_t< _value_t, 3u > i_rotate(

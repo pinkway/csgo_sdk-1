@@ -134,7 +134,7 @@ void c_ctx::init_interfaces( const modules_t& modules ) const {
 
     interfaces_t interfaces{};
 
-    constexpr sdk::hash_t needed_modules[ ]{
+    constexpr sdk::hash_t k_needed_modules[ ]{
         HASH( "client.dll" ),
         HASH( "engine.dll" ),
         HASH( "vstdlib.dll" ),
@@ -144,7 +144,7 @@ void c_ctx::init_interfaces( const modules_t& modules ) const {
         HASH( "materialsystem.dll" )
     };
 
-    for ( const auto hash : needed_modules )
+    for ( const auto hash : k_needed_modules )
         parse_interfaces( modules.at( hash ), interfaces );
 
     if ( interfaces.empty( ) )
@@ -193,9 +193,9 @@ void c_ctx::init_interfaces( const modules_t& modules ) const {
     valve::g_engine_trace = interfaces.at( HASH( "EngineTraceClient004" ) ).as< valve::c_engine_trace* >( );
     valve::g_phys_props = interfaces.at( HASH( "VPhysicsSurfaceProps001" ) ).as< valve::c_physics_surface_props* >( );
 
-    valve::g_game_rules = *BYTESEQ( "A1 ? ? ? ? 85 C0 0F 84 ? ? ? ? 80 B8 ? ? ? ? ? 74 7A" ).search(
+    valve::g_game_rules = *BYTESEQ( VARVAL( "8B 0D ? ? ? ? E8 ? ? ? ? 84 C0 75 6B", "8B 0D ? ? ? ? 56 83 CE FF" ) ).search(
         client.m_start, client.m_end
-    ).self_offset( 0x1 ).as< valve::game_rules_t*** >( );
+    ).self_offset( 0x2 ).as< valve::game_rules_t*** >( );
     valve::g_game_types = interfaces.at( HASH( "VENGINE_GAMETYPES_VERSION002" ) ).as< valve::c_game_types* >( );
 }
 
