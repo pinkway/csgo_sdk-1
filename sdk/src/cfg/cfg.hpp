@@ -31,8 +31,6 @@ namespace sdk {
 
     class c_cfg {
     private:
-        static constexpr std::uint8_t k_byte_xor = 0xc8u;
-
         std::vector< detail::base_cfg_var_t* > m_vars{};
     public:
         void save( const std::string_view name ) const;

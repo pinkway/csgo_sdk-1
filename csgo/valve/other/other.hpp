@@ -867,7 +867,7 @@ namespace valve {
         float                   m_strafe_cycle{};
         int                     m_strafe_sequence{};
         std::uint8_t            pad11[ 388u ]{};
-        float                   m_camera_shooth_height{};
+        float                   m_camera_smooth_height{};
         bool                    m_smooth_height_valid{};
         std::uint8_t            pad12[ 11u ]{};
         float                   m_aim_yaw_min{},

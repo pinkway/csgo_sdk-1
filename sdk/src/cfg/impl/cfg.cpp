@@ -11,18 +11,11 @@ namespace sdk {
         /* use a new object to verify our cfg when loading */
         auto& object = json[ SDK_CFG_ID_OBJECT ];
 
-        for ( const auto& var : m_vars )
+        for ( const auto var : m_vars )
             var->save( object );
 
-        auto str = json.dump( );
-
-        /* encrypt our cfg so the user wouldn't know tf is stored in it */
-        for ( auto& chr : str )
-            /* there is no need for more complex algorithms, a simple xor is enough */
-            chr ^= k_byte_xor;
-
         if ( std::ofstream file{ path, std::ios::out | std::ios::trunc } )
-            file << str;
+            file << json.dump( );
     }
 
     void c_cfg::load( const std::string_view name ) {
@@ -39,10 +32,6 @@ namespace sdk {
         if ( str.empty( ) )
             return;
 
-        /* decrypt cfg */
-        for ( auto& chr : str )
-            chr ^= k_byte_xor;
-
         const auto json = nlohmann::json::parse( str );
         if ( !json.is_object( ) )
             return;
@@ -54,7 +43,7 @@ namespace sdk {
 
         const auto& value = object.value( );
 
-        for ( auto& var : m_vars )
+        for ( const auto var : m_vars )
             var->load( value );
     }
 }
