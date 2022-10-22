@@ -280,8 +280,9 @@ void c_ctx::init_offsets( const modules_t& modules ) {
 
     m_offsets.m_user_cmd_checksum = BYTESEQ( "53 8B D9 83 C8" ).search( client.m_start, client.m_end );
 
-    m_offsets.m_key_values.m_init = BYTESEQ( VARVAL( "E8 ? ? ? ? 5F 89 06", "E8 ? ? ? ? 8B F0 EB 75" ) ).search( client.m_start, client.m_end ).self_rel( );
-
+    m_offsets.m_key_values.m_init = BYTESEQ( VARVAL( "E8 ? ? ? ? 5F 89 06", "E8 ? ? ? ? 8B F0 EB 22" ) ).search(
+        client.m_start, client.m_end
+    ).self_rel( );
     m_offsets.m_key_values.m_load_from_buffer = BYTESEQ( "55 8B EC 83 E4 F8 83 EC 34 53 8B 5D 0C 89" ).search( client.m_start, client.m_end );
 
     m_offsets.m_anim_state.m_reset = BYTESEQ( "56 6A 01 68 ? ? ? ? 8B F1" ).search(
