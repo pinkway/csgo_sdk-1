@@ -236,6 +236,11 @@ namespace valve {
     public:
         VFUNC( e_game_type( __thiscall* )( decltype( this ) ), game_type( ), 8u );
     } inline* g_game_types{};
+
+    class c_weapon {
+    public:
+        VFUNC( weapon_info_t*( __thiscall* )( decltype( this ), e_item_index ), weapon_info( e_item_index item_idx ), 2u, item_idx );
+    } inline* g_weapon{};
 }
 
 #include "impl/interfaces.inl"

@@ -37,7 +37,6 @@ private:
 
     struct {
         sdk::address_t  m_local_player{},
-                        m_weapon_system{},
                         m_user_cmd_checksum{};
 
         struct {

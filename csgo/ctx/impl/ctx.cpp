@@ -197,6 +197,10 @@ void c_ctx::init_interfaces( const modules_t& modules ) const {
         client.m_start, client.m_end
     ).self_offset( 0x2 ).as< valve::game_rules_t*** >( );
     valve::g_game_types = interfaces.at( HASH( "VENGINE_GAMETYPES_VERSION002" ) ).as< valve::c_game_types* >( );
+
+    valve::g_weapon = *BYTESEQ( "8B 35 ? ? ? ? FF 10 0F B7 C0" ).search( 
+        client.m_start, client.m_end 
+    ).self_offset( 0x2 ).as< valve::c_weapon** >( );
 }
 
 bool c_ctx::parse_ent_offsets( ent_offsets_t& offsets, const modules_t& modules ) const {
@@ -271,10 +275,6 @@ void c_ctx::init_offsets( const modules_t& modules ) {
     const code_section_t client{ modules.at( HASH( "client.dll" ) ) };
 
     m_offsets.m_local_player = BYTESEQ( "8B 0D ? ? ? ? 83 FF FF 74 07" ).search(
-        client.m_start, client.m_end
-    ).self_offset( 0x2 ).self_deref( );
-
-    m_offsets.m_weapon_system = BYTESEQ( "8B 35 ? ? ? ? FF 10 0F B7 C0" ).search(
         client.m_start, client.m_end
     ).self_offset( 0x2 ).self_deref( );
 
